@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
-public class ProductoModificarView extends JFrame {
+public class ProductoModificarView extends JInternalFrame {
     private JPanel pnlPrincipal;
     private JTextField txtCodigo;
     private JButton btnListar;
@@ -18,20 +18,16 @@ public class ProductoModificarView extends JFrame {
     private JLabel lblCodigo;
     private JLabel lblNombre;
     private JLabel lblPrecio;
-    private DefaultTableModel modelo;
 
     public ProductoModificarView() {
         setContentPane(pnlPrincipal);
-        setTitle("ELIMINACIÓN DE PRODUCTOS");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
-
-        modelo = new DefaultTableModel();
-        Object[] columnas = {"Código", "Nombre", "Precio"};
-        modelo.setColumnIdentifiers(columnas);
-        tblProducto.setModel(modelo);
+        setTitle("MODIFICACIÓN DE PRODUCTOS");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(500, 200);
+        setClosable(true);
+        setIconifiable(true);
+        setResizable(true);
+        //setLocationRelativeTo(null);
     }
 
     public JPanel getPnlPrincipal() {
@@ -96,50 +92,6 @@ public class ProductoModificarView extends JFrame {
 
     public void setBtnActualizar(JButton btnActualizar) {
         this.btnActualizar = btnActualizar;
-    }
-
-    public JLabel getLblCodigo() {
-        return lblCodigo;
-    }
-
-    public void setLblCodigo(JLabel lblCodigo) {
-        this.lblCodigo = lblCodigo;
-    }
-
-    public JLabel getLblNombre() {
-        return lblNombre;
-    }
-
-    public void setLblNombre(JLabel lblNombre) {
-        this.lblNombre = lblNombre;
-    }
-
-    public JLabel getLblPrecio() {
-        return lblPrecio;
-    }
-
-    public void setLblPrecio(JLabel lblPrecio) {
-        this.lblPrecio = lblPrecio;
-    }
-
-    public DefaultTableModel getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(DefaultTableModel modelo) {
-        this.modelo = modelo;
-    }
-
-    public void cargarProductos(List<Producto> listaproductos) {
-        modelo.setNumRows(0);
-        for(Producto producto : listaproductos) {
-            Object[] fila = {
-                    producto.getCodigo(),
-                    producto.getNombre(),
-                    producto.getPrecio()
-            };
-            modelo.addRow(fila);
-        }
     }
 
     public void mostrarMensaje(String mensaje) {

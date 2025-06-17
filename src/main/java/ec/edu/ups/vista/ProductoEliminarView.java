@@ -6,28 +6,27 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
-public class ProductoEliminarView extends JFrame {
+public class ProductoEliminarView extends JInternalFrame {
     private JPanel pnlPrincipal;
     private JTextField txtCodigo;
     private JButton btnBuscar;
     private JButton btnEliminar;
     private JLabel lblCodigo;
-    private JTable tblProducto;
     private JButton btnListar;
-    private DefaultTableModel modelo;
+    private JTextField txtNombre;
+    private JTextField txtPrecio;
+    private JLabel lblNombre;
+    private JLabel lblPrecio;
 
     public ProductoEliminarView() {
         setContentPane(pnlPrincipal);
         setTitle("ELIMINACIÓN DE PRODUCTOS");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
-
-        modelo = new DefaultTableModel();
-        Object[] columnas = {"Código", "Nombre", "Precio"};
-        modelo.setColumnIdentifiers(columnas);
-        tblProducto.setModel(modelo);
+        setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
+        setSize(500, 200);
+        //setLocationRelativeTo(null);
+        setClosable(true);
+        setIconifiable(true);
+        setResizable(true);
     }
 
     public JPanel getPnlPrincipal() {
@@ -42,8 +41,8 @@ public class ProductoEliminarView extends JFrame {
         return txtCodigo;
     }
 
-    public void setTxtCodigo(JTextField textField1) {
-        this.txtCodigo = textField1;
+    public void setTxtCodigo(JTextField txtCodigo) {
+        this.txtCodigo = txtCodigo;
     }
 
     public JButton getBtnBuscar() {
@@ -70,45 +69,24 @@ public class ProductoEliminarView extends JFrame {
         this.btnListar = btnListar;
     }
 
-    public JTable getTblProducto() {
-        return tblProducto;
+    public JTextField getTxtNombre() {
+        return txtNombre;
     }
 
-    public void setTblProducto(JTable tblProducto) {
-        this.tblProducto = tblProducto;
+    public void setTxtNombre(JTextField txtNombre) {
+        this.txtNombre = txtNombre;
     }
 
-    public DefaultTableModel getModelo() {
-        return modelo;
+    public JTextField getTxtPrecio() {
+        return txtPrecio;
     }
 
-    public void setModelo(DefaultTableModel modelo) {
-        this.modelo = modelo;
-    }
-
-    public void mostrarProducto(List<Producto> listaproductos) {
-        limpiarTabla();
-        if(listaproductos != null) {
-            for(Producto producto : listaproductos) {
-                Object[] fila = {
-                        producto.getCodigo(),
-                        producto.getNombre(),
-                        producto.getPrecio()
-                };
-                modelo.addRow(fila);
-            }
-        } else {
-            mostrarMensaje("Producto no encontrado");
-            limpiarCampos();
-        }
+    public void setTxtPrecio(JTextField txtPrecio) {
+        this.txtPrecio = txtPrecio;
     }
 
     public void limpiarCampos() {
         txtCodigo.setText("");
-    }
-
-    public void limpiarTabla() {
-        modelo.setNumRows(0);
     }
 
     public void mostrarMensaje(String mensaje) {
