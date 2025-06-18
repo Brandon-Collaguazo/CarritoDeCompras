@@ -2,10 +2,7 @@ package ec.edu.ups.controlador;
 
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.modelo.Producto;
-import ec.edu.ups.vista.ProductoAnadirView;
-import ec.edu.ups.vista.ProductoEliminarView;
-import ec.edu.ups.vista.ProductoListaView;
-import ec.edu.ups.vista.ProductoModificarView;
+import ec.edu.ups.vista.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,50 +11,25 @@ import java.util.List;
 
 public class ProductoController {
 
-    private ProductoAnadirView productoAnadirView;
-    private ProductoListaView productoListaView;
-    private ProductoEliminarView productoEliminarView;
-    private ProductoModificarView productoModificarView;
     private final ProductoDAO productoDAO;
+    private final ProductoAnadirView productoAnadirView;
+    private final ProductoListaView productoListaView;
+    private final ProductoEliminarView productoEliminarView;
+    private final ProductoModificarView productoModificarView;
+    private final CarritoAnadirView carritoAnadirView;
 
-    public ProductoController(ProductoDAO productoDAO) {
+    public ProductoController(ProductoDAO productoDAO,
+                              ProductoAnadirView productoAnadirView,
+                              ProductoListaView productoListaView,
+                              ProductoEliminarView productoEliminarView,
+                              ProductoModificarView productoModificarView,
+                              CarritoAnadirView carritoAnadirView) {
         this.productoDAO = productoDAO;
-    }
-
-    public ProductoAnadirView getProductoAnadirView() {
-        return productoAnadirView;
-    }
-
-    public void setProductoAnadirView(ProductoAnadirView productoAnadirView) {
         this.productoAnadirView = productoAnadirView;
-    }
-
-    public ProductoListaView getProductoListaView() {
-        return productoListaView;
-    }
-
-    public void setProductoListaView(ProductoListaView productoListaView) {
         this.productoListaView = productoListaView;
-    }
-
-    public ProductoEliminarView getProductoEliminarView() {
-        return productoEliminarView;
-    }
-
-    public void setProductoEliminarView(ProductoEliminarView productoEliminarView) {
         this.productoEliminarView = productoEliminarView;
-    }
-
-    public ProductoModificarView getProductoModificarView() {
-        return productoModificarView;
-    }
-
-    public void setProductoModificarView(ProductoModificarView productoModificarView) {
         this.productoModificarView = productoModificarView;
-    }
-
-    public ProductoDAO getProductoDAO() {
-        return productoDAO;
+        this.carritoAnadirView = carritoAnadirView;
     }
 
     public void configurarEventosAnadir() {
@@ -220,5 +192,10 @@ public class ProductoController {
     private void actualizarVistas() {
         List<Producto> productos = productoDAO.listarTodos();
         productoListaView.cargarDatos(productos);
+    }
+
+    private void buscarProducto() {
+        int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
+
     }
 }

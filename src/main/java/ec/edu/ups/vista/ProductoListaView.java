@@ -25,7 +25,7 @@ public class ProductoListaView extends JInternalFrame {
         setResizable(true);
 
         modelo = new DefaultTableModel();
-        Object[] columnas = {"Código", "Nombre", "Precio"};
+        Object[] columnas = {"Código", "Nombre", "Precio", "Cantidad"};
         modelo.setColumnIdentifiers(columnas);
         tblProducto.setModel(modelo);
     }
