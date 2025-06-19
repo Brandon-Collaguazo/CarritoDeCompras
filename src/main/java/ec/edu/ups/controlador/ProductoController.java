@@ -5,6 +5,7 @@ import ec.edu.ups.modelo.Producto;
 import ec.edu.ups.vista.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -78,6 +79,21 @@ public class ProductoController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 modificarProducto();
+            }
+        });
+    }
+
+    public void configurarEventosCarrito() {
+        carritoAnadirView.getBtnBuscar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buscarProducto();
+            }
+        });
+        carritoAnadirView.getBtnAnadir().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                anadirAlCarrito();
             }
         });
     }
@@ -193,9 +209,66 @@ public class ProductoController {
         List<Producto> productos = productoDAO.listarTodos();
         productoListaView.cargarDatos(productos);
     }
-
+    //Ventana Carrito
     private void buscarProducto() {
         int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
+        Producto producto = productoDAO.buscarPorCodigo(codigo);
+        if(producto == null) {
+            carritoAnadirView.mostrarMensaje("No se encontro el producto");
+            carritoAnadirView.getTxtNombre().setText("");
+            carritoAnadirView.getTxtPrecio().setText("");
+        } else {
+            carritoAnadirView.getTxtNombre().setText(producto.getNombre());
+            carritoAnadirView.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
+        }
+    }
 
+    private void anadirAlCarrito() {
+        if(carritoAnadirView.getTxtNombre().getText().isEmpty() ||
+        carritoAnadirView.getTxtPrecio().getText().isEmpty()) {
+            carritoAnadirView.mostrarMensaje("Busque un producto primero");
+            return;
+        }
+
+        //Obtener datos del proucto buscado
+        int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
+        String nombre = carritoAnadirView.getTxtNombre().getText();
+        double precio = Double.parseDouble(carritoAnadirView.getTxtPrecio().getText());
+        int cantidad = Integer.parseInt(carritoAnadirView.getCbxCantidad().getSelectedItem().toString());
+
+        if(cantidad<=0) {
+            carritoAnadirView.mostrarMensaje("La cantidad debe ser mayor a 0");
+        }
+
+        //Verificacion de duplicidad
+        DefaultTableModel model = (DefaultTableModel) carritoAnadirView.getTblProducto().getModel();
+
+        for(int i = 0; i < model.getRowCount(); i++) {
+            if(Integer.parseInt(model.getValueAt(i, 0).toString()) == codigo) {
+                carritoAnadirView.mostrarMensaje("Este producto ya está en el carrito");
+                return;
+            }
+        }
+
+        Producto producto = new Producto(codigo, nombre, precio);
+        carritoAnadirView.agregarProductoATabla(producto, cantidad);
+        calcularTotales();
+        carritoAnadirView.limpiarCampos();
+    }
+
+    private void calcularTotales() {
+        DefaultTableModel modelo = (DefaultTableModel) carritoAnadirView.getTblProducto().getModel();
+        double subtotal = 0;
+        //Sumar los productos del carrito
+        for(int i = 0; i < modelo.getRowCount(); i++) {
+            double precio = Double.parseDouble(modelo.getValueAt(i, 2).toString());
+            int cantidad = Integer.parseInt(modelo.getValueAt(i, 3).toString());
+            subtotal += precio * cantidad;
+
+        }
+        double iva = subtotal * 0.15;
+        double total = subtotal + iva;
+
+        carritoAnadirView.actualizarTotales(subtotal, iva, total);
     }
 }

@@ -1,5 +1,7 @@
 package ec.edu.ups.vista;
 
+import ec.edu.ups.modelo.Producto;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -42,6 +44,33 @@ public class CarritoAnadirView extends JInternalFrame {
         for(int i = 0; i < 10; i++) {
             cbxCantidad.addItem(String.valueOf(i + 1));
         }
+    }
+
+    public void agregarProductoATabla(Producto producto, int cantidad) {
+        DefaultTableModel modelo = (DefaultTableModel) tblProducto.getModel();
+        modelo.addRow(new Object[]{
+                producto.getCodigo(),
+                producto.getNombre(),
+                producto.getPrecio(),
+                cantidad
+        });
+    }
+
+    public void limpiarCampos() {
+        txtCodigo.setText("");
+        txtNombre.setText("");
+        txtPrecio.setText("");
+        cbxCantidad.setSelectedIndex(0);
+    }
+
+    public void limpiarTabla() {
+        modelo.setRowCount(0);
+    }
+
+    public void actualizarTotales(double subtotal, double iva, double total) {
+        txtSubtotal.setText(String.format("%.2f", subtotal));
+        txtIva.setText(String.format("%.2f", iva));
+        txtTotal.setText(String.format("%.2f", total));
     }
 
     public JPanel getPnlPrincipal() {

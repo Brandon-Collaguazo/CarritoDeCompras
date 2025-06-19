@@ -32,6 +32,7 @@ public class Main {
                 productoController.configurarEventosModificar();
                 productoController.configurarEventosEliminar();
                 productoController.configurarEventosLista();
+                productoController.configurarEventosCarrito();
 
                 principalView.getMenuItemCrear().addActionListener(new ActionListener() {
                     @Override
