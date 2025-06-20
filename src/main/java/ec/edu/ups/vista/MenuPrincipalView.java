@@ -14,6 +14,9 @@ public class MenuPrincipalView extends JFrame {
     private JMenuItem menuItemBuscar;
 
     private JMenuItem menuItemCrearCarrito;
+    private JMenuItem menuItemBuscarCarrito;
+    private JMenuItem menuItemEliminarCarrito;
+    private JMenuItem menuItemActualizarCarrito;
 
     private JDesktopPane jDesktopPane;
 
@@ -30,6 +33,9 @@ public class MenuPrincipalView extends JFrame {
         menuItemActualizar = new JMenuItem("Modificar Producto");
 
         menuItemCrearCarrito = new JMenuItem("Crear Carrito");
+        menuItemBuscarCarrito = new JMenuItem("Buscar Carrito");
+        menuItemEliminarCarrito = new JMenuItem("Eliminar Carrito");
+        menuItemActualizarCarrito = new JMenuItem("Actualizar carrito");
 
         menuBar.add(menuProducto);
         menuBar.add(menuCarrito);
@@ -40,6 +46,9 @@ public class MenuPrincipalView extends JFrame {
         menuProducto.add(menuItemActualizar);
 
         menuCarrito.add(menuItemCrearCarrito);
+        menuCarrito.add(menuItemBuscarCarrito);
+        menuCarrito.add(menuItemEliminarCarrito);
+        menuCarrito.add(menuItemActualizarCarrito);
 
         setJMenuBar(menuBar);
         setContentPane(jDesktopPane);
@@ -49,67 +58,39 @@ public class MenuPrincipalView extends JFrame {
         setVisible(true);
     }
 
-    public JMenu getMenuProducto() {
-        return menuProducto;
-    }
-
-    public void setMenuProducto(JMenu menuProducto) {
-        this.menuProducto = menuProducto;
-    }
-
-    public JMenu getMenuCarrito() {
-        return menuCarrito;
-    }
-
-    public void setMenuCarrito(JMenu menuCarrito) {
-        this.menuCarrito = menuCarrito;
-    }
-
     public JMenuItem getMenuItemCrear() {
         return menuItemCrear;
-    }
-
-    public void setMenuItemCrear(JMenuItem menuItemCrear) {
-        this.menuItemCrear = menuItemCrear;
     }
 
     public JMenuItem getMenuItemEliminar() {
         return menuItemEliminar;
     }
 
-    public void setMenuItemEliminar(JMenuItem menuItemEliminar) {
-        this.menuItemEliminar = menuItemEliminar;
-    }
-
     public JMenuItem getMenuItemActualizar() {
         return menuItemActualizar;
-    }
-
-    public void setMenuItemActualizar(JMenuItem menuItemActualizar) {
-        this.menuItemActualizar = menuItemActualizar;
     }
 
     public JMenuItem getMenuItemBuscar() {
         return menuItemBuscar;
     }
 
-    public void setMenuItemBuscar(JMenuItem menuItemBuscar) {
-        this.menuItemBuscar = menuItemBuscar;
-    }
-
     public JMenuItem getMenuItemCrearCarrito() {
         return menuItemCrearCarrito;
     }
 
-    public void setMenuItemCrearCarrito(JMenuItem menuItemCrearCarrito) {
-        this.menuItemCrearCarrito = menuItemCrearCarrito;
+    public JMenuItem getMenuItemBuscarCarrito() {
+        return menuItemBuscarCarrito;
+    }
+
+    public JMenuItem getMenuItemEliminarCarrito() {
+        return menuItemEliminarCarrito;
+    }
+
+    public JMenuItem getMenuItemActualizarCarrito() {
+        return menuItemActualizarCarrito;
     }
 
     public JDesktopPane getjDesktopPane() {
         return jDesktopPane;
-    }
-
-    public void setjDesktopPane(JDesktopPane jDesktopPane) {
-        this.jDesktopPane = jDesktopPane;
     }
 }

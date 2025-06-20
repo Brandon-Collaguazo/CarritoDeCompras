@@ -35,6 +35,7 @@ public class CarritoDAOMemoria implements CarritoDAO {
         for(int i = 0; i < listaCarritos.size(); i++) {
             if(listaCarritos.get(i).getCodigo() == carrito.getCodigo()) {
                 listaCarritos.set(i, carrito);
+                break;
             }
         }
     }

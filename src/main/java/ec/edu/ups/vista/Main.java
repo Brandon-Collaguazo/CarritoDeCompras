@@ -1,8 +1,12 @@
 package ec.edu.ups.vista;
 
+import ec.edu.ups.controlador.CarritoController;
 import ec.edu.ups.controlador.ProductoController;
+import ec.edu.ups.dao.CarritoDAO;
 import ec.edu.ups.dao.ProductoDAO;
+import ec.edu.ups.dao.impl.CarritoDAOMemoria;
 import ec.edu.ups.dao.impl.ProductoDAOMemoria;
+import ec.edu.ups.modelo.Carrito;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,13 +17,20 @@ public class Main {
             public void run() {
                 //Instanciamos DAO
                 ProductoDAO productoDAO = new ProductoDAOMemoria();
+                CarritoDAO carritoDAO = new CarritoDAOMemoria();
                 //Instancia Vista
                 MenuPrincipalView principalView = new MenuPrincipalView();
+
                 ProductoAnadirView productoAnadirView = new ProductoAnadirView();
                 ProductoListaView productoListaView = new ProductoListaView();
                 ProductoModificarView productoModificarView = new ProductoModificarView();
                 ProductoEliminarView  productoEliminarView = new ProductoEliminarView();
+
                 CarritoAnadirView carritoAnadirView = new CarritoAnadirView();
+                CarritoBuscarView carritoBuscarView = new CarritoBuscarView();
+                CarritoEliminarView carritoEliminarView = new CarritoEliminarView();
+                CarritoActualizarView carritoActualizarView = new CarritoActualizarView();
+
                 //Instancia Controlador
                 ProductoController productoController = new ProductoController(productoDAO,
                         productoAnadirView,
@@ -27,6 +38,14 @@ public class Main {
                         productoEliminarView,
                         productoModificarView,
                         carritoAnadirView);
+
+                CarritoController carritoController = new CarritoController(carritoDAO,
+                                                                            productoDAO,
+                                                                            carritoAnadirView,
+                                                                            carritoBuscarView,
+                                                                            carritoEliminarView,
+                                                                            carritoActualizarView
+                );
 
                 productoController.configurarEventosAnadir();
                 productoController.configurarEventosModificar();
@@ -77,9 +96,39 @@ public class Main {
                 principalView.getMenuItemCrearCarrito().addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if(!carritoAnadirView.isVisible()) {
+                        if(!carritoAnadirView.isVisible()){
                             carritoAnadirView.setVisible(true);
                             principalView.getjDesktopPane().add(carritoAnadirView);
+                        }
+                    }
+                });
+
+                principalView.getMenuItemBuscarCarrito().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(!carritoBuscarView.isVisible()){
+                            carritoBuscarView.setVisible(true);
+                            principalView.getjDesktopPane().add(carritoBuscarView);
+                        }
+                    }
+                });
+
+                principalView.getMenuItemEliminarCarrito().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(!carritoEliminarView.isVisible()){
+                            carritoEliminarView.setVisible(true);
+                            principalView.getjDesktopPane().add(carritoEliminarView );
+                        }
+                    }
+                });
+
+                principalView.getMenuItemActualizarCarrito().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(!carritoActualizarView.isVisible()){
+                            carritoActualizarView.setVisible(true);
+                            principalView.getjDesktopPane().add(carritoActualizarView );
                         }
                     }
                 });

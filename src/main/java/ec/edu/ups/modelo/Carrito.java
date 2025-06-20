@@ -7,13 +7,24 @@ import java.util.List;
 
 public class Carrito {
 
+    private final double IVA = 0.15;
+
+    private static int contador = 1;
+
     private int codigo;
+
     private GregorianCalendar fechaCreacion;
+
     private List<ItemCarrito> items;
 
     public Carrito() {
+        codigo = contador++;
         items = new ArrayList<>();
         fechaCreacion = new GregorianCalendar();
+    }
+
+    public double getIVA() {
+        return IVA;
     }
 
     public int getCodigo() {
@@ -50,14 +61,6 @@ public class Carrito {
         items.clear();
     }
 
-    public double calcularTotal() {
-        double total = 0;
-        for (ItemCarrito item : items) {
-            total += item.getProducto().getPrecio() * item.getCantidad();
-        }
-        return total;
-    }
-
     public List<ItemCarrito> obtenerItems() {
         return items;
     }
@@ -65,4 +68,57 @@ public class Carrito {
     public boolean estaVacio() {
         return items.isEmpty();
     }
+
+    public double calcularSubtotal() {
+        double subtotal = 0;
+        for (ItemCarrito item : items) {
+            subtotal += item.getProducto().getPrecio() * item.getCantidad();
+        }
+        return subtotal;
+    }
+
+    public double calcularIVA() {
+        double subtotal = calcularSubtotal();
+        return subtotal * IVA;
+    }
+
+    public double calcularTotal() {
+        return calcularSubtotal() + calcularIVA();
+    }
+
+    public void modificarCantidadProducto(int codigoProducto, int nuevaCantidad) {
+        for (ItemCarrito item : items) {
+            if (item.getProducto().getCodigo() == codigoProducto) {
+                item.setCantidad(nuevaCantidad);
+                return;
+            }
+        }
+    }
+
+    public boolean contieneProducto(int codigoProducto) {
+        return items.stream().anyMatch(item ->
+                item.getProducto().getCodigo() == codigoProducto
+        );
+    }
+
+    public ItemCarrito buscarItemPorCodigo(int codigo) {
+        for (ItemCarrito item : items) {
+            if (item.getProducto().getCodigo() == codigo) {
+                return item; // Retorna el ítem si encuentra coincidencia
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Carrito[" + "\n" +
+                "IVA=" + IVA + "\n" +
+                ", codigo=" + codigo + "\n" +
+                ", fechaCreacion=" + fechaCreacion + "\n" +
+                ", items=" + items + "\n" +
+                ']';
+    }
+
+
 }
