@@ -2,191 +2,179 @@ package ec.edu.ups.vista;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class CarritoActualizarView extends JInternalFrame {
     private JPanel pnlPrincipal;
-    private JPanel pnlSuperior;
-    private JPanel pnlCentral;
-    private JTextField txtCodigo;
-    private JButton btnBuscar;
+    private JTextField txtCodigoC;
+    private JButton btnBuscarC;
+    private JTextField txtCodigoP;
+    private JButton btnBuscarP;
+    private JButton btnAnadir;
     private JTable tblProducto;
     private JTextField txtSubtotal;
     private JTextField txtIva;
     private JTextField txtTotal;
-    private JTextField txtNombre;
-    private JButton btnActualizar;
-    private JButton btnAnadir;
-    private JComboBox cbxCantidad;
-    private JButton btnEliminar;
     private JButton btnGuardar;
-    private JTextField txtPrecio;
-    private JTextField txtCodigoProducto;
-    private JButton btnBuscarProducto;
+    private JPanel pnlSuperior;
+    private JPanel pnlInferior;
+
+    // Listeners para los botones de la tabla
+    private ActionListener modificarListener;
+    private ActionListener eliminarListener;
 
     public CarritoActualizarView() {
-        super("Actualizar Carrito", true, true, false, true);
+        // Configuración básica de la ventana
         setContentPane(pnlPrincipal);
-        setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
-        setSize(600, 500);
+        setTitle("Actualizar Carrito");
+        setClosable(true);
+        setResizable(true);
+        setSize(1000, 500);
 
-        DefaultTableModel modelo = new DefaultTableModel();
-        Object[] columnas = {"Código", "Nombre", "Precio", "Cantidad", "SubTotal"};
-        modelo.setColumnIdentifiers(columnas);
+        // Configurar modelo de tabla con botones
+        setupTableModel();
+    }
+
+    public void limpiarTabla() {
+        DefaultTableModel model = (DefaultTableModel) tblProducto.getModel();
+        model.setRowCount(0);
+        txtSubtotal.setText("0.00");
+        txtIva.setText("0.00");
+        txtTotal.setText("0.00");
+    }
+
+    private void setupTableModel() {
+        DefaultTableModel modelo = new DefaultTableModel(
+                new Object[]{"Código", "Nombre", "Precio", "Cantidad", "SubTotal", "Acciones"}, 0) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 3 || column == 5;
+            }
+        };
         tblProducto.setModel(modelo);
 
-        cargarDatos();
+        // Configurar renderizador y editor para botones
+        tblProducto.getColumn("Acciones").setCellRenderer(new ButtonRenderer());
+        tblProducto.getColumn("Acciones").setCellEditor(new ButtonEditor(new JCheckBox()));
     }
 
-    public void cargarDatos() {
-        cbxCantidad.removeAllItems();
-        for(int i = 0; i < 20; i++) {
-            cbxCantidad.addItem(String.valueOf(i + 1));
+    // Clase interna para renderizar botones
+    class ButtonRenderer extends JPanel implements TableCellRenderer {
+        private JButton btnModificar;
+        private JButton btnEliminar;
+
+        public ButtonRenderer() {
+            setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+            btnModificar = new JButton("Mod");
+            btnEliminar = new JButton("Elim");
+            add(btnModificar);
+            add(btnEliminar);
         }
-        cbxCantidad.setSelectedIndex(0);
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            return this;
+        }
     }
 
-    public JPanel getPnlPrincipal() {
-        return pnlPrincipal;
+    // Clase interna para manejar eventos de botones
+    class ButtonEditor extends DefaultCellEditor {
+        private JPanel panel;
+        private JButton btnModificar;
+        private JButton btnEliminar;
+        private int currentRow;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+            btnModificar = new JButton("Mod");
+            btnEliminar = new JButton("Elim");
+
+            panel.add(btnModificar);
+            panel.add(btnEliminar);
+
+            btnModificar.addActionListener(e -> {
+                fireEditingStopped();
+                if (modificarListener != null) {
+                    modificarListener.actionPerformed(
+                            new ActionEvent(this, ActionEvent.ACTION_PERFORMED, String.valueOf(currentRow)));
+                }
+            });
+
+            btnEliminar.addActionListener(e -> {
+                fireEditingStopped();
+                if (eliminarListener != null) {
+                    eliminarListener.actionPerformed(
+                            new ActionEvent(this, ActionEvent.ACTION_PERFORMED, String.valueOf(currentRow)));
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            currentRow = row;
+            return panel;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "";
+        }
     }
 
-    public void setPnlPrincipal(JPanel pnlPrincipal) {
-        this.pnlPrincipal = pnlPrincipal;
+    // Métodos para establecer los listeners desde el controlador
+    public void setModificarListener(ActionListener listener) {
+        this.modificarListener = listener;
     }
 
-    public JPanel getPnlSuperior() {
-        return pnlSuperior;
+    public void setEliminarListener(ActionListener listener) {
+        this.eliminarListener = listener;
     }
 
-    public void setPnlSuperior(JPanel pnlSuperior) {
-        this.pnlSuperior = pnlSuperior;
+    // Todos tus getters existentes (los mantengo igual)
+    public JPanel getPnlPrincipal() { return pnlPrincipal; }
+    public JTextField getTxtCodigoC() { return txtCodigoC; }
+    public JButton getBtnBuscarC() { return btnBuscarC; }
+    public JTextField getTxtCodigoP() { return txtCodigoP; }
+    public JButton getBtnBuscarP() { return btnBuscarP; }
+    public JButton getBtnAnadir() { return btnAnadir; }
+    public JTable getTblProducto() { return tblProducto; }
+    public JTextField getTxtSubtotal() { return txtSubtotal; }
+    public JTextField getTxtIva() { return txtIva; }
+    public JTextField getTxtTotal() { return txtTotal; }
+    public JButton getBtnGuardar() { return btnGuardar; }
+
+    // Métodos utilitarios (los mantengo igual)
+    public int getFilaSeleccionada() {
+        return tblProducto.getSelectedRow();
     }
 
-    public JPanel getPnlCentral() {
-        return pnlCentral;
+    public int getCodigoProductoEnFila(int fila) {
+        try {
+            return Integer.parseInt(tblProducto.getValueAt(fila, 0).toString());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
-    public void setPnlCentral(JPanel pnlCentral) {
-        this.pnlCentral = pnlCentral;
+    public int getCantidadEnFila(int fila) {
+        try {
+            return Integer.parseInt(tblProducto.getValueAt(fila, 3).toString());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
-    public JTextField getTxtCodigo() {
-        return txtCodigo;
-    }
-
-    public void setTxtCodigo(JTextField txtCodigo) {
-        this.txtCodigo = txtCodigo;
-    }
-
-    public JButton getBtnBuscar() {
-        return btnBuscar;
-    }
-
-    public void setBtnBuscar(JButton btnBuscar) {
-        this.btnBuscar = btnBuscar;
-    }
-
-    public JTable getTblProducto() {
-        return tblProducto;
-    }
-
-    public void setTblProducto(JTable tblProducto) {
-        this.tblProducto = tblProducto;
-    }
-
-    public JTextField getTxtSubtotal() {
-        return txtSubtotal;
-    }
-
-    public void setTxtSubtotal(JTextField txtSubtotal) {
-        this.txtSubtotal = txtSubtotal;
-    }
-
-    public JTextField getTxtIva() {
-        return txtIva;
-    }
-
-    public void setTxtIva(JTextField txtIva) {
-        this.txtIva = txtIva;
-    }
-
-    public JTextField getTxtTotal() {
-        return txtTotal;
-    }
-
-    public void setTxtTotal(JTextField txtTotal) {
-        this.txtTotal = txtTotal;
-    }
-
-    public JTextField getTxtNombre() {
-        return txtNombre;
-    }
-
-    public void setTxtNombre(JTextField txtNombre) {
-        this.txtNombre = txtNombre;
-    }
-
-    public JTextField getTxtPrecio() {
-        return txtPrecio;
-    }
-
-    public void setTxtPrecio(JTextField txtPrecio) {
-        this.txtPrecio = txtPrecio;
-    }
-
-    public JTextField getTxtCodigoProducto() {
-        return txtCodigoProducto;
-    }
-
-    public void setTxtCodigoProducto(JTextField txtCodigoProducto) {
-        this.txtCodigoProducto = txtCodigoProducto;
-    }
-
-    public JButton getBtnActualizar() {
-        return btnActualizar;
-    }
-
-    public void setBtnActualizar(JButton btnActualizar) {
-        this.btnActualizar = btnActualizar;
-    }
-
-    public JButton getBtnBuscarProducto() {
-        return btnBuscarProducto;
-    }
-
-    public void setBtnBuscarProducto(JButton btnBuscarProducto) {
-        this.btnBuscarProducto = btnBuscarProducto;
-    }
-
-    public JButton getBtnAnadir() {
-        return btnAnadir;
-    }
-
-    public void setBtnAnadir(JButton btnAnadir) {
-        this.btnAnadir = btnAnadir;
-    }
-
-    public JButton getBtnEliminar() {
-        return btnEliminar;
-    }
-
-    public void setBtnEliminar(JButton btnEliminar) {
-        this.btnEliminar = btnEliminar;
-    }
-
-    public JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public void setBtnGuardar(JButton btnGuardar) {
-        this.btnGuardar = btnGuardar;
-    }
-
-    public JComboBox getCbxCantidad() {
-        return cbxCantidad;
-    }
-
-    public void setCbxCantidad(JComboBox cbxCantidad) {
-        this.cbxCantidad = cbxCantidad;
+    public void actualizarTotales(double subtotal, double iva, double total) {
+        txtSubtotal.setText(String.format("$%.2f", subtotal));
+        txtIva.setText(String.format("$%.2f", iva));
+        txtTotal.setText(String.format("$%.2f", total));
     }
 
     public void mostrarMensaje(String mensaje) {

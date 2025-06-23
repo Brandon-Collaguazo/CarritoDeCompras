@@ -93,4 +93,11 @@ public class MenuPrincipalView extends JFrame {
     public JDesktopPane getjDesktopPane() {
         return jDesktopPane;
     }
+
+    public void deshabilitarMenusAdministrador() {
+        getMenuItemCrear().setEnabled(false);
+        getMenuItemBuscar().setEnabled(false);
+        getMenuItemActualizar().setEnabled(false);
+        getMenuItemEliminar().setEnabled(false);
+    }
 }

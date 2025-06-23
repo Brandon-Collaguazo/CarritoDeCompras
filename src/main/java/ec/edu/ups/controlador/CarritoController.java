@@ -96,13 +96,13 @@ public class CarritoController {
         });
 
         //Evento en "CarritoActualizarView"
-        carritoActualizarView.getBtnBuscar().addActionListener(new ActionListener() {
+        carritoActualizarView.getBtnBuscarC().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 buscarCarritoModificar();
             }
         });
-        carritoActualizarView.getBtnBuscarProducto().addActionListener(new ActionListener() {
+        carritoActualizarView.getBtnBuscarP().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 buscarProductoModificar();
@@ -114,23 +114,19 @@ public class CarritoController {
                 agregarProductoAlCarrito();
             }
         });
-        carritoActualizarView.getBtnEliminar().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                eliminarProductoDelCarrito();
-            }
-        });
-        carritoActualizarView.getBtnActualizar().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                actualizarProductoEnCarrito();
-            }
-        });
         carritoActualizarView.getBtnGuardar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 guardarCambios();
             }
+        });
+        carritoActualizarView.setModificarListener(e -> {
+            int fila = Integer.parseInt(e.getActionCommand());
+            modificarProductoEnCarrito(fila);
+        });
+        carritoActualizarView.setEliminarListener(e -> {
+            int fila = Integer.parseInt(e.getActionCommand());
+            eliminarProductoDelCarrito(fila);
         });
     }
 
@@ -302,108 +298,62 @@ public class CarritoController {
 
     //Métodos para la ventana "CarritoActualizarView"
     private void buscarCarritoModificar() {
-        int codigo = Integer.parseInt(carritoActualizarView.getTxtCodigo().getText());
+        int codigo = Integer.parseInt(carritoActualizarView.getTxtCodigoC().getText());
         carrito = carritoDAO.buscarPorCodigo(codigo);
 
-        if (carrito != null) {
-            carritoActualizarView.getBtnBuscarProducto().setEnabled(true);
-            carritoActualizarView.getBtnGuardar().setEnabled(true);
-            mostrarProductosEnTabla();
-            actualizarTotales();
-            carritoActualizarView.mostrarMensaje("Carrito encontrado");
+        if (carrito == null) {
+            carritoActualizarView.mostrarMensaje("Carrito no encontrado");
+            carritoActualizarView.limpiarTabla();
         } else {
-            carritoActualizarView.getBtnBuscarProducto().setEnabled(false);
-            carritoActualizarView.getBtnGuardar().setEnabled(false);
-            limpiarEstadoProducto();
-            carritoActualizarView.mostrarMensaje("Carrito no existe");
+            cargarProductosEnTabla();
+            actualizarTotales();
         }
     }
 
     private void buscarProductoModificar() {
-        int codigo = Integer.parseInt(carritoActualizarView.getTxtCodigoProducto().getText());
+        int codigo = Integer.parseInt(carritoActualizarView.getTxtCodigoP().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
 
-        if (producto != null) {
-            carritoActualizarView.getTxtNombre().setText(producto.getNombre());
-            carritoActualizarView.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
-
-            boolean existeEnCarrito = carrito.contieneProducto(codigo);
-            carritoActualizarView.getBtnAnadir().setEnabled(!existeEnCarrito);
-            carritoActualizarView.getBtnEliminar().setEnabled(existeEnCarrito);
-            carritoActualizarView.getBtnActualizar().setEnabled(existeEnCarrito);
-
-            if (existeEnCarrito) {
-                ItemCarrito item = carrito.buscarItemPorCodigo(codigo);
-                carritoActualizarView.getCbxCantidad().setSelectedItem(item.getCantidad());
-            } else {
-                carritoActualizarView.getCbxCantidad().setSelectedItem(1);
-            }
-        } else {
+        if (producto == null) {
             carritoActualizarView.mostrarMensaje("Producto no encontrado");
-            limpiarEstadoProducto();
+        } else {
+            productoSeleccionado = codigo;
         }
     }
 
     private void agregarProductoAlCarrito() {
-        int codigoProducto = Integer.parseInt(carritoActualizarView.getTxtCodigoProducto().getText());
-        int cantidad = (Integer) carritoActualizarView.getCbxCantidad().getSelectedItem();
-
-        Producto producto = productoDAO.buscarPorCodigo(codigoProducto);
-        carrito.agregarProducto(producto, cantidad);
-        actualizarVista();
-    }
-
-    private void eliminarProductoDelCarrito() {
-        int codigoProducto = Integer.parseInt(carritoActualizarView.getTxtCodigoProducto().getText());
-        carrito.eliminarProducto(codigoProducto);
-        actualizarVista();
-    }
-
-    private void actualizarProductoEnCarrito() {
-        String codigoTexto = carritoActualizarView.getTxtCodigoProducto().getText();
-        int codigoProducto = Integer.parseInt(codigoTexto);
-
-        String nuevoNombre = carritoActualizarView.getTxtNombre().getText();
-        String precioTexto = carritoActualizarView.getTxtPrecio().getText().replace("$", "").trim();
-        double nuevoPrecio = Double.parseDouble(precioTexto);
-
-        Object cantidadSeleccionada = carritoActualizarView.getCbxCantidad().getSelectedItem();
-        int nuevaCantidad = Integer.parseInt(cantidadSeleccionada.toString());
-
-        ItemCarrito item = carrito.buscarItemPorCodigo(codigoProducto);
-        if (item != null) {
-            Producto producto = item.getProducto();
-            producto.setNombre(nuevoNombre);
-            producto.setPrecio(nuevoPrecio);
-            item.setCantidad(nuevaCantidad);
-
-            mostrarProductosEnTabla();
-            actualizarTotales();
-            carritoActualizarView.mostrarMensaje("Producto actualizado");
-        }
-    }
-
-    private void actualizarVista() {
-        mostrarProductosEnTabla();
+        Producto producto = productoDAO.buscarPorCodigo(productoSeleccionado);
+        carrito.agregarProducto(producto, 1);
+        cargarProductosEnTabla();
         actualizarTotales();
-        limpiarEstadoProducto();
+        productoSeleccionado = -1;
+        carritoActualizarView.getTxtCodigoP().setText("");
+    }
+
+    private void modificarProductoEnCarrito(int fila) {
+        int nuevaCantidad = carritoActualizarView.getCantidadEnFila(fila);
+        int codigo = carritoActualizarView.getCodigoProductoEnFila(fila);
+        carrito.modificarCantidadProducto(codigo, nuevaCantidad);
+        actualizarTotales();
+    }
+
+    private void eliminarProductoDelCarrito(int fila) {
+        int codigo = carritoActualizarView.getCodigoProductoEnFila(fila);
+        carrito.eliminarProducto(codigo);
+        cargarProductosEnTabla();
+        actualizarTotales();
     }
 
     private void guardarCambios() {
         carritoDAO.actualizar(carrito);
-        carritoActualizarView.mostrarMensaje("Cambios guardados");
+        carritoActualizarView.mostrarMensaje("Carrito actualizado correctamente");
+        carritoActualizarView.limpiarTabla();
+        carritoActualizarView.getTxtCodigoC().setText("");
+        carritoActualizarView.getTxtCodigoP().setText("");
+        productoSeleccionado = -1;
     }
 
-    private void limpiarEstadoProducto() {
-        carritoActualizarView.getTxtCodigoProducto().setText("");
-        carritoActualizarView.getTxtNombre().setText("");
-        carritoActualizarView.getTxtPrecio().setText("");
-        carritoActualizarView.getBtnAnadir().setEnabled(false);
-        carritoActualizarView.getBtnEliminar().setEnabled(false);
-        carritoActualizarView.getBtnActualizar().setEnabled(false);
-    }
-
-    private void mostrarProductosEnTabla() {
+    private void cargarProductosEnTabla() {
         DefaultTableModel modelo = (DefaultTableModel) carritoActualizarView.getTblProducto().getModel();
         modelo.setRowCount(0);
 
@@ -413,14 +363,17 @@ public class CarritoController {
                     item.getProducto().getNombre(),
                     item.getProducto().getPrecio(),
                     item.getCantidad(),
-                    item.getProducto().getPrecio() * item.getCantidad()
+                    item.getProducto().getPrecio() * item.getCantidad(),
+                    ""
             });
         }
     }
 
     private void actualizarTotales() {
-        carritoActualizarView.getTxtSubtotal().setText(String.valueOf(carrito.calcularSubtotal()));
-        carritoActualizarView.getTxtIva().setText(String.valueOf(carrito.calcularIVA()));
-        carritoActualizarView.getTxtTotal().setText(String.valueOf(carrito.calcularTotal()));
+        double subtotal = carrito.calcularSubtotal();
+        double iva = carrito.calcularIVA();
+        double total = carrito.calcularTotal();
+
+        carritoActualizarView.actualizarTotales(subtotal, iva, total);
     }
 }
