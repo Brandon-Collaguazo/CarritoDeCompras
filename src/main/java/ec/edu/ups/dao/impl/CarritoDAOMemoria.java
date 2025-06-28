@@ -6,6 +6,7 @@ import ec.edu.ups.modelo.Carrito;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CarritoDAOMemoria implements CarritoDAO {
 
@@ -28,6 +29,18 @@ public class CarritoDAOMemoria implements CarritoDAO {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<Carrito> buscarPorUsuario(String username) {
+        List<Carrito> carritosUsuario = new ArrayList<>();
+        for (Carrito carrito : listaCarritos) {
+            if (carrito.getUsuario() != null &&
+                    carrito.getUsuario().getUsername().equals(username)) {
+                carritosUsuario.add(carrito);
+            }
+        }
+        return carritosUsuario;
     }
 
     @Override

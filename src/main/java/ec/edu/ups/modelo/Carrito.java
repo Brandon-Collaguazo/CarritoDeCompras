@@ -6,21 +6,23 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Carrito {
-
     private final double IVA = 0.15;
-
     private static int contador = 1;
-
     private int codigo;
-
+    private Usuario usuario;
     private GregorianCalendar fechaCreacion;
-
     private List<ItemCarrito> items;
 
     public Carrito() {
-        codigo = contador++;
+        this.codigo = contador++;
+        this.usuario = usuario;
         items = new ArrayList<>();
         fechaCreacion = new GregorianCalendar();
+    }
+
+    public Carrito(Usuario usuario) {
+        this();
+        this.usuario = usuario;
     }
 
     public double getIVA() {
@@ -29,6 +31,14 @@ public class Carrito {
 
     public int getCodigo() {
         return codigo;
+    }
+
+    public static int getContador() {
+        return contador;
+    }
+
+    public static void setContador(int contador) {
+        Carrito.contador = contador;
     }
 
     public void setCodigo(int codigo) {
@@ -41,6 +51,22 @@ public class Carrito {
 
     public void setFechaCreacion(GregorianCalendar fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public List<ItemCarrito> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemCarrito> items) {
+        this.items = items;
     }
 
     public void agregarProducto(Producto producto, int cantidad) {
@@ -112,13 +138,12 @@ public class Carrito {
 
     @Override
     public String toString() {
-        return "Carrito[" + "\n" +
-                "IVA=" + IVA + "\n" +
-                ", codigo=" + codigo + "\n" +
-                ", fechaCreacion=" + fechaCreacion + "\n" +
-                ", items=" + items + "\n" +
-                ']';
+        return "Carrito{" +
+                "IVA=" + IVA +
+                ", Código: " + codigo +
+                ", Usuario: " + usuario +
+                ", Fecha de Creación: " + fechaCreacion +
+                ", Items: " + items +
+                '}';
     }
-
-
 }

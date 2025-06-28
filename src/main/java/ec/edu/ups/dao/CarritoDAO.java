@@ -9,6 +9,8 @@ public interface CarritoDAO {
 
     Carrito buscarPorCodigo(int codigo);
 
+    List<Carrito> buscarPorUsuario(String username);
+
     void actualizar(Carrito carrito);
 
     void eliminar(int codigo);

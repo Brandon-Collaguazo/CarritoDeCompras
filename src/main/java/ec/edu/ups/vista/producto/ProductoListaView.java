@@ -1,6 +1,7 @@
-package ec.edu.ups.vista;
+package ec.edu.ups.vista.producto;
 
 import ec.edu.ups.modelo.Producto;
+import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,22 +13,55 @@ public class ProductoListaView extends JInternalFrame {
     private JLabel lblBuscar;
     private JTable tblProducto;
     private JPanel pnlPrincipal;
+    private JLabel lblTitulo;
     private DefaultTableModel modelo;
+    private MensajeInternacionalizacionHandler mensaje;
 
-    public ProductoListaView() {
+    public ProductoListaView(MensajeInternacionalizacionHandler mensaje) {
+        this.mensaje = mensaje;
+        initComponents();
+        actualizarTextos();
+    }
+
+    private void initComponents() {
         setContentPane(pnlPrincipal);
-        setTitle("LISTADO PRODUCTOS");
-        setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
         setSize(500, 500);
         //setLocationRelativeTo(null);
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
 
+        lblTitulo = new JLabel();
+        lblBuscar = new JLabel();
+
+        btnListar = new JButton();
+        txtBuscar = new JTextField();
+
+        configurarTabla();
+    }
+
+    private void configurarTabla() {
         modelo = new DefaultTableModel();
-        Object[] columnas = {"Código", "Nombre", "Precio", "Cantidad"};
+        Object[] columnas = {
+                mensaje.get("codigo"),
+                mensaje.get("nombre"),
+                mensaje.get("precio")
+        };
         modelo.setColumnIdentifiers(columnas);
         tblProducto.setModel(modelo);
+    }
+
+    private void actualizarTextos() {
+        setTitle(mensaje.get("producto.lista.titulo"));
+        lblTitulo.setText(mensaje.get("producto.lista.titulo"));
+        lblBuscar.setText(mensaje.get("buscar"));
+        btnListar.setText(mensaje.get("listar"));
+    }
+
+    public void cambiarIdioma(String lenguaje, String pais) {
+        mensaje.setLenguaje(lenguaje, pais);
+        actualizarTextos();
+        configurarTabla();
     }
 
     public JTextField getTxtBuscar() {
@@ -68,7 +102,7 @@ public class ProductoListaView extends JInternalFrame {
             Object[] fila = {
                     producto.getCodigo(),
                     producto.getNombre(),
-                    producto.getPrecio()
+                    producto.getPrecio(),
             };
             modelo.addRow(fila);
         }
