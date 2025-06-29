@@ -31,12 +31,6 @@ public class CarritoListaView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-        lblTitulo = new JLabel();
-        lblUsuario = new JLabel();
-
-        btnBuscar = new JButton();
-        btnDetalle = new JButton();
-
         configurarTabla();
     }
 

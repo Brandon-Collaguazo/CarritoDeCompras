@@ -34,12 +34,6 @@ public class CarritoDetalleView extends JDialog {
         setSize(600, 400);
         setModal(true);
 
-        lblUsuario = new JLabel();
-        lblFecha = new JLabel();
-        lblSubtotal = new JLabel();
-        lblIva = new JLabel();
-        lblTotal = new JLabel();
-
         configurarTabla();
     }
 

@@ -44,21 +44,6 @@ public class CarritoAnadirView extends JInternalFrame {
         setClosable(true);
         setResizable(true);
         setSize(500, 500);
-        lblTitulo = new JLabel();
-        lblCodigo = new JLabel();
-        lblNombre = new JLabel();
-        lblPrecio = new JLabel();
-        lblCantidad = new JLabel();
-        lblSubtotal = new JLabel();
-        lblIva = new JLabel();
-        lblTotal = new JLabel();
-
-        btnBuscar = new JButton();
-        btnAnadir = new JButton();
-        btnGuardar = new JButton();
-        btnLimpiar = new JButton();
-
-        cbxCantidad = new JComboBox<>();
 
         configurarTabla();
     }

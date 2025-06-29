@@ -37,18 +37,6 @@ public class ProductoAnadirView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
 
-        lblTitulo = new JLabel();
-        lblCodigo = new JLabel();
-        lblNombre = new JLabel();
-        lblPrecio = new JLabel();
-
-        btnAceptar = new JButton();
-        btnLimpiar = new JButton();
-
-        txtCodigo = new JTextField();
-        txtNombre = new JTextField();
-        txtPrecio = new JTextField();
-
         //setResizable(false);
         //setLocationRelativeTo(null);
         //pack();

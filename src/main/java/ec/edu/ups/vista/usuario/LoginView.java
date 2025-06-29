@@ -203,6 +203,7 @@ public class LoginView extends JFrame {
         this.paisSeleccionado = paisSeleccionado;
     }
 
+
     public void mostrarMensaje(String mensajeKey) {
         JOptionPane.showMessageDialog(this, mensaje.get(mensajeKey));
     }

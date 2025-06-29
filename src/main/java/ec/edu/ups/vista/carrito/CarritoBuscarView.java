@@ -36,15 +36,6 @@ public class CarritoBuscarView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-        lblTitulo = new JLabel();
-        lblCodigo = new JLabel();
-        lblSubtotal = new JLabel();
-        lblIva = new JLabel();
-        lblTotal = new JLabel();
-
-        btnBuscar = new JButton();
-        btnLimpiar = new JButton();
-
         configurarTabla();
     }
 

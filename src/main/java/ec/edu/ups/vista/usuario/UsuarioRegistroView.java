@@ -13,6 +13,7 @@ public class UsuarioRegistroView extends JDialog {
     private JLabel lblUsuario;
     private JLabel lblPassword;
     private JLabel lblConfirmarPassword;
+    private JLabel lblTitulo;
     private MensajeInternacionalizacionHandler mensaje;
 
     public UsuarioRegistroView(MensajeInternacionalizacionHandler mensaje) {
@@ -28,22 +29,12 @@ public class UsuarioRegistroView extends JDialog {
         setSize(400, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        lblUsuario = new JLabel();
-        lblPassword = new JLabel();
-        lblConfirmarPassword = new JLabel();
-
-        btnRegistrar = new JButton();
-
-        txtUsername = new JTextField();
-        txtPassword = new JPasswordField();
-        txtConfirmarPassword = new JPasswordField();
-
     }
 
     private void actualizarTextos() {
         setTitle(mensaje.get("usuario.registro.titulo"));
 
+        lblTitulo.setText(mensaje.get("usuario.registro.titulo"));
         lblUsuario.setText(mensaje.get("usuario"));
         lblPassword.setText(mensaje.get("contrasenia"));
         lblConfirmarPassword.setText(mensaje.get("confirmar.password"));
@@ -51,6 +42,10 @@ public class UsuarioRegistroView extends JDialog {
         btnRegistrar.setText(mensaje.get("registrar"));
     }
 
+    public void cambiarIdioma(String lenguaje, String pais) {
+        mensaje.setLenguaje(lenguaje, pais);
+        actualizarTextos();
+    }
     public JPanel getPnlPrincipal() {
         return pnlPrincipal;
     }
@@ -91,8 +86,16 @@ public class UsuarioRegistroView extends JDialog {
         this.btnRegistrar = btnRegistrar;
     }
 
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+    public MensajeInternacionalizacionHandler getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(MensajeInternacionalizacionHandler mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public void mostrarMensaje(String keyMensaje) {
+        JOptionPane.showMessageDialog(this, mensaje.get(keyMensaje));
     }
 
 

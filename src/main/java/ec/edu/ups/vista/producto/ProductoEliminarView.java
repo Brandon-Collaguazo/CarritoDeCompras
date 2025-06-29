@@ -10,7 +10,6 @@ public class ProductoEliminarView extends JInternalFrame {
     private JButton btnBuscar;
     private JButton btnEliminar;
     private JLabel lblCodigo;
-    private JButton btnListar;
     private JTextField txtNombre;
     private JTextField txtPrecio;
     private JLabel lblNombre;
@@ -31,19 +30,6 @@ public class ProductoEliminarView extends JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
-
-        lblTitulo = new JLabel();
-        lblCodigo = new JLabel();
-        lblNombre = new JLabel();
-        lblPrecio = new JLabel();
-
-        btnBuscar = new JButton();
-        btnEliminar = new JButton();
-        btnListar = new JButton();
-
-        txtCodigo = new JTextField();
-        txtNombre = new JTextField();
-        txtPrecio = new JTextField();
     }
 
     private void actualizarTextos() {
@@ -55,7 +41,6 @@ public class ProductoEliminarView extends JInternalFrame {
 
         btnBuscar.setText(mensaje.get("buscar"));
         btnEliminar.setText(mensaje.get("eliminar"));
-        btnListar.setText(mensaje.get("listar"));
     }
 
     public void cambiarIdioma(String lenguaje, String pais) {
@@ -105,14 +90,6 @@ public class ProductoEliminarView extends JInternalFrame {
 
     public void setLblCodigo(JLabel lblCodigo) {
         this.lblCodigo = lblCodigo;
-    }
-
-    public JButton getBtnListar() {
-        return btnListar;
-    }
-
-    public void setBtnListar(JButton btnListar) {
-        this.btnListar = btnListar;
     }
 
     public JTextField getTxtNombre() {

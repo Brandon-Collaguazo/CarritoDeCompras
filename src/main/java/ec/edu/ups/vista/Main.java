@@ -47,6 +47,7 @@ public class Main {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         Usuario usuarioAutenticado = usuarioController.getUsuarioAutenticado();
+
                         if(usuarioAutenticado != null) {
                             //Instanciamos MensajeHandler (SINGLETON)
                             MensajeInternacionalizacionHandler mensaje = loginView.getMensaje();
@@ -208,6 +209,8 @@ public class Main {
                                     carritoActualizarView.cambiarIdioma("es", "EC");
                                     carritoListaView.cambiarIdioma("es", "EC");
                                     carritoDetalleView.cambiarIdioma("es", "EC");
+
+                                    usuarioRegistroView.cambiarIdioma("es", "EC");
                                 }
                             });
 
@@ -228,6 +231,8 @@ public class Main {
                                     carritoActualizarView.cambiarIdioma("en", "US");
                                     carritoListaView.cambiarIdioma("en", "US");
                                     carritoDetalleView.cambiarIdioma("en", "US");
+
+                                    usuarioRegistroView.cambiarIdioma("en", "US");
                                 }
                             });
 
@@ -248,6 +253,8 @@ public class Main {
                                     carritoActualizarView.cambiarIdioma("fr", "FR");
                                     carritoListaView.cambiarIdioma("fr", "FR");
                                     carritoDetalleView.cambiarIdioma("fr", "FR");
+
+                                    usuarioRegistroView.cambiarIdioma("fr", "FR");
                                 }
                             });
                         }

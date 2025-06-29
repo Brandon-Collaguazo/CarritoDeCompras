@@ -51,18 +51,6 @@ public class CarritoActualizarView extends JInternalFrame {
         setResizable(true);
         setSize(1000, 500);
 
-        lblTitulo = new JLabel();
-        lblCodigoCarrito = new JLabel();
-        lblCodigoProducto = new JLabel();
-        lblSubtotal = new JLabel();
-        lblIva = new JLabel();
-        lblTotal = new JLabel();
-
-        btnBuscarC = new JButton();
-        btnBuscarP = new JButton();
-        btnAnadir = new JButton();
-        btnGuardar = new JButton();
-
         configurarTabla();
     }
 

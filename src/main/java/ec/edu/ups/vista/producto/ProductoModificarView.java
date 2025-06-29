@@ -7,11 +7,10 @@ import javax.swing.*;
 public class ProductoModificarView extends JInternalFrame {
     private JPanel pnlPrincipal;
     private JTextField txtCodigo;
-    private JButton btnListar;
     private JButton btnBuscar;
+    private JButton btnActualizar;
     private JTextField txtNombre;
     private JTextField txtPrecio;
-    private JButton btnActualizar;
     private JLabel lblCodigo;
     private JLabel lblNombre;
     private JLabel lblPrecio;
@@ -32,19 +31,6 @@ public class ProductoModificarView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
         //setLocationRelativeTo(null);
-
-        lblTitulo = new JLabel();
-        lblCodigo = new JLabel();
-        lblNombre = new JLabel();
-        lblPrecio = new JLabel();
-
-        btnBuscar = new JButton();
-        btnListar = new JButton();
-        btnActualizar = new JButton();
-
-        txtCodigo = new JTextField();
-        txtNombre = new JTextField();
-        txtPrecio = new JTextField();
     }
 
     private void actualizarTextos() {
@@ -55,7 +41,6 @@ public class ProductoModificarView extends JInternalFrame {
         lblPrecio.setText(mensaje.get("precio"));
 
         btnBuscar.setText(mensaje.get("buscar"));
-        btnListar.setText(mensaje.get("listar"));
         btnActualizar.setText(mensaje.get("actualizar"));
     }
 
@@ -78,14 +63,6 @@ public class ProductoModificarView extends JInternalFrame {
 
     public void setTxtCodigo(JTextField txtCodigo) {
         this.txtCodigo = txtCodigo;
-    }
-
-    public JButton getBtnListar() {
-        return btnListar;
-    }
-
-    public void setBtnListar(JButton btnListar) {
-        this.btnListar = btnListar;
     }
 
     public JButton getBtnBuscar() {

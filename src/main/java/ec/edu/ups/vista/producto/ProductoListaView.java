@@ -31,12 +31,6 @@ public class ProductoListaView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
 
-        lblTitulo = new JLabel();
-        lblBuscar = new JLabel();
-
-        btnListar = new JButton();
-        txtBuscar = new JTextField();
-
         configurarTabla();
     }
 
