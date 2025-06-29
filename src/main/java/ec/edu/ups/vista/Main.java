@@ -35,9 +35,11 @@ public class Main {
             public void run() {
                 // Iniciar sesión
                 UsuarioDAO usuarioDAO = new UsuarioDAOMemoria();
+
                 LoginView loginView = new LoginView();
-                UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView();
                 loginView.setVisible(true);
+
+                UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView(loginView.getMensaje());
 
                 UsuarioController usuarioController = new UsuarioController(usuarioDAO, loginView, usuarioRegistroView);
 
@@ -47,7 +49,7 @@ public class Main {
                         Usuario usuarioAutenticado = usuarioController.getUsuarioAutenticado();
                         if(usuarioAutenticado != null) {
                             //Instanciamos MensajeHandler (SINGLETON)
-                            MensajeInternacionalizacionHandler mensaje = new MensajeInternacionalizacionHandler("es", "EC");
+                            MensajeInternacionalizacionHandler mensaje = loginView.getMensaje();
 
                             // Instanciamos DAO
                             ProductoDAO productoDAO = new ProductoDAOMemoria();
@@ -192,21 +194,60 @@ public class Main {
                             principalView.getMenuItemEspaniol().addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
+                                    mensaje.setLenguaje("es", "EC");
                                     principalView.cambiarIdioma("es", "EC");
+
+                                    productoAnadirView.cambiarIdioma("es", "EC");
+                                    productoListaView.cambiarIdioma("es", "EC");
+                                    productoModificarView.cambiarIdioma("es", "EC");
+                                    productoEliminarView.cambiarIdioma("es", "EC");
+
+                                    carritoAnadirView.cambiarIdioma("es", "EC");
+                                    carritoBuscarView.cambiarIdioma("es", "EC");
+                                    carritoEliminarView.cambiarIdioma("es", "EC");
+                                    carritoActualizarView.cambiarIdioma("es", "EC");
+                                    carritoListaView.cambiarIdioma("es", "EC");
+                                    carritoDetalleView.cambiarIdioma("es", "EC");
                                 }
                             });
 
                             principalView.getMenuItemIngles().addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
+                                    mensaje.setLenguaje("en", "US");
                                     principalView.cambiarIdioma("en", "US");
+
+                                    productoAnadirView.cambiarIdioma("en", "US");
+                                    productoListaView.cambiarIdioma("en", "US");
+                                    productoModificarView.cambiarIdioma("en", "US");
+                                    productoEliminarView.cambiarIdioma("en", "US");
+
+                                    carritoAnadirView.cambiarIdioma("en", "US");
+                                    carritoBuscarView.cambiarIdioma("en", "US");
+                                    carritoEliminarView.cambiarIdioma("en", "US");
+                                    carritoActualizarView.cambiarIdioma("en", "US");
+                                    carritoListaView.cambiarIdioma("en", "US");
+                                    carritoDetalleView.cambiarIdioma("en", "US");
                                 }
                             });
 
                             principalView.getMenuItemFrances().addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
+                                    mensaje.setLenguaje("fr", "FR");
                                     principalView.cambiarIdioma("fr", "FR");
+
+                                    productoAnadirView.cambiarIdioma("fr", "FR");
+                                    productoListaView.cambiarIdioma("fr", "FR");
+                                    productoModificarView.cambiarIdioma("fr", "FR");
+                                    productoEliminarView.cambiarIdioma("fr", "FR");
+
+                                    carritoAnadirView.cambiarIdioma("fr", "FR");
+                                    carritoBuscarView.cambiarIdioma("fr", "FR");
+                                    carritoEliminarView.cambiarIdioma("fr", "FR");
+                                    carritoActualizarView.cambiarIdioma("fr", "FR");
+                                    carritoListaView.cambiarIdioma("fr", "FR");
+                                    carritoDetalleView.cambiarIdioma("fr", "FR");
                                 }
                             });
                         }

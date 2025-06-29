@@ -43,8 +43,9 @@ public class UsuarioRegistroView extends JDialog {
 
     private void actualizarTextos() {
         setTitle(mensaje.get("usuario.registro.titulo"));
+
         lblUsuario.setText(mensaje.get("usuario"));
-        lblPassword.setText(mensaje.get("password"));
+        lblPassword.setText(mensaje.get("contrasenia"));
         lblConfirmarPassword.setText(mensaje.get("confirmar.password"));
 
         btnRegistrar.setText(mensaje.get("registrar"));

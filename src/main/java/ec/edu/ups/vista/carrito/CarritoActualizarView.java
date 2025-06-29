@@ -95,8 +95,8 @@ public class CarritoActualizarView extends JInternalFrame {
         setTitle(mensaje.get("carrito.actualizar.titulo"));
         lblTitulo.setText(mensaje.get("carrito.actualizar.titulo"));
 
-        lblCodigoCarrito.setText(mensaje.get("codigo"));
-        lblCodigoProducto.setText(mensaje.get("producto"));
+        lblCodigoCarrito.setText(mensaje.get("codigo.carrito"));
+        lblCodigoProducto.setText(mensaje.get("codigo.producto"));
         lblSubtotal.setText(mensaje.get("subtotal"));
         lblIva.setText(mensaje.get("iva"));
         lblTotal.setText(mensaje.get("total"));
@@ -113,7 +113,6 @@ public class CarritoActualizarView extends JInternalFrame {
         configurarTabla();
     }
 
-    // Clase interna para renderizar botones
     class ButtonRenderer extends JPanel implements TableCellRenderer {
         private JButton btnModificar;
         private JButton btnEliminar;
@@ -176,6 +175,25 @@ public class CarritoActualizarView extends JInternalFrame {
         @Override
         public Object getCellEditorValue() {
             return "";
+        }
+    }
+
+    public int getCantidadEnFila(int fila) {
+        if(fila < 0 || fila >= tblProducto.getRowCount()) {
+            throw new IllegalArgumentException("Fila inválida");
+        }
+        try {
+            return Integer.parseInt(tblProducto.getValueAt(fila, 3).toString());
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener la cantidad");
+        }
+    }
+
+    public int getCodigoProductoEnFila(int fila) {
+        try {
+            return Integer.parseInt(tblProducto.getValueAt(fila, 0).toString());
+        } catch (Exception e) {
+            return -1;
         }
     }
 

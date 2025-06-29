@@ -32,10 +32,11 @@ public class CarritoEliminarView extends JInternalFrame {
     private void actualizarTextos() {
         setTitle(mensaje.get("carrito.eliminar.titulo"));
         lblTitulo.setText(mensaje.get("carrito.eliminar.titulo"));
+
         lblCodigo.setText(mensaje.get("codigo"));
         lblSubtotal.setText(mensaje.get("subtotal"));
         lblIva.setText(mensaje.get("iva"));
-        lblTotal.setText(mensaje.get(""));
+        lblTotal.setText(mensaje.get("total"));
 
         btnBuscar.setText(mensaje.get("buscar"));
         btnEliminar.setText(mensaje.get("eliminar"));
