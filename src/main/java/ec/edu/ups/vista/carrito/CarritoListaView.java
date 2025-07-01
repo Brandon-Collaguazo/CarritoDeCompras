@@ -14,7 +14,7 @@ public class CarritoListaView extends JInternalFrame {
     private JTable tblCarrito;
     private JButton btnDetalle;
     private JLabel lblTitulo;
-    private JLabel lblUsuario;
+    private JLabel lblCodigo;
     private DefaultTableModel modelo;
     private MensajeInternacionalizacionHandler mensaje;
 
@@ -37,10 +37,10 @@ public class CarritoListaView extends JInternalFrame {
     private void configurarTabla() {
         modelo = new DefaultTableModel();
         Object[] columnas = {
+                mensaje.get("columna.fecha"),
                 mensaje.get("columna.codigo"),
+                mensaje.get("columna.usuario"),
                 mensaje.get("columna.cantidad"),
-                mensaje.get("columna.subtotal"),
-                mensaje.get("columna.iva"),
                 mensaje.get("columna.total")
         };
         modelo.setColumnIdentifiers(columnas);
@@ -50,7 +50,8 @@ public class CarritoListaView extends JInternalFrame {
     private void actualizarTextos() {
         setTitle(mensaje.get("carrito.lista.titulo"));
         lblTitulo.setText(mensaje.get("carrito.lista.titulo"));
-        lblUsuario.setText(mensaje.get("usuario"));
+
+        lblCodigo.setText(mensaje.get("codigo"));
 
         btnBuscar.setText(mensaje.get("buscar"));
         btnDetalle.setText(mensaje.get("detalle"));
@@ -66,80 +67,40 @@ public class CarritoListaView extends JInternalFrame {
         return pnlPrincipal;
     }
 
-    public void setPnlPrincipal(JPanel pnlPrincipal) {
-        this.pnlPrincipal = pnlPrincipal;
-    }
-
     public JPanel getPnlSuperior() {
         return pnlSuperior;
-    }
-
-    public void setPnlSuperior(JPanel pnlSuperior) {
-        this.pnlSuperior = pnlSuperior;
     }
 
     public JPanel getPnlInferior() {
         return pnlInferior;
     }
 
-    public void setPnlInferior(JPanel pnlInferior) {
-        this.pnlInferior = pnlInferior;
-    }
-
-    public JLabel getLblTitulo() {
-        return lblTitulo;
-    }
-
-    public void setLblTitulo(JLabel lblTitulo) {
-        this.lblTitulo = lblTitulo;
-    }
-
-    public JLabel getLblUsuario() {
-        return lblUsuario;
-    }
-
-    public void setLblUsuario(JLabel lblUsuario) {
-        this.lblUsuario = lblUsuario;
-    }
-
-    public MensajeInternacionalizacionHandler getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(MensajeInternacionalizacionHandler mensaje) {
-        this.mensaje = mensaje;
-    }
-
-    public JTextField getTxtUsuario() {
+    public JTextField getTxtCodigo() {
         return txtUsuario;
-    }
-
-    public void setTxtUsuario(JTextField txtUsuario) {
-        this.txtUsuario = txtUsuario;
     }
 
     public JButton getBtnBuscar() {
         return btnBuscar;
     }
 
-    public void setBtnBuscar(JButton btnBuscar) {
-        this.btnBuscar = btnBuscar;
-    }
-
     public JTable getTblCarrito() {
         return tblCarrito;
-    }
-
-    public void setTblCarrito(JTable tblCarrito) {
-        this.tblCarrito = tblCarrito;
     }
 
     public JButton getBtnDetalle() {
         return btnDetalle;
     }
 
-    public void setBtnDetalle(JButton btnDetalle) {
-        this.btnDetalle = btnDetalle;
+    public JLabel getLblTitulo() {
+        return lblTitulo;
+    }
+
+    public JLabel getLblCodigo() {
+        return lblCodigo;
+    }
+
+    public MensajeInternacionalizacionHandler getMensaje() {
+        return mensaje;
     }
 
     public DefaultTableModel getModelo() {

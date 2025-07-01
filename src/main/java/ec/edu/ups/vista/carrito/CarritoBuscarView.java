@@ -27,7 +27,6 @@ public class CarritoBuscarView extends JInternalFrame {
         this.mensaje = mensaje;
         initComponents();
         actualizarTextos();
-
     }
 
     private void initComponents() {

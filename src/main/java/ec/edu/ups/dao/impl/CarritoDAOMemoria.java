@@ -68,4 +68,17 @@ public class CarritoDAOMemoria implements CarritoDAO {
     public List<Carrito> listarTodos() {
         return listaCarritos;
     }
+
+    @Override
+    public List<Carrito> listarPorUsuario(String username) {
+        List<Carrito> carritosUsuario = new ArrayList<>();
+        for (Carrito carrito : listaCarritos) {
+            if (carrito.getUsuario() != null
+                    && carrito.getUsuario().getUsername() != null
+                    && carrito.getUsuario().getUsername().equals(username)) {
+                carritosUsuario.add(carrito);
+            }
+        }
+        return carritosUsuario;
+    }
 }

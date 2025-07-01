@@ -105,7 +105,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!productoAnadirView.isVisible()) {
-                                        principalView.getjDesktopPane().add(productoAnadirView);
+                                        principalView.getMiJDesktopPane().add(productoAnadirView);
                                         productoAnadirView.setVisible(true);
                                     }
                                 }
@@ -115,7 +115,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!productoListaView.isVisible()) {
-                                        principalView.getjDesktopPane().add(productoListaView);
+                                        principalView.getMiJDesktopPane().add(productoListaView);
                                         productoListaView.setVisible(true);
                                     }
                                 }
@@ -125,7 +125,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!productoEliminarView.isVisible()) {
-                                        principalView.getjDesktopPane().add(productoEliminarView);
+                                        principalView.getMiJDesktopPane().add(productoEliminarView);
                                         productoEliminarView.setVisible(true);
                                     }
                                 }
@@ -135,7 +135,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!productoModificarView.isVisible()) {
-                                        principalView.getjDesktopPane().add(productoModificarView);
+                                        principalView.getMiJDesktopPane().add(productoModificarView);
                                         productoModificarView.setVisible(true);
                                     }
                                 }
@@ -145,7 +145,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!carritoAnadirView.isVisible()){
-                                        principalView.getjDesktopPane().add(carritoAnadirView);
+                                        principalView.getMiJDesktopPane().add(carritoAnadirView);
                                         carritoAnadirView.setVisible(true);
                                     }
                                 }
@@ -155,7 +155,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!carritoBuscarView.isVisible()){
-                                        principalView.getjDesktopPane().add(carritoBuscarView);
+                                        principalView.getMiJDesktopPane().add(carritoBuscarView);
                                         carritoBuscarView.setVisible(true);
                                     }
                                 }
@@ -165,7 +165,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!carritoEliminarView.isVisible()){
-                                        principalView.getjDesktopPane().add(carritoEliminarView );
+                                        principalView.getMiJDesktopPane().add(carritoEliminarView );
                                         carritoEliminarView.setVisible(true);
                                     }
                                 }
@@ -175,7 +175,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!carritoActualizarView.isVisible()){
-                                        principalView.getjDesktopPane().add(carritoActualizarView );
+                                        principalView.getMiJDesktopPane().add(carritoActualizarView );
                                         carritoActualizarView.setVisible(true);
                                     }
                                 }
@@ -185,7 +185,7 @@ public class Main {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     if(!carritoListaView.isVisible()) {
-                                        principalView.getjDesktopPane().add(carritoListaView);
+                                        principalView.getMiJDesktopPane().add(carritoListaView);
                                         carritoListaView.setVisible(true);
                                     }
                                 }

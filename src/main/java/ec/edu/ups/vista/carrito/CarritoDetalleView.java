@@ -20,6 +20,8 @@ public class CarritoDetalleView extends JDialog {
     private JLabel lblSubtotal;
     private JLabel lblIva;
     private JLabel lblTotal;
+    private JTextField txtCodigo;
+    private JLabel lblCodigo;
     private DefaultTableModel modelo;
     private MensajeInternacionalizacionHandler mensaje;
 
@@ -53,6 +55,7 @@ public class CarritoDetalleView extends JDialog {
     private void actualizarTextos() {
         setTitle(mensaje.get("carrito.detalle.titulo"));
 
+        lblCodigo.setText(mensaje.get("codigo"));
         lblUsuario.setText(mensaje.get("usuario"));
         lblFecha.setText(mensaje.get("fecha"));
         lblSubtotal.setText(mensaje.get("subtotal"));
@@ -86,96 +89,60 @@ public class CarritoDetalleView extends JDialog {
         return pnlInferior;
     }
 
-    public void setPnlInferior(JPanel pnlInferior) {
-        this.pnlInferior = pnlInferior;
-    }
-
-    public JLabel getLblUsuario() {
-        return lblUsuario;
-    }
-
-    public void setLblUsuario(JLabel lblUsuario) {
-        this.lblUsuario = lblUsuario;
-    }
-
-    public JLabel getLblFecha() {
-        return lblFecha;
-    }
-
-    public void setLblFecha(JLabel lblFecha) {
-        this.lblFecha = lblFecha;
-    }
-
-    public JLabel getLblSubtotal() {
-        return lblSubtotal;
-    }
-
-    public void setLblSubtotal(JLabel lblSubtotal) {
-        this.lblSubtotal = lblSubtotal;
-    }
-
-    public JLabel getLblIva() {
-        return lblIva;
-    }
-
-    public void setLblIva(JLabel lblIva) {
-        this.lblIva = lblIva;
-    }
-
-    public JLabel getLblTotal() {
-        return lblTotal;
-    }
-
-    public void setLblTotal(JLabel lblTotal) {
-        this.lblTotal = lblTotal;
-    }
-
     public JTextField getTxtUsuario() {
         return txtUsuario;
-    }
-
-    public void setTxtUsuario(JTextField txtUsuario) {
-        this.txtUsuario = txtUsuario;
     }
 
     public JTextField getTxtFecha() {
         return txtFecha;
     }
 
-    public void setTxtFecha(JTextField txtFecha) {
-        this.txtFecha = txtFecha;
-    }
-
     public JTextField getTxtSubtotal() {
         return txtSubtotal;
-    }
-
-    public void setTxtSubtotal(JTextField txtSubtotal) {
-        this.txtSubtotal = txtSubtotal;
     }
 
     public JTextField getTxtIva() {
         return txtIva;
     }
 
-    public void setTxtIva(JTextField txtIva) {
-        this.txtIva = txtIva;
-    }
-
     public JTextField getTxtTotal() {
         return txtTotal;
-    }
-
-    public void setTxtTotal(JTextField txtTotal) {
-        this.txtTotal = txtTotal;
     }
 
     public JTable getTblCarrito() {
         return tblCarrito;
     }
 
-    public void setTblCarrito(JTable tblCarrito) {
-        this.tblCarrito = tblCarrito;
+    public JLabel getLblUsuario() {
+        return lblUsuario;
+    }
+
+    public JLabel getLblFecha() {
+        return lblFecha;
+    }
+
+    public JLabel getLblSubtotal() {
+        return lblSubtotal;
+    }
+
+    public JLabel getLblIva() {
+        return lblIva;
+    }
+
+    public JLabel getLblTotal() {
+        return lblTotal;
+    }
+
+    public JTextField getTxtCodigo() {
+        return txtCodigo;
+    }
+
+    public JLabel getLblCodigo() {
+        return lblCodigo;
+    }
+
+    public DefaultTableModel getModelo() {
+        return modelo;
     }
 
     public MensajeInternacionalizacionHandler getMensaje() {

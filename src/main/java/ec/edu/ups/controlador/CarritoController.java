@@ -390,23 +390,116 @@ public class CarritoController {
     }
 
     //Métodos para la ventana "CarritoListaView"
-    public void cargarCarritos() {
-        DefaultTableModel modelo = carritoListaView.getModelo();
-        modelo.setRowCount(0);
-
-        List<Carrito> carritos;
-        if(usuarioAutenticado.getRol() == Rol.ADMINISTRADOR) {
-            carritos = carritoDAO.listarTodos();
+    private void buscarCarritoPorCodigoParaListar() {
+        String codigoStr = carritoListaView.getTxtCodigo().getText().trim();
+        if(codigoStr.isEmpty()) {
+            cargarCarritosEnTabla(carritoDAO.listarTodos());
         } else {
-            carritos = carritoDAO.buscarPorUsuario(usuarioAutenticado.getUsername());
+            int codigo = Integer.parseInt(codigoStr);
+            Carrito carrito = carritoDAO.buscarPorCodigo(codigo);
+
+            if(carrito != null) {
+                cargarCarritosEnTabla(carritoDAO.listarTodos());
+            } else {
+                carritoListaView.mostrarMensaje("carrito.no.encontrado");
+                cargarCarritosEnTabla(List.of());
+            }
         }
+    }
+
+    private void cargarCarritosEnTabla(List<Carrito> carritos) {
+        DefaultTableModel modelo = carritoListaView.getModelo();
+
+        modelo.setRowCount(0);
+        Locale locale = carritoListaView.getMensaje().getLocale();
 
         for(Carrito carrito : carritos) {
             modelo.addRow(new Object[]{
-                    carrito.getFechaCreacion().getTime(),
-                    carrito.getItems().size(),
-                    "$ " + String.format("%.2f", carrito.calcularTotal())
+                    FormateadorUtils.formatearFecha(carrito.getFechaCreacion().getTime(), locale),
+                    carrito.getCodigo(),
+                    carrito.getUsuario().getUsername(),
+                    carrito.obtenerItems().size(),
+                    FormateadorUtils.formatearMoneda(carrito.calcularTotal(), locale)
             });
         }
+    }
+
+    private void mostrarDetalleCarrito() {
+        int filaSeleccionada = carritoListaView.getTblCarrito().getSelectedRow();
+
+        if(filaSeleccionada == -1) {
+            carritoListaView.mostrarMensaje("seleccionar.fila");
+            return;
+        }
+
+        int codigo = (int) carritoListaView.getModelo().getValueAt(filaSeleccionada, 1);
+
+        Carrito carrito = carritoDAO.buscarPorCodigo(codigo);
+
+        if(carrito == null) {
+            carritoListaView.mostrarMensaje("carrito.no.encontrado");
+            return;
+        }
+
+        mostrarVentanaDetalle(carrito);
+    }
+
+    //Métodos para la vetana detalle
+    private void mostrarVentanaDetalle(Carrito carrito) {
+        CarritoDetalleView detalleView = new CarritoDetalleView(carritoListaView.getMensaje());
+        configurarCamposDetalle(detalleView, carrito);
+        configurarTablaProductos(detalleView, carrito);
+        configurarTotalesDetalle(detalleView, carrito);
+
+        detalleView.setLocationRelativeTo(carritoListaView);
+        detalleView.setVisible(true);
+    }
+
+    private void configurarCamposDetalle(CarritoDetalleView detalleView, Carrito carrito) {
+        Locale locale = detalleView.getMensaje().getLocale();
+
+        detalleView.getTxtCodigo().setText(String.valueOf(carrito.getCodigo()));
+        detalleView.getTxtUsuario().setText(carrito.getUsuario().getUsername());
+        detalleView.getTxtFecha().setText(
+                FormateadorUtils.formatearFecha(carrito.getFechaCreacion().getTime(), locale)
+        );
+    }
+
+    private void configurarTablaProductos(CarritoDetalleView detalleView, Carrito carrito) {
+        DefaultTableModel modelo = detalleView.getModelo();
+        modelo.setRowCount(0);
+
+        Locale locale = detalleView.getMensaje().getLocale();
+
+        for (ItemCarrito item : carrito.obtenerItems()) {
+            Producto producto = item.getProducto();
+            double subtotal = producto.getPrecio() * item.getCantidad();
+            double iva = subtotal * carrito.getIVA();
+            double total = subtotal + iva;
+
+            modelo.addRow(new Object[]{
+                    producto.getCodigo(),
+                    producto.getNombre(),
+                    FormateadorUtils.formatearMoneda(producto.getPrecio(), locale),
+                    item.getCantidad(),
+                    FormateadorUtils.formatearMoneda(subtotal, locale),
+                    FormateadorUtils.formatearMoneda(iva, locale),
+                    FormateadorUtils.formatearMoneda(total, locale)
+            });
+        }
+    }
+
+    private void configurarTotalesDetalle(CarritoDetalleView detalleView, Carrito carrito) {
+        Locale locale = detalleView.getMensaje().getLocale();
+
+        detalleView.getTxtSubtotal().setText(
+                FormateadorUtils.formatearMoneda(carrito.calcularSubtotal(), locale)
+        );
+        detalleView.getTxtIva().setText(
+                FormateadorUtils.formatearMoneda(carrito.calcularIVA(), locale)
+        );
+        detalleView.getTxtTotal().setText(
+                FormateadorUtils.formatearMoneda(carrito.calcularTotal(), locale)
+        );
     }
 }

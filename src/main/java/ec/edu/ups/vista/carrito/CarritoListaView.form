@@ -20,14 +20,14 @@
           <title-color color="-16777216"/>
         </border>
         <children>
-          <component id="d547c" class="javax.swing.JLabel" binding="lblUsuario">
+          <component id="d547c" class="javax.swing.JLabel" binding="lblCodigo">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font name="Courier New" size="13" style="0"/>
               <foreground color="-16777216"/>
-              <text value="Nombre de Usuario:"/>
+              <text value="Código del Carrito:"/>
             </properties>
           </component>
           <component id="5520b" class="javax.swing.JTextField" binding="txtUsuario">
@@ -45,7 +45,7 @@
             <properties>
               <background color="-8011287"/>
               <font name="DialogInput" size="12" style="1"/>
-              <text value="Buscar Usuario"/>
+              <text value="Buscar Carrito"/>
             </properties>
           </component>
           <component id="b77fe" class="javax.swing.JLabel" binding="lblTitulo">
