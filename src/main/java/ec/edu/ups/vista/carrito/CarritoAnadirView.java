@@ -3,6 +3,7 @@ package ec.edu.ups.vista.carrito;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.net.URL;
 
 public class CarritoAnadirView extends JInternalFrame {
     private JPanel pnlPrincipal;
@@ -44,6 +45,38 @@ public class CarritoAnadirView extends JInternalFrame {
         setClosable(true);
         setResizable(true);
         setSize(500, 500);
+
+        URL buscarURL = CarritoAnadirView.class.getResource("imagenes/buscar_producto.png");
+        if(buscarURL != null) {
+            ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
+            btnBuscar.setIcon(iconBtnBuscar);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL anadirURL = CarritoAnadirView.class.getResource("imagenes/anadir_producto.png");
+        if(anadirURL != null) {
+            ImageIcon iconBtnAnadir = new ImageIcon(anadirURL);
+            btnAnadir.setIcon(iconBtnAnadir);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL guardarURL = CarritoAnadirView.class.getResource("imagenes/guardar.png");
+        if(guardarURL != null) {
+            ImageIcon iconBtnGuardar = new ImageIcon(guardarURL);
+            btnGuardar.setIcon(iconBtnGuardar);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL limpiarURL = CarritoAnadirView.class.getResource("imagenes/limpiar.png");
+        if(limpiarURL != null) {
+            ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
+            btnLimpiar.setIcon(iconBtnLimpiar);
+        } else {
+            System.out.println("error");
+        }
 
         configurarTabla();
     }

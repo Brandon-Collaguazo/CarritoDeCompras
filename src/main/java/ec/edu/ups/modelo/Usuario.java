@@ -12,7 +12,7 @@ public class Usuario {
     private Rol rol;
     private List<RespuestaSeguridad> respuesta;
 
-    public Usuario() {
+    public Usuario(String nombre, Date fechaNacimiento, String telefono, String correo, String username, String password, Rol usuario) {
         this.respuesta = new ArrayList<>();
     }
 

@@ -4,6 +4,7 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.net.URL;
 
 public class CarritoEliminarView extends JInternalFrame {
     private JPanel pnlPrincipal;
@@ -47,6 +48,23 @@ public class CarritoEliminarView extends JInternalFrame {
         setClosable(true);
         setResizable(true);
         setSize(500, 500);
+
+        URL buscarURL = CarritoEliminarView.class.getResource("imagenes/buscar_carrito.png");
+        if(buscarURL != null) {
+            ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
+            btnBuscar.setIcon(iconBtnBuscar);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL eliminarURL = CarritoEliminarView.class.getResource("imagenes/eliminar_carrito.png");
+        if(eliminarURL != null) {
+            ImageIcon iconBtnEliminar = new ImageIcon(eliminarURL);
+            btnEliminar.setIcon(iconBtnEliminar);
+        } else {
+            System.out.println("Error");
+        }
+
 
         configurarTabla();
     }

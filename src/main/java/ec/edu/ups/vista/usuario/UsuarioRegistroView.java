@@ -3,6 +3,7 @@ package ec.edu.ups.vista.usuario;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
+import java.net.URL;
 
 public class UsuarioRegistroView extends JDialog {
     private JPanel pnlPrincipal;
@@ -14,6 +15,14 @@ public class UsuarioRegistroView extends JDialog {
     private JLabel lblPassword;
     private JLabel lblConfirmarPassword;
     private JLabel lblTitulo;
+    private JTextField txtNombre;
+    private JLabel lblNombre;
+    private JTextField txtTelefono;
+    private JLabel lblTelefono;
+    private JLabel lblFechaDeNacimiento;
+    private JTextField txtFechaNacimiento;
+    private JLabel lblCorreo;
+    private JTextField txtCorreo;
     private MensajeInternacionalizacionHandler mensaje;
 
     public UsuarioRegistroView(MensajeInternacionalizacionHandler mensaje) {
@@ -29,12 +38,24 @@ public class UsuarioRegistroView extends JDialog {
         setSize(400, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        URL registrarURL = UsuarioRegistroView.class.getClassLoader().getResource("imagenes/registrarusuario.png");
+        if(registrarURL != null) {
+            ImageIcon iconBtnRegistrar = new ImageIcon(registrarURL);
+            btnRegistrar.setIcon(iconBtnRegistrar);
+        } else {
+            System.err.println("Error");
+        }
     }
 
     private void actualizarTextos() {
         setTitle(mensaje.get("usuario.registro.titulo"));
 
         lblTitulo.setText(mensaje.get("usuario.registro.titulo"));
+        lblNombre.setText(mensaje.get("registro.nombre"));
+        lblFechaDeNacimiento.setText(mensaje.get("fecha.nacimiento"));
+        lblTelefono.setText(mensaje.get("telefono"));
+        lblCorreo.setText(mensaje.get("correo"));
         lblUsuario.setText(mensaje.get("usuario"));
         lblPassword.setText(mensaje.get("contrasenia"));
         lblConfirmarPassword.setText(mensaje.get("confirmar.password"));
@@ -56,6 +77,38 @@ public class UsuarioRegistroView extends JDialog {
 
     public JTextField getTxtUsername() {
         return txtUsername;
+    }
+
+    public JTextField getTxtNombre() {
+        return txtNombre;
+    }
+
+    public void setTxtNombre(JTextField txtNombre) {
+        this.txtNombre = txtNombre;
+    }
+
+    public JTextField getTxtTelefono() {
+        return txtTelefono;
+    }
+
+    public void setTxtTelefono(JTextField txtTelefono) {
+        this.txtTelefono = txtTelefono;
+    }
+
+    public JTextField getTxtFechaNacimiento() {
+        return txtFechaNacimiento;
+    }
+
+    public void setTxtFechaNacimiento(JTextField txtFechaNacimiento) {
+        this.txtFechaNacimiento = txtFechaNacimiento;
+    }
+
+    public JTextField getTxtCorreo() {
+        return txtCorreo;
+    }
+
+    public void setTxtCorreo(JTextField txtCorreo) {
+        this.txtCorreo = txtCorreo;
     }
 
     public void setTxtUsername(JTextField txtUsername) {

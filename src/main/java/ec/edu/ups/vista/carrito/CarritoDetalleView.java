@@ -22,6 +22,7 @@ public class CarritoDetalleView extends JDialog {
     private JLabel lblTotal;
     private JTextField txtCodigo;
     private JLabel lblCodigo;
+    private JLabel lblTitulo;
     private DefaultTableModel modelo;
     private MensajeInternacionalizacionHandler mensaje;
 
@@ -55,9 +56,10 @@ public class CarritoDetalleView extends JDialog {
     private void actualizarTextos() {
         setTitle(mensaje.get("carrito.detalle.titulo"));
 
+        lblTitulo.setText(mensaje.get("carrito.detalle.titulo"));
         lblCodigo.setText(mensaje.get("codigo"));
         lblUsuario.setText(mensaje.get("usuario"));
-        lblFecha.setText(mensaje.get("fecha"));
+        lblFecha.setText(mensaje.get("fecha.creacion"));
         lblSubtotal.setText(mensaje.get("subtotal"));
         lblIva.setText(mensaje.get("iva"));
         lblTotal.setText(mensaje.get("total"));

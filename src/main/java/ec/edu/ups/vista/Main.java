@@ -21,8 +21,7 @@ import ec.edu.ups.vista.producto.ProductoAnadirView;
 import ec.edu.ups.vista.producto.ProductoEliminarView;
 import ec.edu.ups.vista.producto.ProductoListaView;
 import ec.edu.ups.vista.producto.ProductoModificarView;
-import ec.edu.ups.vista.usuario.LoginView;
-import ec.edu.ups.vista.usuario.UsuarioRegistroView;
+import ec.edu.ups.vista.usuario.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,8 +39,11 @@ public class Main {
                 loginView.setVisible(true);
 
                 UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView(loginView.getMensaje());
+                UsuarioEliminarView usuarioEliminarView = new UsuarioEliminarView(loginView.getMensaje());
+                UsuarioListaView usuarioListaView = new UsuarioListaView(loginView.getMensaje());
+                UsuarioModificarView usuarioModificarView = new UsuarioModificarView(loginView.getMensaje());
 
-                UsuarioController usuarioController = new UsuarioController(usuarioDAO, loginView, usuarioRegistroView);
+                UsuarioController usuarioController = new UsuarioController(usuarioDAO, null, loginView, usuarioRegistroView, usuarioEliminarView, usuarioListaView, usuarioModificarView);
 
                 loginView.addWindowListener(new WindowAdapter() {
                     @Override

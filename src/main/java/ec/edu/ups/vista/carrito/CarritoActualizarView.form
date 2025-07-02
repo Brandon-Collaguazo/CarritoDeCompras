@@ -72,7 +72,7 @@
             <properties>
               <background color="-8011287"/>
               <font name="DialogInput" size="13" style="1"/>
-              <text value="BuscarCarrito"/>
+              <text value="Buscar Carrito"/>
             </properties>
           </component>
           <component id="cdde0" class="javax.swing.JButton" binding="btnBuscarP">

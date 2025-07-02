@@ -4,6 +4,7 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.net.URL;
 
 public class UsuarioListaView extends JInternalFrame {
     private JPanel pnlPrincipal;
@@ -29,6 +30,20 @@ public class UsuarioListaView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
+        URL buscarURL = UsuarioListaView.class.getResource("imagenes/buscarUsuario.png");
+        if(buscarURL != null) {
+            ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
+            btnBuscar.setIcon(iconBtnBuscar);
+        }
+
+        URL limpiarURL = UsuarioListaView.class.getResource("imagenes/limpiar.png");
+        if(limpiarURL != null) {
+            ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
+            btnLimpiar.setIcon(iconBtnLimpiar);
+        } else {
+            System.out.println("Error");
+        }
+
         configurarTabla();
     }
 
@@ -44,9 +59,9 @@ public class UsuarioListaView extends JInternalFrame {
     }
 
     private void actualizarTextos() {
-        setTitle(mensaje.get("usuario.lista.view"));
+        setTitle(mensaje.get("usuario.lista.titulo"));
 
-        lblTitulo.setText(mensaje.get("usuario.lista.view"));
+        lblTitulo.setText(mensaje.get("usuario.lista.titulo"));
         lblUsuario.setText(mensaje.get("usuario"));
 
         btnBuscar.setText(mensaje.get("buscar"));

@@ -5,6 +5,7 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.net.URL;
 import java.util.List;
 
 public class ProductoListaView extends JInternalFrame {
@@ -30,6 +31,12 @@ public class ProductoListaView extends JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
+
+        URL listaURL = ProductoListaView.class.getResource("imagenes/listar_producto");
+        if(listaURL != null) {
+            ImageIcon iconBtnLista = new ImageIcon(listaURL);
+            btnListar.setIcon(iconBtnLista);
+        }
 
         configurarTabla();
     }

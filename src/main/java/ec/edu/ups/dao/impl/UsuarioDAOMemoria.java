@@ -57,7 +57,7 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
     }
 
     @Override
-    public void actualizar(Usuario usuario) {
+    public boolean actualizar(Usuario usuario) {
         for(int i = 0; i < usuarios.size(); i++){
             Usuario usuarioAux = usuarios.get(i);
             if(usuarioAux.getUsername().equals(usuario.getUsername())){
@@ -65,6 +65,7 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
                 break;
             }
         }
+        return false;
     }
 
     @Override

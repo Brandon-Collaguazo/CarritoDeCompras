@@ -4,6 +4,7 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.net.URL;
 
 public class CarritoBuscarView extends JInternalFrame {
     private JPanel pnlPrincipal;
@@ -34,6 +35,20 @@ public class CarritoBuscarView extends JInternalFrame {
         setClosable(true);
         setResizable(true);
         setSize(500, 500);
+
+        URL buscarURL = CarritoBuscarView.class.getResource("imagenes/buscar_carrito.png");
+        if(buscarURL != null) {
+            ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
+            btnBuscar.setIcon(iconBtnBuscar);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL limpiarURL = CarritoBuscarView.class.getResource("imagenes/limpiar.png");
+        if(limpiarURL != null) {
+            ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
+            btnLimpiar.setIcon(iconBtnLimpiar);
+        }
 
         configurarTabla();
     }

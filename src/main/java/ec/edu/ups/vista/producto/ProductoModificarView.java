@@ -3,6 +3,7 @@ package ec.edu.ups.vista.producto;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
+import java.net.URL;
 
 public class ProductoModificarView extends JInternalFrame {
     private JPanel pnlPrincipal;
@@ -31,6 +32,22 @@ public class ProductoModificarView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
         //setLocationRelativeTo(null);
+
+        URL buscarURL = ProductoModificarView.class.getResource("imagenes/buscar_producto.png");
+        if(buscarURL != null) {
+            ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
+            btnBuscar.setIcon(iconBtnBuscar);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL modificarURL = ProductoModificarView.class.getResource("imagenes/modificar.png");
+        if(modificarURL != null) {
+            ImageIcon iconBtnActualizar = new ImageIcon(modificarURL);
+            btnActualizar.setIcon(iconBtnActualizar);
+        } else {
+            System.out.println("Error");
+        }
     }
 
     private void actualizarTextos() {

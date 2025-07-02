@@ -1,8 +1,10 @@
 package ec.edu.ups.vista.usuario;
 
+import ec.edu.ups.modelo.Usuario;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
+import java.net.URL;
 
 public class UsuarioEliminarView extends JInternalFrame {
     private JPanel pnlPrincipal;
@@ -29,6 +31,30 @@ public class UsuarioEliminarView extends JInternalFrame {
         setClosable(true);
         setResizable(true);
         setSize(500, 500);
+
+        URL buscarURL = UsuarioEliminarView.class.getResource("imagenes/buscarUsario.png");
+        if(buscarURL != null) {
+            ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
+            btnBuscar.setIcon(iconBtnBuscar);
+        } else {
+            System.err.println("Error");
+        }
+
+        URL eliminarURL = UsuarioEliminarView.class.getResource("imagenes/eliminar_usuario.png");
+        if(eliminarURL != null) {
+            ImageIcon iconBtnEliminar = new ImageIcon(eliminarURL);
+            btnEliminar.setIcon(iconBtnEliminar);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL cancelarURL = UsuarioEliminarView.class.getResource("imagenes/cancelar.png");
+        if(cancelarURL != null) {
+            ImageIcon iconBtnCancelar = new ImageIcon(cancelarURL);
+            btnCancelar.setIcon(iconBtnCancelar);
+        } else {
+            System.out.println("Error");
+        }
     }
 
     private void actualizarTextos() {
@@ -37,6 +63,10 @@ public class UsuarioEliminarView extends JInternalFrame {
         lblTitulo.setText(mensaje.get("usuario.eliminar.titulo"));
         lblUsuario.setText(mensaje.get("usuario"));
         lblAsociado.setText(mensaje.get("asociado"));
+
+        btnBuscar.setText(mensaje.get("buscar"));
+        btnEliminar.setText(mensaje.get("eliminar"));
+        btnCancelar.setText(mensaje.get("cancelar"));
     }
 
     public void cambiarIdioma(String lenguaje, String pais) {

@@ -6,6 +6,7 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.List;
 
 public class ProductoAnadirView extends JInternalFrame {
@@ -36,6 +37,22 @@ public class ProductoAnadirView extends JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
+
+        URL aceptarURL = ProductoAnadirView.class.getResource("imagenes/aceptar.png");
+        if(aceptarURL != null) {
+            ImageIcon iconBtnAceptar = new ImageIcon(aceptarURL);
+            btnAceptar.setIcon(iconBtnAceptar);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL limpiarURL = ProductoAnadirView.class.getResource("imagenes/limpiar.png");
+        if(limpiarURL != null) {
+            ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
+            btnLimpiar.setIcon(iconBtnLimpiar);
+        } else {
+            System.out.println("Error");
+        }
 
         //setResizable(false);
         //setLocationRelativeTo(null);

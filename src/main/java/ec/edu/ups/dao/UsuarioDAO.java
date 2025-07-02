@@ -15,7 +15,7 @@ public interface UsuarioDAO {
 
     void eliminar(String username);
 
-    void actualizar(Usuario usuario);
+    boolean actualizar(Usuario usuario);
 
     List<Usuario> listarTodos();
 

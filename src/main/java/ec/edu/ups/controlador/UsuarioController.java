@@ -14,7 +14,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,31 +97,54 @@ public class UsuarioController {
     }
 
     //Métodos en "USUARIOREGISTROVIEW"
-    private void registrarUsuario() {
+    public void registrarUsuario() {
+        String nombre = usuarioRegistroView.getTxtNombre().getText();
+        String fechaStr = usuarioRegistroView.getTxtFechaNacimiento().getText();
+        String telefono = usuarioRegistroView.getTxtTelefono().getText();
+        String correo = usuarioRegistroView.getTxtCorreo().getText();
         String username = usuarioRegistroView.getTxtUsername().getText();
         String password = new String(usuarioRegistroView.getTxtPassword().getPassword());
-        String confirmarPassword = new String(usuarioRegistroView.getTxtConfirmarPassword().getPassword());
+        String confirmPassword = new String(usuarioRegistroView.getTxtConfirmarPassword().getPassword());
 
-        if(username.isEmpty() || password.isEmpty()) {
-            usuarioRegistroView.mostrarMensaje("Por favor complete todos los campos");
+        if (nombre.isEmpty() || fechaStr.isEmpty() || telefono.isEmpty() ||
+                correo.isEmpty() || username.isEmpty() || password.isEmpty()) {
+            usuarioRegistroView.mostrarMensaje("Complete todos los campos");
             return;
         }
 
-        if(usuarioDAO.buscarPorUsername(username) != null) {
-            usuarioRegistroView.mostrarMensaje("Nombre de usuarios ya existente");
-            return;
-        }
-
-        if(!password.equals(confirmarPassword)) {
+        if (!password.equals(confirmPassword)) {
             usuarioRegistroView.mostrarMensaje("Las contraseñas no coinciden");
             return;
         }
 
-        Usuario nuevoUsuario = new Usuario(username, password, Rol.USUARIO);
+        if (usuarioDAO.buscarPorUsername(username) != null) {
+            usuarioRegistroView.mostrarMensaje("Usuario ya registrado");
+            return;
+        }
+
+        Date fechaNacimiento = null;
+        try {
+            fechaNacimiento = new SimpleDateFormat("dd/MM/yyyy").parse(fechaStr);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        Usuario nuevoUsuario = new Usuario(
+                nombre,
+                fechaNacimiento,
+                telefono,
+                correo,
+                username,
+                password,
+                Rol.USUARIO
+        );
+
         usuarioDAO.crear(nuevoUsuario);
-        usuarioRegistroView.mostrarMensaje("Usuario registrado exitosamente");
+        String fechaFormateada = FormateadorUtils.formatearFecha(fechaNacimiento, Locale.getDefault());
+        usuarioRegistroView.mostrarMensaje("Usuario registrado (" + fechaFormateada + ")");
         usuarioRegistroView.limpiarCampos();
     }
+
 
     //Métodos de la ventana "USUARIOELIMINARVIEW"
     private void buscarUsuario() {
@@ -271,7 +297,7 @@ public class UsuarioController {
         usuario.setUsername(username);
         usuario.setContrasenia(contrasenia);
 
-        if(usuarioDAO.actualizar(usuario);) {
+        if(usuarioDAO.actualizar(usuario)) {
             usuarioModificarView.mostrarMensaje("usuario.actualizado");
             usuarioModificarView.dispose();
         } else {

@@ -5,9 +5,11 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class LoginView extends JFrame {
     private JPanel pnlPrincipal;
+    private JTextField txtPassword;
     private JPanel pnlSuperior;
     private JPanel pnlCentral;
     private JTextField txtUsuario;
@@ -15,9 +17,13 @@ public class LoginView extends JFrame {
     private JButton btnIniciar;
     private JButton btnRegistrar;
     private JComboBox<String> cbxIdioma;
-    private JLabel lblUser;
     private JLabel lblContrasenia;
     private JLabel lblTitulo;
+    private JLabel lblUsuario;
+    private JLabel lblPassword;
+    private JPanel pnlBotones;
+    private JButton btnRecuperar;
+    private JLabel lblRecuperar;
     private MensajeInternacionalizacionHandler mensaje;
     private String[] codigosIdioma = {"es", "en", "fr"};
     private String idiomaSeleccionado = "es";
@@ -45,6 +51,31 @@ public class LoginView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(300, 200);
         setLocationRelativeTo(null);
+
+        //Íconos para los botones
+        URL iniciarsesionURL = LoginView.class.getClassLoader().getResource("imagenes/iniciarsesion.png");
+        if(iniciarsesionURL != null) {
+            ImageIcon iconoBtnIniciar = new ImageIcon(iniciarsesionURL);
+            btnIniciar.setIcon(iconoBtnIniciar);
+        } else {
+            System.err.println("Error. no se ha cargado");
+        }
+
+        URL registrarURL = LoginView.class.getClassLoader().getResource("imagenes/registrarusuario.png");
+        if(registrarURL != null) {
+            ImageIcon iconoBtnRegistrar = new ImageIcon(registrarURL);
+            btnRegistrar.setIcon(iconoBtnRegistrar);
+        } else {
+            System.err.println("Error ");
+        }
+
+        URL recuperarURL = LoginView.class.getClassLoader().getResource("imagenes/recuperarcontrasenia");
+        if(recuperarURL != null) {
+            ImageIcon iconoBtnRecuperar = new ImageIcon(recuperarURL);
+            btnRecuperar.setIcon(iconoBtnRecuperar);
+        } else {
+            System.err.println("Error");
+        }
     }
 
     private void cargarDatos() {
@@ -62,11 +93,14 @@ public class LoginView extends JFrame {
         setTitle(mensaje.get("login.titulo"));
 
         lblTitulo.setText(mensaje.get("login.titulo"));
-        lblUser.setText(mensaje.get("usuario"));
+        lblUsuario.setText(mensaje.get("usuario"));
         lblContrasenia.setText((mensaje.get("contrasenia")));
+
+        lblRecuperar.setText(mensaje.get("recuperar"));
 
         btnIniciar.setText(mensaje.get("iniciar"));
         btnRegistrar.setText(mensaje.get("registrar"));
+        btnRecuperar.setText(mensaje.get("btn.recuperar"));
 
         cargarDatos();
 
@@ -145,14 +179,6 @@ public class LoginView extends JFrame {
 
     public void setCbxIdioma(JComboBox<String> cbxIdioma) {
         this.cbxIdioma = cbxIdioma;
-    }
-
-    public JLabel getLblUser() {
-        return lblUser;
-    }
-
-    public void setLblUser(JLabel lblUser) {
-        this.lblUser = lblUser;
     }
 
     public JLabel getLblContrasenia() {

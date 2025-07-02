@@ -7,6 +7,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.text.NumberFormat;
 
 public class CarritoActualizarView extends JInternalFrame {
@@ -50,6 +51,29 @@ public class CarritoActualizarView extends JInternalFrame {
         setClosable(true);
         setResizable(true);
         setSize(1000, 500);
+
+        URL buscarCarritoURL = CarritoActualizarView.class.getResource("imagenes/buscar_carrito.png");
+        if(buscarCarritoURL != null) {
+            ImageIcon iconBtnBuscarC = new ImageIcon(buscarCarritoURL);
+            btnBuscarC.setIcon(iconBtnBuscarC);
+        } else {
+            System.out.println("Error");
+        }
+        URL buscarProductoURL = CarritoActualizarView.class.getResource("imagenes/buscar_producto.png");
+        if(buscarProductoURL != null) {
+            ImageIcon iconBtnBuscarP = new ImageIcon(buscarProductoURL);
+            btnBuscarP.setIcon(iconBtnBuscarP);
+        } else {
+            System.out.println("Error");
+        }
+
+        URL anadirProductoURL = CarritoActualizarView.class.getResource("imagenes/anadir_producto.png");
+        if(anadirProductoURL != null) {
+            ImageIcon iconBtnAnadir = new ImageIcon(anadirProductoURL);
+            btnAnadir.setIcon(iconBtnAnadir);
+        } else {
+            System.out.println("error");
+        }
 
         configurarTabla();
     }
