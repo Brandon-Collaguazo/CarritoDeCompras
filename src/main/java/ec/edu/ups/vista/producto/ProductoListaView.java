@@ -32,7 +32,8 @@ public class ProductoListaView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
 
-        URL listaURL = ProductoListaView.class.getResource("imagenes/listar_producto");
+        //Íconos para los botones
+        URL listaURL = ProductoListaView.class.getClassLoader().getResource("imagenes/listar_producto.png");
         if(listaURL != null) {
             ImageIcon iconBtnLista = new ImageIcon(listaURL);
             btnListar.setIcon(iconBtnLista);

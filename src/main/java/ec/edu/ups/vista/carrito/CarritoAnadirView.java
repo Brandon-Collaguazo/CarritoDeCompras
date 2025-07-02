@@ -46,7 +46,8 @@ public class CarritoAnadirView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-        URL buscarURL = CarritoAnadirView.class.getResource("imagenes/buscar_producto.png");
+        //Íconos de los botones
+        URL buscarURL = CarritoAnadirView.class.getClassLoader().getResource("imagenes/buscar_producto.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
@@ -54,7 +55,7 @@ public class CarritoAnadirView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL anadirURL = CarritoAnadirView.class.getResource("imagenes/anadir_producto.png");
+        URL anadirURL = CarritoAnadirView.class.getClassLoader().getResource("imagenes/anadir_producto.png");
         if(anadirURL != null) {
             ImageIcon iconBtnAnadir = new ImageIcon(anadirURL);
             btnAnadir.setIcon(iconBtnAnadir);
@@ -62,7 +63,7 @@ public class CarritoAnadirView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL guardarURL = CarritoAnadirView.class.getResource("imagenes/guardar.png");
+        URL guardarURL = CarritoAnadirView.class.getClassLoader().getResource("imagenes/guardar.png");
         if(guardarURL != null) {
             ImageIcon iconBtnGuardar = new ImageIcon(guardarURL);
             btnGuardar.setIcon(iconBtnGuardar);
@@ -70,7 +71,7 @@ public class CarritoAnadirView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL limpiarURL = CarritoAnadirView.class.getResource("imagenes/limpiar.png");
+        URL limpiarURL = CarritoAnadirView.class.getClassLoader().getResource("imagenes/limpiar.png");
         if(limpiarURL != null) {
             ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
             btnLimpiar.setIcon(iconBtnLimpiar);

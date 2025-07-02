@@ -30,13 +30,14 @@ public class UsuarioListaView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-        URL buscarURL = UsuarioListaView.class.getResource("imagenes/buscarUsuario.png");
+        //Íconos para los botones
+        URL buscarURL = UsuarioListaView.class.getClassLoader().getResource("imagenes/buscarUsuario.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
         }
 
-        URL limpiarURL = UsuarioListaView.class.getResource("imagenes/limpiar.png");
+        URL limpiarURL = UsuarioListaView.class.getClassLoader().getResource("imagenes/limpiar.png");
         if(limpiarURL != null) {
             ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
             btnLimpiar.setIcon(iconBtnLimpiar);

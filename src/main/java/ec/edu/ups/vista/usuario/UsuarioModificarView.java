@@ -30,8 +30,8 @@ public class UsuarioModificarView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-
-        URL modificarURL = UsuarioModificarView.class.getResource("imagenes/modificar.png");
+        //Íconos para los botones
+        URL modificarURL = UsuarioModificarView.class.getClassLoader().getResource("imagenes/modificar.png");
         if(modificarURL != null) {
             ImageIcon iconBtnModificar = new ImageIcon(modificarURL);
             btnModificar.setIcon(iconBtnModificar);
@@ -39,7 +39,7 @@ public class UsuarioModificarView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL mostrarURL = UsuarioModificarView.class.getResource("imagenes/mostrar.png");
+        URL mostrarURL = UsuarioModificarView.class.getClassLoader().getResource("imagenes/mostrar.png");
         if(mostrarURL != null) {
             ImageIcon iconBtnMostrar = new ImageIcon(mostrarURL);
             btnMostrar.setIcon(iconBtnMostrar);
@@ -54,7 +54,7 @@ public class UsuarioModificarView extends JInternalFrame {
         lblTitulo.setText(mensaje.get("usuario.modificar.titulo"));
         lblUsuario.setText(mensaje.get("usuario"));
         lblContrasenia.setText(mensaje.get("contrasenia"));
-        lblConfirmar.setText(mensaje.get("confirmar"));
+        lblConfirmar.setText(mensaje.get("confirmar.password"));
 
         btnModificar.setText(mensaje.get("modificar"));
         btnMostrar.setText(mensaje.get("mostrar"));

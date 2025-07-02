@@ -49,7 +49,8 @@ public class CarritoEliminarView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-        URL buscarURL = CarritoEliminarView.class.getResource("imagenes/buscar_carrito.png");
+        //Íconos para los botones
+        URL buscarURL = CarritoEliminarView.class.getClassLoader().getResource("imagenes/buscar_carrito.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
@@ -57,7 +58,7 @@ public class CarritoEliminarView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL eliminarURL = CarritoEliminarView.class.getResource("imagenes/eliminar_carrito.png");
+        URL eliminarURL = CarritoEliminarView.class.getClassLoader().getResource("imagenes/eliminar_carrito.png");
         if(eliminarURL != null) {
             ImageIcon iconBtnEliminar = new ImageIcon(eliminarURL);
             btnEliminar.setIcon(iconBtnEliminar);

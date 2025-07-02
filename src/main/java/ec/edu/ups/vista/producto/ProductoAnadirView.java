@@ -38,7 +38,8 @@ public class ProductoAnadirView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
 
-        URL aceptarURL = ProductoAnadirView.class.getResource("imagenes/aceptar.png");
+        //Íconos para los botones
+        URL aceptarURL = ProductoAnadirView.class.getClassLoader().getResource("imagenes/aceptar.png");
         if(aceptarURL != null) {
             ImageIcon iconBtnAceptar = new ImageIcon(aceptarURL);
             btnAceptar.setIcon(iconBtnAceptar);
@@ -46,7 +47,7 @@ public class ProductoAnadirView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL limpiarURL = ProductoAnadirView.class.getResource("imagenes/limpiar.png");
+        URL limpiarURL = ProductoAnadirView.class.getClassLoader().getResource("imagenes/limpiar.png");
         if(limpiarURL != null) {
             ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
             btnLimpiar.setIcon(iconBtnLimpiar);

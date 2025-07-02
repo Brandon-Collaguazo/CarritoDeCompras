@@ -45,7 +45,8 @@ public class RecuperarContraseniaView extends JDialog {
         setResizable(true);
         setLocationRelativeTo(getParent());
 
-        URL recuperarURL = RecuperarContraseniaView.class.getResource("imagenes/recuperarcontrasenia.png");
+        //Íconos para los botones
+        URL recuperarURL = RecuperarContraseniaView.class.getClassLoader().getResource("imagenes/recuperarcontrasenia.png");
         if(recuperarURL != null) {
             ImageIcon iconBtnRecuperar = new ImageIcon(recuperarURL);
             btnRecuperar.setIcon(iconBtnRecuperar);
@@ -53,7 +54,7 @@ public class RecuperarContraseniaView extends JDialog {
             System.err.println("Error");
         }
 
-        URL cancelarURL = RecuperarContraseniaView.class.getResource("imagenes/cancelar.png");
+        URL cancelarURL = RecuperarContraseniaView.class.getClassLoader().getResource("imagenes/cancelar.png");
         if(cancelarURL != null) {
             ImageIcon iconBtnCancelar = new ImageIcon(cancelarURL);
             btnRecuperar.setIcon(iconBtnCancelar);

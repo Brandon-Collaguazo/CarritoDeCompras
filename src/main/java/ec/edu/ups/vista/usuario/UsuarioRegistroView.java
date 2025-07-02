@@ -1,9 +1,12 @@
 package ec.edu.ups.vista.usuario;
 
+import ec.edu.ups.modelo.PreguntaSeguridad;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import java.net.URL;
+import java.util.List;
+import java.util.Objects;
 
 public class UsuarioRegistroView extends JDialog {
     private JPanel pnlPrincipal;
@@ -39,6 +42,7 @@ public class UsuarioRegistroView extends JDialog {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        //Íconos para los botones
         URL registrarURL = UsuarioRegistroView.class.getClassLoader().getResource("imagenes/registrarusuario.png");
         if(registrarURL != null) {
             ImageIcon iconBtnRegistrar = new ImageIcon(registrarURL);
@@ -67,6 +71,47 @@ public class UsuarioRegistroView extends JDialog {
         mensaje.setLenguaje(lenguaje, pais);
         actualizarTextos();
     }
+
+    public String[] mostrarPreguntasSeguridad(List<PreguntaSeguridad> preguntas) {
+        Object[] message = {
+                mensaje.get("preguntas.seguridad.mensaje"),
+                " "
+        };
+
+        JOptionPane.showMessageDialog(this, message, mensaje.get("preguntas.seguridad.titulo"),
+                JOptionPane.INFORMATION_MESSAGE);
+
+        String[] resultados = new String[6]; // 3 Preguntas y 3 Respuestas
+
+        for(int i = 0; i < 3; i++) {
+            String pregunta = (String) JOptionPane.showInputDialog(
+                    this,
+                    mensaje.get("pregunta.seleccione") + (i + 1),
+                    mensaje.get("preguntas.seguridad.titulo"),
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    preguntas.toArray(),
+                    preguntas.get(0)
+            );
+            if(pregunta == null)
+                return null;
+            String respuesta =  JOptionPane.showInputDialog(
+                    this,
+                    mensaje.get("pregunta.responda") + "\n" + pregunta,
+                    mensaje.get("preguntas.seguridad.titulo"),
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (respuesta == null || respuesta.trim().isEmpty()) {
+                mostrarMensaje("pregunta.respuesta.requerida");
+                return null;
+            }
+            resultados[i*2] = pregunta;
+            resultados[i*2+1] = respuesta;
+        }
+        return resultados;
+    }
+
     public JPanel getPnlPrincipal() {
         return pnlPrincipal;
     }

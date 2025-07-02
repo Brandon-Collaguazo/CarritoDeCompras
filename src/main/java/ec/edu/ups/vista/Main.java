@@ -5,10 +5,12 @@ import ec.edu.ups.controlador.ProductoController;
 import ec.edu.ups.controlador.UsuarioController;
 
 import ec.edu.ups.dao.CarritoDAO;
+import ec.edu.ups.dao.PreguntaSeguridadDAO;
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.dao.UsuarioDAO;
 
 import ec.edu.ups.dao.impl.CarritoDAOMemoria;
+import ec.edu.ups.dao.impl.PreguntaSeguridadDAOMemoria;
 import ec.edu.ups.dao.impl.ProductoDAOMemoria;
 import ec.edu.ups.dao.impl.UsuarioDAOMemoria;
 
@@ -38,12 +40,16 @@ public class Main {
                 LoginView loginView = new LoginView();
                 loginView.setVisible(true);
 
+                CarritoDAO carritoDAO = new CarritoDAOMemoria();
+
+                PreguntaSeguridadDAO preguntaSeguridadDAO = new PreguntaSeguridadDAOMemoria();
+
                 UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView(loginView.getMensaje());
                 UsuarioEliminarView usuarioEliminarView = new UsuarioEliminarView(loginView.getMensaje());
                 UsuarioListaView usuarioListaView = new UsuarioListaView(loginView.getMensaje());
                 UsuarioModificarView usuarioModificarView = new UsuarioModificarView(loginView.getMensaje());
 
-                UsuarioController usuarioController = new UsuarioController(usuarioDAO, null, loginView, usuarioRegistroView, usuarioEliminarView, usuarioListaView, usuarioModificarView);
+                UsuarioController usuarioController = new UsuarioController(usuarioDAO, carritoDAO, loginView, preguntaSeguridadDAO ,usuarioRegistroView, usuarioEliminarView, usuarioListaView, usuarioModificarView);
 
                 loginView.addWindowListener(new WindowAdapter() {
                     @Override
@@ -56,7 +62,6 @@ public class Main {
 
                             // Instanciamos DAO
                             ProductoDAO productoDAO = new ProductoDAOMemoria();
-                            CarritoDAO carritoDAO = new CarritoDAOMemoria();
 
                             // Instancia Vistas, pasando el objeto 'mensaje' a cada una
                             MenuPrincipalView principalView = new MenuPrincipalView(mensaje);

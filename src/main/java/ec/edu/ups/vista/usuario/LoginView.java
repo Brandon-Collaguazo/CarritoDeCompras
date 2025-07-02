@@ -17,7 +17,6 @@ public class LoginView extends JFrame {
     private JButton btnIniciar;
     private JButton btnRegistrar;
     private JComboBox<String> cbxIdioma;
-    private JLabel lblContrasenia;
     private JLabel lblTitulo;
     private JLabel lblUsuario;
     private JLabel lblPassword;
@@ -49,7 +48,7 @@ public class LoginView extends JFrame {
     private void initComponents() {
         setContentPane(pnlPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 200);
+        setSize(400, 300);
         setLocationRelativeTo(null);
 
         //Íconos para los botones
@@ -69,7 +68,7 @@ public class LoginView extends JFrame {
             System.err.println("Error ");
         }
 
-        URL recuperarURL = LoginView.class.getClassLoader().getResource("imagenes/recuperarcontrasenia");
+        URL recuperarURL = LoginView.class.getClassLoader().getResource("imagenes/recuperarcontrasenia.png");
         if(recuperarURL != null) {
             ImageIcon iconoBtnRecuperar = new ImageIcon(recuperarURL);
             btnRecuperar.setIcon(iconoBtnRecuperar);
@@ -79,14 +78,17 @@ public class LoginView extends JFrame {
     }
 
     private void cargarDatos() {
-        cbxIdioma.removeAllItems();
-        cbxIdioma.addItem(mensaje.get("menu.idioma.es"));
-        cbxIdioma.addItem(mensaje.get("menu.idioma.en"));
-        cbxIdioma.addItem(mensaje.get("menu.idioma.fr"));
-
-        if (idiomaSeleccionado.equals("es")) cbxIdioma.setSelectedIndex(0);
-        else if (idiomaSeleccionado.equals("en")) cbxIdioma.setSelectedIndex(1);
-        else if (idiomaSeleccionado.equals("fr")) cbxIdioma.setSelectedIndex(2);
+        if (cbxIdioma != null) {
+            cbxIdioma.removeAllItems();
+            cbxIdioma.addItem(mensaje.get("menu.idioma.es"));
+            cbxIdioma.addItem(mensaje.get("menu.idioma.en"));
+            cbxIdioma.addItem(mensaje.get("menu.idioma.fr"));
+            if (idiomaSeleccionado.equals("es")) cbxIdioma.setSelectedIndex(0);
+            else if (idiomaSeleccionado.equals("en")) cbxIdioma.setSelectedIndex(1);
+            else if (idiomaSeleccionado.equals("fr")) cbxIdioma.setSelectedIndex(2);
+        } else {
+            System.err.println("cbxIdioma es null");
+        }
     }
 
     private void actualizarTextos() {
@@ -94,7 +96,7 @@ public class LoginView extends JFrame {
 
         lblTitulo.setText(mensaje.get("login.titulo"));
         lblUsuario.setText(mensaje.get("usuario"));
-        lblContrasenia.setText((mensaje.get("contrasenia")));
+        lblPassword.setText(mensaje.get("contrasenia"));
 
         lblRecuperar.setText(mensaje.get("recuperar"));
 
@@ -141,6 +143,54 @@ public class LoginView extends JFrame {
         this.pnlCentral = pnlCentral;
     }
 
+    public JTextField getTxtPassword() {
+        return txtPassword;
+    }
+
+    public void setTxtPassword(JTextField txtPassword) {
+        this.txtPassword = txtPassword;
+    }
+
+    public JLabel getLblUsuario() {
+        return lblUsuario;
+    }
+
+    public void setLblUsuario(JLabel lblUsuario) {
+        this.lblUsuario = lblUsuario;
+    }
+
+    public JLabel getLblPassword() {
+        return lblPassword;
+    }
+
+    public void setLblPassword(JLabel lblPassword) {
+        this.lblPassword = lblPassword;
+    }
+
+    public JPanel getPnlBotones() {
+        return pnlBotones;
+    }
+
+    public void setPnlBotones(JPanel pnlBotones) {
+        this.pnlBotones = pnlBotones;
+    }
+
+    public JButton getBtnRecuperar() {
+        return btnRecuperar;
+    }
+
+    public void setBtnRecuperar(JButton btnRecuperar) {
+        this.btnRecuperar = btnRecuperar;
+    }
+
+    public JLabel getLblRecuperar() {
+        return lblRecuperar;
+    }
+
+    public void setLblRecuperar(JLabel lblRecuperar) {
+        this.lblRecuperar = lblRecuperar;
+    }
+
     public JTextField getTxtUsuario() {
         return txtUsuario;
     }
@@ -179,14 +229,6 @@ public class LoginView extends JFrame {
 
     public void setCbxIdioma(JComboBox<String> cbxIdioma) {
         this.cbxIdioma = cbxIdioma;
-    }
-
-    public JLabel getLblContrasenia() {
-        return lblContrasenia;
-    }
-
-    public void setLblContrasenia(JLabel lblContrasenia) {
-        this.lblContrasenia = lblContrasenia;
     }
 
     public JLabel getLblTitulo() {
@@ -236,6 +278,6 @@ public class LoginView extends JFrame {
 
     public void limpiarCampos() {
         txtUsuario.setText("");
-        txtContrasenia.setText("");
+        txtPassword.setText("");
     }
 }

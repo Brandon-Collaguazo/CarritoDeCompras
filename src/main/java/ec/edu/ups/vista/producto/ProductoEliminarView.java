@@ -32,7 +32,8 @@ public class ProductoEliminarView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
 
-        URL buscarURL = ProductoEliminarView.class.getResource("imagenes/buscar_producto.png");
+        //Íconos de los botones
+        URL buscarURL = ProductoEliminarView.class.getClassLoader().getResource("imagenes/buscar_producto.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
@@ -40,7 +41,7 @@ public class ProductoEliminarView extends JInternalFrame {
             System.out.println("error");
         }
 
-        URL eliminarURL =ProductoEliminarView.class.getResource("imagenes/eliminar_producto");
+        URL eliminarURL =ProductoEliminarView.class.getClassLoader().getResource("imagenes/eliminar_producto.png");
         if(eliminarURL != null) {
             ImageIcon iconBtnEliminar = new ImageIcon(eliminarURL);
             btnEliminar.setIcon(iconBtnEliminar);

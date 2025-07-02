@@ -10,19 +10,11 @@ public class Usuario {
     private String username;
     private String contrasenia;
     private Rol rol;
-    private List<RespuestaSeguridad> respuesta;
+    private List<String> preguntas;
+    private List<String> respuestas;
 
-    public Usuario(String nombre, Date fechaNacimiento, String telefono, String correo, String username, String password, Rol usuario) {
-        this.respuesta = new ArrayList<>();
-    }
-
-    public Usuario(String nombreCompleto,
-                   Date fechaNacimiento,
-                   String telefono,
-                   String correo,
-                   String username,
-                   String contrasenia,
-                   Rol rol, List<RespuestaSeguridad> respuesta) {
+    public Usuario(String nombreCompleto, Date fechaNacimiento, String telefono,
+                   String correo, String username, String contrasenia, Rol rol) {
         this.nombreCompleto = nombreCompleto;
         this.fechaNacimiento = fechaNacimiento;
         this.telefono = telefono;
@@ -30,7 +22,26 @@ public class Usuario {
         this.username = username;
         this.contrasenia = contrasenia;
         this.rol = rol;
-        this.respuesta = respuesta;
+        this.preguntas = new ArrayList<>();
+        this.respuestas = new ArrayList<>();
+    }
+
+    public Usuario() {
+        this.preguntas = new ArrayList<>();
+        this.respuestas = new ArrayList<>();
+    }
+
+    public void addPreguntaSeguridad(String pregunta, String respuesta) {
+        preguntas.add(pregunta);
+        respuestas.add(respuesta);
+    }
+
+    public List<String> getPreguntas() {
+        return preguntas;
+    }
+
+    public List<String> getRespuestas() {
+        return respuestas;
     }
 
     public String getNombreCompleto() {
@@ -89,24 +100,24 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public List<RespuestaSeguridad> getRespuesta() {
-        return respuesta;
-    }
-
-    public void setRespuesta(List<RespuestaSeguridad> respuesta) {
-        this.respuesta = respuesta;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(nombreCompleto, usuario.nombreCompleto) && Objects.equals(fechaNacimiento, usuario.fechaNacimiento) && Objects.equals(telefono, usuario.telefono) && Objects.equals(correo, usuario.correo) && Objects.equals(username, usuario.username) && Objects.equals(contrasenia, usuario.contrasenia) && rol == usuario.rol && Objects.equals(respuesta, usuario.respuesta);
+        return Objects.equals(nombreCompleto, usuario.nombreCompleto) &&
+                Objects.equals(fechaNacimiento, usuario.fechaNacimiento) &&
+                Objects.equals(telefono, usuario.telefono) &&
+                Objects.equals(correo, usuario.correo) &&
+                Objects.equals(username, usuario.username) &&
+                Objects.equals(contrasenia, usuario.contrasenia) &&
+                rol == usuario.rol &&
+                Objects.equals(preguntas, usuario.preguntas) &&
+                Objects.equals(respuestas, usuario.respuestas);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombreCompleto, fechaNacimiento, telefono, correo, username, contrasenia, rol, respuesta);
+        return Objects.hash(nombreCompleto, fechaNacimiento, telefono, correo, username, contrasenia, rol, preguntas, respuestas);
     }
 
     @Override
@@ -119,7 +130,8 @@ public class Usuario {
                 ", username='" + username + '\'' +
                 ", contrasenia='" + contrasenia + '\'' +
                 ", rol=" + rol +
-                ", respuesta=" + respuesta +
+                ", preguntas=" + preguntas +
+                ", respuestas=" + respuestas +
                 '}';
     }
 }

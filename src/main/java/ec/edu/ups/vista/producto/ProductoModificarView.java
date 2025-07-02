@@ -33,7 +33,8 @@ public class ProductoModificarView extends JInternalFrame {
         setResizable(true);
         //setLocationRelativeTo(null);
 
-        URL buscarURL = ProductoModificarView.class.getResource("imagenes/buscar_producto.png");
+        //Íconos para los botones
+        URL buscarURL = ProductoModificarView.class.getClassLoader().getResource("imagenes/buscar_producto.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
@@ -41,7 +42,7 @@ public class ProductoModificarView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL modificarURL = ProductoModificarView.class.getResource("imagenes/modificar.png");
+        URL modificarURL = ProductoModificarView.class.getClassLoader().getResource("imagenes/modificar.png");
         if(modificarURL != null) {
             ImageIcon iconBtnActualizar = new ImageIcon(modificarURL);
             btnActualizar.setIcon(iconBtnActualizar);

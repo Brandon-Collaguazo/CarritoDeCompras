@@ -32,7 +32,8 @@ public class UsuarioEliminarView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-        URL buscarURL = UsuarioEliminarView.class.getResource("imagenes/buscarUsario.png");
+        //Íconos para los botones
+        URL buscarURL = UsuarioEliminarView.class.getClassLoader().getResource("imagenes/buscarUsario.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
@@ -40,7 +41,7 @@ public class UsuarioEliminarView extends JInternalFrame {
             System.err.println("Error");
         }
 
-        URL eliminarURL = UsuarioEliminarView.class.getResource("imagenes/eliminar_usuario.png");
+        URL eliminarURL = UsuarioEliminarView.class.getClassLoader().getResource("imagenes/eliminar_usuario.png");
         if(eliminarURL != null) {
             ImageIcon iconBtnEliminar = new ImageIcon(eliminarURL);
             btnEliminar.setIcon(iconBtnEliminar);
@@ -48,7 +49,7 @@ public class UsuarioEliminarView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL cancelarURL = UsuarioEliminarView.class.getResource("imagenes/cancelar.png");
+        URL cancelarURL = UsuarioEliminarView.class.getClassLoader().getResource("imagenes/cancelar.png");
         if(cancelarURL != null) {
             ImageIcon iconBtnCancelar = new ImageIcon(cancelarURL);
             btnCancelar.setIcon(iconBtnCancelar);

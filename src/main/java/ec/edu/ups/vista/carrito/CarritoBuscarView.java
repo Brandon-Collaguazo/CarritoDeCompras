@@ -36,7 +36,8 @@ public class CarritoBuscarView extends JInternalFrame {
         setResizable(true);
         setSize(500, 500);
 
-        URL buscarURL = CarritoBuscarView.class.getResource("imagenes/buscar_carrito.png");
+        //Íconos para los botones
+        URL buscarURL = CarritoBuscarView.class.getClassLoader().getResource("imagenes/buscar_carrito.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
@@ -44,7 +45,7 @@ public class CarritoBuscarView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL limpiarURL = CarritoBuscarView.class.getResource("imagenes/limpiar.png");
+        URL limpiarURL = CarritoBuscarView.class.getClassLoader().getResource("imagenes/limpiar.png");
         if(limpiarURL != null) {
             ImageIcon iconBtnLimpiar = new ImageIcon(limpiarURL);
             btnLimpiar.setIcon(iconBtnLimpiar);
