@@ -1,5 +1,6 @@
 package ec.edu.ups.vista.carrito;
 
+import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
@@ -18,12 +19,21 @@ public class CarritoListaView extends JInternalFrame {
     private JLabel lblCodigo;
     private DefaultTableModel modelo;
     private MensajeInternacionalizacionHandler mensaje;
+    private Rol rol;
 
-    public CarritoListaView(MensajeInternacionalizacionHandler mensaje) {
+    public CarritoListaView(MensajeInternacionalizacionHandler mensaje, Rol rol) {
         //super("Listar Carritos", true, true, false, true);
         this.mensaje = mensaje;
+        this.rol = rol;
         initComponents();
         actualizarTextos();
+    }
+
+    private void configurarAcceso() {
+        if(rol == Rol.USUARIO) {
+            lblCodigo.setVisible(false);
+            txtUsuario.setVisible(false);
+        }
     }
 
     private void initComponents() {
@@ -51,12 +61,12 @@ public class CarritoListaView extends JInternalFrame {
         configurarTabla();
     }
 
-    private void configurarTabla() {
+    public void configurarTabla() {
         modelo = new DefaultTableModel();
         Object[] columnas = {
-                mensaje.get("columna.fecha"),
                 mensaje.get("columna.codigo"),
                 mensaje.get("columna.usuario"),
+                mensaje.get("columna.fecha"),
                 mensaje.get("columna.cantidad"),
                 mensaje.get("columna.total")
         };
@@ -78,6 +88,12 @@ public class CarritoListaView extends JInternalFrame {
         mensaje.setLenguaje(lenguaje, pais);
         actualizarTextos();
         configurarTabla();
+    }
+
+    public void limpiarCampos() {
+        txtUsuario.setText("");
+        DefaultTableModel modelo = (DefaultTableModel) tblCarrito.getModel();
+        modelo.setRowCount(0);
     }
 
     public JPanel getPnlPrincipal() {

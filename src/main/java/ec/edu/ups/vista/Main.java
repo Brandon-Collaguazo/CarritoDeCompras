@@ -75,7 +75,7 @@ public class Main {
                             CarritoBuscarView carritoBuscarView = new CarritoBuscarView(mensaje);
                             CarritoEliminarView carritoEliminarView = new CarritoEliminarView(mensaje);
                             CarritoActualizarView carritoActualizarView = new CarritoActualizarView(mensaje);
-                            CarritoListaView carritoListaView = new CarritoListaView(mensaje);
+                            CarritoListaView carritoListaView = new CarritoListaView(mensaje, usuarioAutenticado.getRol());
                             CarritoDetalleView carritoDetalleView = new CarritoDetalleView(mensaje);
 
                             // Instancia Controlador
@@ -93,7 +93,9 @@ public class Main {
                                     carritoEliminarView,
                                     carritoActualizarView,
                                     carritoListaView,
-                                    usuarioAutenticado
+                                    carritoDetalleView,
+                                    usuarioAutenticado,
+                                    mensaje
                             );
 
                             productoController.configurarEventosAnadir();

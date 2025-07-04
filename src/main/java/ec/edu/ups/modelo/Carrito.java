@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Carrito {
-    private final double IVA = 0.15;
+    private final double IVA = 0.12;
     private static int contador = 1;
     private int codigo;
     private Usuario usuario;
@@ -130,7 +130,7 @@ public class Carrito {
     public ItemCarrito buscarItemPorCodigo(int codigo) {
         for (ItemCarrito item : items) {
             if (item.getProducto().getCodigo() == codigo) {
-                return item; // Retorna el ítem si encuentra coincidencia
+                return item;
             }
         }
         return null;
