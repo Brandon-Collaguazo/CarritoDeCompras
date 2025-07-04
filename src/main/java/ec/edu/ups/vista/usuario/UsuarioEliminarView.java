@@ -1,9 +1,9 @@
 package ec.edu.ups.vista.usuario;
 
-import ec.edu.ups.modelo.Usuario;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.net.URL;
 
 public class UsuarioEliminarView extends JInternalFrame {
@@ -18,6 +18,7 @@ public class UsuarioEliminarView extends JInternalFrame {
     private JButton btnBuscar;
     private JButton btnEliminar;
     private JButton btnCancelar;
+    private JTable tblUsuario;
     private MensajeInternacionalizacionHandler mensaje;
 
     public UsuarioEliminarView(MensajeInternacionalizacionHandler mensaje) {
@@ -56,6 +57,30 @@ public class UsuarioEliminarView extends JInternalFrame {
         } else {
             System.out.println("Error");
         }
+
+        configurarTabla();
+    }
+
+    private void configurarTabla() {
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        Object[] columnas = {
+                mensaje.get("columna.nombre.completo"),
+                mensaje.get("columna.fecha.nacimiento"),
+                mensaje.get("columna.telefono"),
+                mensaje.get("columna.correo"),
+                mensaje.get("columna.usuario"),
+                mensaje.get("columna.asociado")
+        };
+
+        modelo.setColumnIdentifiers(columnas);
+        tblUsuario.setModel(modelo);
+
+        tblUsuario.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     private void actualizarTextos() {
@@ -63,7 +88,6 @@ public class UsuarioEliminarView extends JInternalFrame {
 
         lblTitulo.setText(mensaje.get("usuario.eliminar.titulo"));
         lblUsuario.setText(mensaje.get("usuario"));
-        lblAsociado.setText(mensaje.get("asociado"));
 
         btnBuscar.setText(mensaje.get("buscar"));
         btnEliminar.setText(mensaje.get("eliminar"));
@@ -73,6 +97,7 @@ public class UsuarioEliminarView extends JInternalFrame {
     public void cambiarIdioma(String lenguaje, String pais) {
         mensaje.setLenguaje(lenguaje, pais);
         actualizarTextos();
+        configurarTabla();
     }
 
     public JPanel getPnlPrincipal() {
@@ -81,22 +106,6 @@ public class UsuarioEliminarView extends JInternalFrame {
 
     public void setPnlPrincipal(JPanel pnlPrincipal) {
         this.pnlPrincipal = pnlPrincipal;
-    }
-
-    public JLabel getLblTitulo() {
-        return lblTitulo;
-    }
-
-    public void setLblTitulo(JLabel lblTitulo) {
-        this.lblTitulo = lblTitulo;
-    }
-
-    public JLabel getLblAsociado() {
-        return lblAsociado;
-    }
-
-    public void setLblAsociado(JLabel lblAsociado) {
-        this.lblAsociado = lblAsociado;
     }
 
     public JTextField getTxtUsuario() {
@@ -153,6 +162,14 @@ public class UsuarioEliminarView extends JInternalFrame {
 
     public void setBtnCancelar(JButton btnCancelar) {
         this.btnCancelar = btnCancelar;
+    }
+
+    public JTable getTblUsuario() {
+        return tblUsuario;
+    }
+
+    public void setTblUsuario(JTable tblUsuario) {
+        this.tblUsuario = tblUsuario;
     }
 
     public MensajeInternacionalizacionHandler getMensaje() {

@@ -6,13 +6,13 @@ public class PreguntaSeguridad {
     private int id;
     private String textoPregunta;
 
-    public PreguntaSeguridad() {
-
-    }
-
     public PreguntaSeguridad(int id, String textoPregunta) {
         this.id = id;
         this.textoPregunta = textoPregunta;
+    }
+
+    public PreguntaSeguridad() {
+
     }
 
     public int getId() {

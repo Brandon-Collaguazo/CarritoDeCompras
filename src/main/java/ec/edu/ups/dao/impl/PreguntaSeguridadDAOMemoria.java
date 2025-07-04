@@ -51,6 +51,11 @@ public class PreguntaSeguridadDAOMemoria implements PreguntaSeguridadDAO {
     }
 
     @Override
+    public List<PreguntaSeguridad> obtenerPreguntasPorUsername(String username) {
+        return new ArrayList<>(preguntas);
+    }
+
+    @Override
     public void actualizar(PreguntaSeguridad pregunta) {
         for (int i = 0; i < preguntas.size(); i++) {
             if (preguntas.get(i).getId() == pregunta.getId()) {

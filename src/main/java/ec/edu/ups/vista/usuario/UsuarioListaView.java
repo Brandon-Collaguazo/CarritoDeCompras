@@ -69,6 +69,12 @@ public class UsuarioListaView extends JInternalFrame {
         btnLimpiar.setText(mensaje.get("limpiar"));
     }
 
+    public void cambiarIdioma(String lenguaje, String pais) {
+        mensaje.setLenguaje(lenguaje, pais);
+        actualizarTextos();
+        configurarTabla();
+    }
+
     public JPanel getPnlPrincipal() {
         return pnlPrincipal;
     }

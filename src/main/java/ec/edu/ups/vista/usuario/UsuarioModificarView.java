@@ -1,8 +1,10 @@
 package ec.edu.ups.vista.usuario;
 
+import ec.edu.ups.modelo.Usuario;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.net.URL;
 
 public class UsuarioModificarView extends JInternalFrame {
@@ -14,8 +16,9 @@ public class UsuarioModificarView extends JInternalFrame {
     private JTextField txtUsuario;
     private JPasswordField txtContrasenia;
     private JPasswordField txtConfirmar;
-    private JButton btnModificar;
     private JButton btnMostrar;
+    private JTable tblDatos;
+    private JComboBox cbxModificar;
     private MensajeInternacionalizacionHandler mensaje;
 
     public UsuarioModificarView(MensajeInternacionalizacionHandler mensaje) {
@@ -31,14 +34,6 @@ public class UsuarioModificarView extends JInternalFrame {
         setSize(500, 500);
 
         //Íconos para los botones
-        URL modificarURL = UsuarioModificarView.class.getClassLoader().getResource("imagenes/modificar.png");
-        if(modificarURL != null) {
-            ImageIcon iconBtnModificar = new ImageIcon(modificarURL);
-            btnModificar.setIcon(iconBtnModificar);
-        } else {
-            System.out.println("Error");
-        }
-
         URL mostrarURL = UsuarioModificarView.class.getClassLoader().getResource("imagenes/mostrar.png");
         if(mostrarURL != null) {
             ImageIcon iconBtnMostrar = new ImageIcon(mostrarURL);
@@ -46,6 +41,35 @@ public class UsuarioModificarView extends JInternalFrame {
         } else {
             System.out.println("Error");
         }
+
+        configurarTabla();
+        configurarComboBox();
+    }
+
+    private void configurarTabla() {
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        modelo.setColumnIdentifiers(new Object[]{
+                mensaje.get("columna.nombre.completo"),
+                mensaje.get("columna.fecha.nacimiento"),
+                mensaje.get("columna.telefono"),
+                mensaje.get("columna.correo"),
+                mensaje.get("columna.usuario")
+        });
+
+        tblDatos.setModel(modelo);
+        tblDatos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    private void configurarComboBox() {
+        cbxModificar.removeAllItems();
+        cbxModificar.addItem(mensaje.get("modificar.nombre"));
+        cbxModificar.addItem(mensaje.get("modificar.contrasenia"));
     }
 
     private void actualizarTextos() {
@@ -56,8 +80,24 @@ public class UsuarioModificarView extends JInternalFrame {
         lblContrasenia.setText(mensaje.get("contrasenia"));
         lblConfirmar.setText(mensaje.get("confirmar.password"));
 
-        btnModificar.setText(mensaje.get("modificar"));
         btnMostrar.setText(mensaje.get("mostrar"));
+        configurarComboBox();
+    }
+
+    public void cargarDatosUsuario(Usuario usuario) {
+        DefaultTableModel modelo = (DefaultTableModel) tblDatos.getModel();
+        modelo.setRowCount(0);
+
+        if(usuario != null) {
+            modelo.addRow(new Object[]{
+                    usuario.getNombreCompleto(),
+                    usuario.getFechaNacimiento(),
+                    usuario.getTelefono(),
+                    usuario.getCorreo(),
+                    usuario.getUsername()
+            });
+            txtUsuario.setText(usuario.getUsername());
+        }
     }
 
     public void cambiarIdioma(String lenguaje, String pais) {
@@ -71,30 +111,6 @@ public class UsuarioModificarView extends JInternalFrame {
 
     public void setPnlPrincipal(JPanel pnlPrincipal) {
         this.pnlPrincipal = pnlPrincipal;
-    }
-
-    public JLabel getLblTitulo() {
-        return lblTitulo;
-    }
-
-    public void setLblTitulo(JLabel lblTitulo) {
-        this.lblTitulo = lblTitulo;
-    }
-
-    public JLabel getLblUsuario() {
-        return lblUsuario;
-    }
-
-    public void setLblUsuario(JLabel lblUsuario) {
-        this.lblUsuario = lblUsuario;
-    }
-
-    public JLabel getLblContrasenia() {
-        return lblContrasenia;
-    }
-
-    public void setLblContrasenia(JLabel lblContrasenia) {
-        this.lblContrasenia = lblContrasenia;
     }
 
     public JTextField getTxtUsuario() {
@@ -121,20 +137,28 @@ public class UsuarioModificarView extends JInternalFrame {
         this.txtConfirmar = txtConfirmar;
     }
 
-    public JButton getBtnModificar() {
-        return btnModificar;
-    }
-
-    public void setBtnModificar(JButton btnModificar) {
-        this.btnModificar = btnModificar;
-    }
-
     public JButton getBtnMostrar() {
         return btnMostrar;
     }
 
     public void setBtnMostrar(JButton btnMostrar) {
         this.btnMostrar = btnMostrar;
+    }
+
+    public JTable getTblDatos() {
+        return tblDatos;
+    }
+
+    public void setTblDatos(JTable tblDatos) {
+        this.tblDatos = tblDatos;
+    }
+
+    public JComboBox getCbxModificar() {
+        return cbxModificar;
+    }
+
+    public void setCbxModificar(JComboBox cbxModificar) {
+        this.cbxModificar = cbxModificar;
     }
 
     public MensajeInternacionalizacionHandler getMensaje() {

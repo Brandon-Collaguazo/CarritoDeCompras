@@ -5,25 +5,14 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecuperarContraseniaView extends JDialog {
     private JPanel pnlPrincipal;
     private JTextField txtUsuario;
-    private JTextField txtRes1;
-    private JComboBox cbxPregunta1;
-    private JComboBox cbxPregunta2;
-    private JTextField txtRes2;
-    private JComboBox cbxPregunta3;
-    private JTextField txtRes3;
     private JLabel lblTitulo;
     private JLabel lblUsuario;
-    private JLabel lblPregunta1;
-    private JLabel lblRespuesta1;
-    private JLabel lblPregunta2;
-    private JLabel lblRespuesta2;
-    private JLabel lblPregunta3;
-    private JLabel lblRespuesta3;
     private JPasswordField txtContrasenia;
     private JPasswordField txtConfirmar;
     private JLabel lblContrasenia;
@@ -31,6 +20,8 @@ public class RecuperarContraseniaView extends JDialog {
     private JButton btnRecuperar;
     private JButton btnCancelar;
     private MensajeInternacionalizacionHandler mensaje;
+    private List<PreguntaSeguridad> preguntas;
+    private List<String> respuestas = new ArrayList<>();
 
     public RecuperarContraseniaView(JFrame parent, MensajeInternacionalizacionHandler mensaje) {
         super(parent, true);
@@ -67,10 +58,8 @@ public class RecuperarContraseniaView extends JDialog {
         setTitle(mensaje.get("recuperar.contrasenia.titulo"));
 
         lblTitulo.setText(mensaje.get("recuperar.contrasenia.titulo"));
+
         lblUsuario.setText(mensaje.get("usuario"));
-        lblPregunta1.setText("1. " + mensaje.get("pregunta.1"));
-        lblPregunta2.setText("2. " + mensaje.get("pregunta.2"));
-        lblPregunta3.setText("3. " + mensaje.get("pregunta.3"));
         lblContrasenia.setText(mensaje.get("nueva.contrasenia"));
         lblConfirmar.setText(mensaje.get("confirmar.contrasenia"));
 
@@ -79,9 +68,22 @@ public class RecuperarContraseniaView extends JDialog {
     }
 
     public void cargarPreguntas(List<PreguntaSeguridad> preguntas) {
-        if(preguntas.size() > 0) lblPregunta1.setText("1. " + preguntas.get(0).getTextoPregunta());
-        if(preguntas.size() > 1) lblPregunta2.setText("2. " + preguntas.get(1).getTextoPregunta());
-        if(preguntas.size() > 2) lblPregunta3.setText("3. " + preguntas.get(2).getTextoPregunta());
+        this.respuestas.clear(); // Limpiar respuestas anteriores
+
+        for (PreguntaSeguridad pregunta : preguntas) {
+            String respuesta = JOptionPane.showInputDialog(
+                    this,
+                    pregunta.getTextoPregunta(),
+                    mensaje.get("responda.pregunta"),
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (respuesta == null) {
+                respuestas = null;
+                return;
+            }
+            respuestas.add(respuesta.trim());
+        }
     }
 
     public void cambiarIdioma(String lenguaje, String pais) {
@@ -105,54 +107,6 @@ public class RecuperarContraseniaView extends JDialog {
         this.txtUsuario = txtUsuario;
     }
 
-    public JTextField getTxtRes1() {
-        return txtRes1;
-    }
-
-    public void setTxtRes1(JTextField txtRes1) {
-        this.txtRes1 = txtRes1;
-    }
-
-    public JComboBox getCbxPregunta1() {
-        return cbxPregunta1;
-    }
-
-    public void setCbxPregunta1(JComboBox cbxPregunta1) {
-        this.cbxPregunta1 = cbxPregunta1;
-    }
-
-    public JComboBox getCbxPregunta2() {
-        return cbxPregunta2;
-    }
-
-    public void setCbxPregunta2(JComboBox cbxPregunta2) {
-        this.cbxPregunta2 = cbxPregunta2;
-    }
-
-    public JTextField getTxtRes2() {
-        return txtRes2;
-    }
-
-    public void setTxtRes2(JTextField txtRes2) {
-        this.txtRes2 = txtRes2;
-    }
-
-    public JComboBox getCbxPregunta3() {
-        return cbxPregunta3;
-    }
-
-    public void setCbxPregunta3(JComboBox cbxPregunta3) {
-        this.cbxPregunta3 = cbxPregunta3;
-    }
-
-    public JTextField getTxtRes3() {
-        return txtRes3;
-    }
-
-    public void setTxtRes3(JTextField txtRes3) {
-        this.txtRes3 = txtRes3;
-    }
-
     public JLabel getLblTitulo() {
         return lblTitulo;
     }
@@ -167,54 +121,6 @@ public class RecuperarContraseniaView extends JDialog {
 
     public void setLblUsuario(JLabel lblUsuario) {
         this.lblUsuario = lblUsuario;
-    }
-
-    public JLabel getLblPregunta1() {
-        return lblPregunta1;
-    }
-
-    public void setLblPregunta1(JLabel lblPregunta1) {
-        this.lblPregunta1 = lblPregunta1;
-    }
-
-    public JLabel getLblRespuesta1() {
-        return lblRespuesta1;
-    }
-
-    public void setLblRespuesta1(JLabel lblRespuesta1) {
-        this.lblRespuesta1 = lblRespuesta1;
-    }
-
-    public JLabel getLblPregunta2() {
-        return lblPregunta2;
-    }
-
-    public void setLblPregunta2(JLabel lblPregunta2) {
-        this.lblPregunta2 = lblPregunta2;
-    }
-
-    public JLabel getLblRespuesta2() {
-        return lblRespuesta2;
-    }
-
-    public void setLblRespuesta2(JLabel lblRespuesta2) {
-        this.lblRespuesta2 = lblRespuesta2;
-    }
-
-    public JLabel getLblPregunta3() {
-        return lblPregunta3;
-    }
-
-    public void setLblPregunta3(JLabel lblPregunta3) {
-        this.lblPregunta3 = lblPregunta3;
-    }
-
-    public JLabel getLblRespuesta3() {
-        return lblRespuesta3;
-    }
-
-    public void setLblRespuesta3(JLabel lblRespuesta3) {
-        this.lblRespuesta3 = lblRespuesta3;
     }
 
     public JPasswordField getTxtContrasenia() {
@@ -263,6 +169,22 @@ public class RecuperarContraseniaView extends JDialog {
 
     public void setBtnCancelar(JButton btnCancelar) {
         this.btnCancelar = btnCancelar;
+    }
+
+    public List<PreguntaSeguridad> getPreguntas() {
+        return preguntas;
+    }
+
+    public void setPreguntas(List<PreguntaSeguridad> preguntas) {
+        this.preguntas = preguntas;
+    }
+
+    public List<String> getRespuestas() {
+        return respuestas;
+    }
+
+    public void setRespuestas(List<String> respuestas) {
+        this.respuestas = respuestas;
     }
 
     public MensajeInternacionalizacionHandler getMensaje() {

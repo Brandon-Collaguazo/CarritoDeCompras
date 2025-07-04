@@ -4,8 +4,10 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import ec.edu.ups.vista.usuario.LoginView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class MenuPrincipalView extends JFrame {
     private MensajeInternacionalizacionHandler mensaje;
@@ -101,6 +103,124 @@ public class MenuPrincipalView extends JFrame {
         setTitle(mensaje.get("app.titulo"));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+
+        //Íconos para los items
+
+        //MENÚ DE PRODUCTOS
+        URL crearProductoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/crear_producto.png");
+        if(crearProductoURL != null) {
+            ImageIcon iconCrearProducto = new ImageIcon(crearProductoURL);
+            menuItemCrear.setIcon(iconCrearProducto);
+        } else {
+            System.out.println("No se cargo el anadir_producto");
+        }
+
+        URL buscarProductoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/buscar_producto.png");
+        if(buscarProductoURL != null) {
+            ImageIcon iconBuscarProducto = new ImageIcon(buscarProductoURL);
+            menuItemBuscar.setIcon(iconBuscarProducto);
+        } else {
+            System.out.println("No se cargó el buscar producto");
+        }
+
+        URL eliminarProductoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/eliminar_producto.png");
+        if(eliminarProductoURL != null) {
+            ImageIcon iconEliminarProducto = new ImageIcon(eliminarProductoURL);
+            menuItemEliminar.setIcon(iconEliminarProducto);
+        } else {
+            System.out.println("No se cargó eliminarProducto");
+        }
+
+        URL actualizarProductoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/modificar.png");
+        if(actualizarProductoURL != null) {
+            ImageIcon iconActualizarProducto = new ImageIcon(actualizarProductoURL);
+            menuItemActualizar.setIcon(iconActualizarProducto);
+        } else {
+            System.err.println("No se cargó el modificar en menuprincipal");
+        }
+
+        //MENÚ CARRITO
+        URL crearCarritoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/crear_carrito.png");
+        if(crearCarritoURL != null) {
+            ImageIcon iconCrearCarrito = new ImageIcon(crearCarritoURL);
+            menuItemCrearCarrito.setIcon(iconCrearCarrito);
+        } else {
+            System.err.println("No se cargó el crear carrito");
+        }
+
+        URL buscarCarritoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/buscar_carrito.png");
+        if(buscarCarritoURL != null) {
+            ImageIcon iconBuscarCarrito = new ImageIcon(buscarCarritoURL);
+            menuItemBuscarCarrito.setIcon(iconBuscarCarrito);
+        } else {
+            System.err.println("No se cargó el buscar carrito");
+        }
+
+        URL eliminarCarritoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/eliminar_carrito.png");
+        if(eliminarCarritoURL != null) {
+            ImageIcon iconEliminarCaarito = new ImageIcon(eliminarCarritoURL);
+            menuItemEliminarCarrito.setIcon(iconEliminarCaarito);
+        } else {
+            System.err.println("No se cargó el eliminar carrito");
+        }
+
+        URL actualizarCarritoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/modificar.png");
+        if(actualizarCarritoURL != null) {
+            ImageIcon iconActualizarCarrito = new ImageIcon(actualizarCarritoURL);
+            menuItemActualizarCarrito.setIcon(iconActualizarCarrito);
+        } else {
+            System.err.println("No se cargó el actualizar carrito");
+        }
+
+        URL listarCarritoURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/listar_carrito.png");
+        if(listarCarritoURL != null) {
+            ImageIcon iconListarCarrito = new ImageIcon(listarCarritoURL);
+            menuItemListarCarrito.setIcon(iconListarCarrito);
+        } else {
+            System.err.println("No se cargó el listar carrito");
+        }
+
+        //MENÚ SALIR
+        URL salirURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/salir_sistema.png");
+        if(salirURL != null) {
+            ImageIcon iconSalir = new ImageIcon(salirURL);
+            menuItemSalir.setIcon(iconSalir);
+        } else {
+            System.err.println("No se cargó el salir del sistema");
+        }
+
+        URL cerrarSesionURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/cerrar_sesion.png");
+        if(cerrarSesionURL != null) {
+            ImageIcon iconCerrarSesion = new ImageIcon(cerrarSesionURL);
+            menuItemCerrarSesion.setIcon(iconCerrarSesion);
+        } else {
+            System.err.println("No se cargó el cerrar sesión");
+        }
+
+        //MENÚ IDIOMAS
+        URL espaniolURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/espana.png");
+        if(espaniolURL != null) {
+            ImageIcon iconItemEsp = new ImageIcon(espaniolURL);
+            menuItemEspaniol.setIcon(iconItemEsp);
+        } else {
+            System.out.println("Error, no se cargó la bandera de españa");
+        }
+
+        URL inglesURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/reino-unido.png");
+        if(inglesURL != null) {
+            ImageIcon iconItemIng = new ImageIcon(inglesURL);
+            menuItemIngles.setIcon(iconItemIng);
+        } else {
+            System.out.println("Error, no se cargó la bandra inglesa");
+        }
+
+        URL francesURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/francia.png");
+        if(francesURL != null) {
+            ImageIcon iconItemFrn = new ImageIcon(francesURL);
+            menuItemFrances.setIcon(iconItemFrn);
+        } else {
+            System.out.println("Error, no se cargó la bandera de francia");
+        }
     }
 
     public JMenuItem getMenuItemCrear() {

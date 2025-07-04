@@ -102,7 +102,7 @@ public class Main {
                             productoController.configurarEventosLista();
                             productoController.configurarEventosCarrito();
 
-                            principalView.mostrarMensaje("Bienvenido " + usuarioAutenticado.getUsername());
+                            principalView.mostrarMensaje("Bienvenido: " + usuarioAutenticado.getNombreCompleto() + " :D");
                             if(usuarioAutenticado.getRol().equals(Rol.USUARIO)) {
                                 principalView.deshabilitarMenusAdministrador();
                             }
