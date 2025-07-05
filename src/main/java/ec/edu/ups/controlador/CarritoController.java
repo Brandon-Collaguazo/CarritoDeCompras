@@ -165,7 +165,7 @@ public class CarritoController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(carritoListaView.getTblCarrito().getRowCount() == 0) {
-                    carritoListaView.mostrarMensaje("primero.busque.carritos");
+                    carritoListaView.mostrarMensaje("busque.carritos");
                     return;
                 }
                 mostrarDetallesCarrito();
@@ -179,12 +179,11 @@ public class CarritoController {
             this.carrito.setUsuario(this.usuarioAutenticado);
         }
         carritoDAO.crear(carrito);
-        carritoAnadirView.mostrarMensaje("Carrito creado correctamente");
+        carritoAnadirView.mostrarMensaje("creacion.carrito.exito");
         System.out.println(carritoDAO.listarTodos());
     }
 
     private void anadirProducto() {
-
         int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
         int cantidad =  Integer.parseInt(carritoAnadirView.getCbxCantidad().getSelectedItem().toString());
@@ -246,7 +245,7 @@ public class CarritoController {
         int codigo = Integer.parseInt(carritoBuscarView.getTxtCodigo().getText());
         carrito = carritoDAO.buscarPorCodigo(codigo);
         if(carrito == null) {
-            carritoBuscarView.mostrarMensaje("No se encontró el carrito");
+            carritoBuscarView.mostrarMensaje("carrito.no.encontrado");
             limpiarCampos();
         } else {
             mostrarProductosEnCarrito(carrito);
@@ -293,7 +292,7 @@ public class CarritoController {
         int codigo = Integer.parseInt(carritoEliminarView.getTxtCodigo().getText());
         carrito = carritoDAO.buscarPorCodigo(codigo);
         if(carrito == null) {
-            carritoEliminarView.mostrarMensaje("Carrito no encontrado");
+            carritoEliminarView.mostrarMensaje("carrito.no.encontrado");
             limpiarCamposEliminar();
         } else {
             mostrarDetallesCarrito(carrito);
@@ -304,17 +303,17 @@ public class CarritoController {
         int codigo = Integer.parseInt(carritoEliminarView.getTxtCodigo().getText());
         carrito = carritoDAO.buscarPorCodigo(codigo);
         if(carrito == null) {
-            carritoEliminarView.mostrarMensaje("El carrito ya fue eliminado o no existe");
+            carritoEliminarView.mostrarMensaje("carrito.inexistente");
             return;
         }
         int confirmacion = JOptionPane.showConfirmDialog(carritoEliminarView,
-                "¿Está seguro de eliminar el carrito #" + codigo + "?",
-                "Confirmar Eliminación",
+                "pregunta.eliminar.carrito",
+                "confirmar.eliminacion.carrito",
                 JOptionPane.YES_NO_OPTION
         );
         if(confirmacion == JOptionPane.YES_NO_OPTION) {
             carritoDAO.eliminar(codigo);
-            carritoEliminarView.mostrarMensaje("Carrito eliminado correctamente");
+            carritoEliminarView.mostrarMensaje("eliminacion.carrito.exito");
             limpiarCamposEliminar();
         }
     }
@@ -352,7 +351,7 @@ public class CarritoController {
         carrito = carritoDAO.buscarPorCodigo(codigo);
 
         if (carrito == null) {
-            carritoActualizarView.mostrarMensaje("Carrito no encontrado");
+            carritoActualizarView.mostrarMensaje("carrito.no.encontrado");
             carritoActualizarView.limpiarTabla();
         } else {
             cargarProductosEnTabla();
@@ -365,7 +364,7 @@ public class CarritoController {
         Producto producto = productoDAO.buscarPorCodigo(codigo);
 
         if (producto == null) {
-            carritoActualizarView.mostrarMensaje("Producto no encontrado");
+            carritoActualizarView.mostrarMensaje("producto.no.encontrado");
         } else {
             productoSeleccionado = codigo;
         }
@@ -396,7 +395,7 @@ public class CarritoController {
 
     private void guardarCambios() {
         carritoDAO.actualizar(carrito);
-        carritoActualizarView.mostrarMensaje("Carrito actualizado correctamente");
+        carritoActualizarView.mostrarMensaje("actualizacion.carrito.exito");
         carritoActualizarView.limpiarTabla();
         carritoActualizarView.getTxtCodigoC().setText("");
         carritoActualizarView.getTxtCodigoP().setText("");

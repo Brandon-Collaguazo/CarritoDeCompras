@@ -5,10 +5,10 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class UsuarioRegistroView extends JDialog {
+public class UsuarioRegistroView extends JFrame {
     private JPanel pnlPrincipal;
     private JTextField txtUsername;
     private JPasswordField txtPassword;
@@ -26,7 +26,12 @@ public class UsuarioRegistroView extends JDialog {
     private JTextField txtFechaNacimiento;
     private JLabel lblCorreo;
     private JTextField txtCorreo;
+    private JComboBox<String> cbxPregunta;
+    private JTextField txtRespuesta;
+    private JButton btnSiguiente;
     private MensajeInternacionalizacionHandler mensaje;
+    private List<String> preguntaSelecionada = new ArrayList<>();
+    private List<String> respuestas = new ArrayList<>();
 
     public UsuarioRegistroView(MensajeInternacionalizacionHandler mensaje) {
         this.mensaje = mensaje;
@@ -37,8 +42,7 @@ public class UsuarioRegistroView extends JDialog {
     private void initComponents() {
         setContentPane(pnlPrincipal);
         setTitle("Registro de Usuario");
-        setModal(true);
-        setSize(750, 300);
+        setSize(750, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -46,6 +50,14 @@ public class UsuarioRegistroView extends JDialog {
         URL registrarURL = UsuarioRegistroView.class.getClassLoader().getResource("imagenes/registrarusuario.png");
         if(registrarURL != null) {
             ImageIcon iconBtnRegistrar = new ImageIcon(registrarURL);
+            btnRegistrar.setIcon(iconBtnRegistrar);
+        } else {
+            System.err.println("Error");
+        }
+
+        URL siguienteURL = UsuarioRegistroView.class.getClassLoader().getResource("imagenes/siguiente.png");
+        if(siguienteURL != null) {
+            ImageIcon iconBtnRegistrar = new ImageIcon(siguienteURL);
             btnRegistrar.setIcon(iconBtnRegistrar);
         } else {
             System.err.println("Error");
@@ -65,6 +77,7 @@ public class UsuarioRegistroView extends JDialog {
         lblConfirmarPassword.setText(mensaje.get("confirmar.password"));
 
         btnRegistrar.setText(mensaje.get("registrar"));
+        btnSiguiente.setText(mensaje.get("siguiente"));
     }
 
     public void cambiarIdioma(String lenguaje, String pais) {
@@ -72,44 +85,31 @@ public class UsuarioRegistroView extends JDialog {
         actualizarTextos();
     }
 
-    public String[] mostrarPreguntasSeguridad(List<PreguntaSeguridad> preguntas) {
-        Object[] message = {
-                mensaje.get("preguntas.seguridad.mensaje"),
-                " "
-        };
-
-        JOptionPane.showMessageDialog(this, message, mensaje.get("preguntas.seguridad.titulo"),
-                JOptionPane.INFORMATION_MESSAGE);
-
-        String[] resultados = new String[6]; // 3 Preguntas y 3 Respuestas
-
-        for(int i = 0; i < 3; i++) {
-            String pregunta = (String) JOptionPane.showInputDialog(
-                    this,
-                    mensaje.get("pregunta.seleccione") + (i + 1),
-                    mensaje.get("preguntas.seguridad.titulo"),
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    preguntas.toArray(),
-                    preguntas.get(0)
-            );
-            if(pregunta == null)
-                return null;
-            String respuesta =  JOptionPane.showInputDialog(
-                    this,
-                    mensaje.get("pregunta.responda") + "\n" + pregunta,
-                    mensaje.get("preguntas.seguridad.titulo"),
-                    JOptionPane.QUESTION_MESSAGE
-            );
-
-            if (respuesta == null || respuesta.trim().isEmpty()) {
-                mostrarMensaje("pregunta.respuesta.requerida");
-                return null;
-            }
-            resultados[i*2] = pregunta;
-            resultados[i*2+1] = respuesta;
+    public void mostrarPreguntasSeguridad(List<PreguntaSeguridad> preguntas) {
+        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
+        for(PreguntaSeguridad pregunta : preguntas) {
+            modelo.addElement(pregunta.getTextoPregunta());
         }
-        return resultados;
+        cbxPregunta.setModel(modelo);
+        cbxPregunta.setSelectedIndex(-1);
+    }
+
+    private void guardarPreguntaYAvanzar() {
+        String pregunta = (String) cbxPregunta.getSelectedItem();
+        String respuesta = txtRespuesta.getText().trim();
+        if (pregunta == null || respuesta.isEmpty()) {
+            mostrarMensaje("seleccion.pregunta");
+            return;
+        }
+
+        preguntaSelecionada.add(pregunta);
+        respuestas.add(respuesta);
+        txtRespuesta.setText("");
+        cbxPregunta.setSelectedIndex(-1);
+        if (preguntaSelecionada.size() >= 3) {
+            btnSiguiente.setEnabled(false);
+            mostrarMensaje(mensaje.get("preguntas.guardadas"));
+        }
     }
 
     public JPanel getPnlPrincipal() {
@@ -174,6 +174,46 @@ public class UsuarioRegistroView extends JDialog {
 
     public void setTxtConfirmarPassword(JPasswordField txtConfirmarPassword) {
         this.txtConfirmarPassword = txtConfirmarPassword;
+    }
+
+    public JTextField getTxtRespuesta() {
+        return txtRespuesta;
+    }
+
+    public void setTxtRespuesta(JTextField txtRespuesta) {
+        this.txtRespuesta = txtRespuesta;
+    }
+
+    public JComboBox getCbxPregunta() {
+        return cbxPregunta;
+    }
+
+    public void setCbxPregunta(JComboBox<String> cbxPregunta) {
+        this.cbxPregunta = cbxPregunta;
+    }
+
+    public JButton getBtnSiguiente() {
+        return btnSiguiente;
+    }
+
+    public void setBtnSiguiente(JButton btnSiguiente) {
+        this.btnSiguiente = btnSiguiente;
+    }
+
+    public List<String> getPreguntaSelecionada() {
+        return preguntaSelecionada;
+    }
+
+    public void setPreguntaSelecionada(List<String> preguntaSelecionada) {
+        this.preguntaSelecionada = preguntaSelecionada;
+    }
+
+    public List<String> getRespuestas() {
+        return respuestas;
+    }
+
+    public void setRespuestas(List<String> respuestas) {
+        this.respuestas = respuestas;
     }
 
     public JButton getBtnRegistrar() {

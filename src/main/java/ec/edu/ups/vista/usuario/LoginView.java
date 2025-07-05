@@ -1,6 +1,7 @@
 package ec.edu.ups.vista.usuario;
 
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
+import ec.edu.ups.vista.MenuPrincipalView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -8,21 +9,24 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 
 public class LoginView extends JFrame {
+    private JMenuBar menuBar;
+    private JMenu menuIdioma;
+    private JMenuItem menuItemEspaniol;
+    private JMenuItem menuItemIngles;
+    private JMenuItem menuItemFrances;
     private JPanel pnlPrincipal;
-    private JTextField txtPassword;
     private JPanel pnlSuperior;
     private JPanel pnlCentral;
     private JTextField txtUsuario;
-    private JPasswordField txtContrasenia;
     private JButton btnIniciar;
     private JButton btnRegistrar;
-    private JComboBox<String> cbxIdioma;
     private JLabel lblTitulo;
     private JLabel lblUsuario;
     private JLabel lblPassword;
     private JPanel pnlBotones;
     private JButton btnRecuperar;
     private JLabel lblRecuperar;
+    private JPasswordField txtPassword;
     private MensajeInternacionalizacionHandler mensaje;
     private String[] codigosIdioma = {"es", "en", "fr"};
     private String idiomaSeleccionado = "es";
@@ -31,18 +35,8 @@ public class LoginView extends JFrame {
     public LoginView() {
         mensaje = new MensajeInternacionalizacionHandler(idiomaSeleccionado, paisSeleccionado);
         initComponents();
-        cargarDatos();
-        agregarListeners();
+        configurarListenersIdiomas();
         actualizarTextos();
-    }
-
-    private void agregarListeners() {
-        cbxIdioma.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cambiarIdioma();
-            }
-        });
     }
 
     private void initComponents() {
@@ -50,6 +44,22 @@ public class LoginView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null);
+
+        menuBar = new JMenuBar();
+
+        menuIdioma = new JMenu(mensaje.get("menu.idioma"));
+
+        menuItemEspaniol = new JMenuItem(mensaje.get("menu.idioma.es"));
+        menuItemIngles = new JMenuItem(mensaje.get("menu.idioma.en"));
+        menuItemFrances = new JMenuItem(mensaje.get("menu.idioma.fr"));
+
+        menuIdioma.add(menuItemEspaniol);
+        menuIdioma.add(menuItemIngles);
+        menuIdioma.add(menuItemFrances);
+
+        menuBar.add(menuIdioma);
+
+        setJMenuBar(menuBar);
 
         //Íconos para los botones
         URL iniciarsesionURL = LoginView.class.getClassLoader().getResource("imagenes/iniciarsesion.png");
@@ -75,20 +85,54 @@ public class LoginView extends JFrame {
         } else {
             System.err.println("Error");
         }
+
+        //Íconos para los items
+        URL espaniolURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/espana.png");
+        if(espaniolURL != null) {
+            ImageIcon iconItemEsp = new ImageIcon(espaniolURL);
+            menuItemEspaniol.setIcon(iconItemEsp);
+        } else {
+            System.out.println("Error, no se cargó la bandera de españa");
+        }
+
+        URL inglesURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/reino-unido.png");
+        if(inglesURL != null) {
+            ImageIcon iconItemIng = new ImageIcon(inglesURL);
+            menuItemIngles.setIcon(iconItemIng);
+        } else {
+            System.out.println("Error, no se cargó la bandra inglesa");
+        }
+
+        URL francesURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/francia.png");
+        if(francesURL != null) {
+            ImageIcon iconItemFrn = new ImageIcon(francesURL);
+            menuItemFrances.setIcon(iconItemFrn);
+        } else {
+            System.out.println("Error, no se cargó la bandera de francia");
+        }
     }
 
-    private void cargarDatos() {
-        if (cbxIdioma != null) {
-            cbxIdioma.removeAllItems();
-            cbxIdioma.addItem(mensaje.get("menu.idioma.es"));
-            cbxIdioma.addItem(mensaje.get("menu.idioma.en"));
-            cbxIdioma.addItem(mensaje.get("menu.idioma.fr"));
-            if (idiomaSeleccionado.equals("es")) cbxIdioma.setSelectedIndex(0);
-            else if (idiomaSeleccionado.equals("en")) cbxIdioma.setSelectedIndex(1);
-            else if (idiomaSeleccionado.equals("fr")) cbxIdioma.setSelectedIndex(2);
-        } else {
-            System.err.println("cbxIdioma es null");
-        }
+    private void configurarListenersIdiomas() {
+        menuItemEspaniol.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiarIdioma(0);
+            }
+        });
+
+        menuItemIngles.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiarIdioma(1);
+            }
+        });
+
+        menuItemFrances.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiarIdioma(2);
+            }
+        });
     }
 
     private void actualizarTextos() {
@@ -104,16 +148,19 @@ public class LoginView extends JFrame {
         btnRegistrar.setText(mensaje.get("registrar"));
         btnRecuperar.setText(mensaje.get("btn.recuperar"));
 
-        cargarDatos();
+        menuIdioma.setText(mensaje.get("menu.idioma"));
 
+        menuItemEspaniol.setText(mensaje.get("menu.idioma.es"));
+        menuItemIngles.setText(mensaje.get("menu.idioma.en"));
+        menuItemFrances.setText(mensaje.get("menu.idioma.fr"));
     }
 
-    private void cambiarIdioma() {
-        int seleccion = cbxIdioma.getSelectedIndex();
+    private void cambiarIdioma(int indice) {
+        if (indice >= 0 && indice < codigosIdioma.length) {
+            idiomaSeleccionado = codigosIdioma[indice];
+            paisSeleccionado = idiomaSeleccionado.equals("es") ? "EC" :
+                    idiomaSeleccionado.equals("fr") ? "FR" : "US";
 
-        if (seleccion != -1 && seleccion < codigosIdioma.length) {
-            idiomaSeleccionado = codigosIdioma[seleccion];
-            paisSeleccionado = idiomaSeleccionado.equals("es") ? "EC" : idiomaSeleccionado.equals("fr") ? "FR" : "US";
             mensaje.setLenguaje(idiomaSeleccionado, paisSeleccionado);
             actualizarTextos();
         }
@@ -143,12 +190,36 @@ public class LoginView extends JFrame {
         this.pnlCentral = pnlCentral;
     }
 
-    public JTextField getTxtPassword() {
-        return txtPassword;
+    public JMenu getMenuIdioma() {
+        return menuIdioma;
     }
 
-    public void setTxtPassword(JTextField txtPassword) {
-        this.txtPassword = txtPassword;
+    public void setMenuIdioma(JMenu menuIdioma) {
+        this.menuIdioma = menuIdioma;
+    }
+
+    public JMenuItem getMenuItemEspaniol() {
+        return menuItemEspaniol;
+    }
+
+    public void setMenuItemEspaniol(JMenuItem menuItemEspaniol) {
+        this.menuItemEspaniol = menuItemEspaniol;
+    }
+
+    public JMenuItem getMenuItemIngles() {
+        return menuItemIngles;
+    }
+
+    public void setMenuItemIngles(JMenuItem menuItemIngles) {
+        this.menuItemIngles = menuItemIngles;
+    }
+
+    public JMenuItem getMenuItemFrances() {
+        return menuItemFrances;
+    }
+
+    public void setMenuItemFrances(JMenuItem menuItemFrances) {
+        this.menuItemFrances = menuItemFrances;
     }
 
     public JLabel getLblUsuario() {
@@ -199,12 +270,12 @@ public class LoginView extends JFrame {
         this.txtUsuario = txtUsuario;
     }
 
-    public JPasswordField getTxtContrasenia() {
-        return txtContrasenia;
+    public JPasswordField getTxtPassword() {
+        return txtPassword;
     }
 
-    public void setTxtContrasenia(JPasswordField txtContrasenia) {
-        this.txtContrasenia = txtContrasenia;
+    public void setTxtPassword(JPasswordField txtPassword) {
+        this.txtPassword = txtPassword;
     }
 
     public JButton getBtnIniciar() {
@@ -223,14 +294,6 @@ public class LoginView extends JFrame {
         this.btnRegistrar = btnRegistrar;
     }
 
-    public JComboBox<String> getCbxIdioma() {
-        return cbxIdioma;
-    }
-
-    public void setCbxIdioma(JComboBox<String> cbxIdioma) {
-        this.cbxIdioma = cbxIdioma;
-    }
-
     public JLabel getLblTitulo() {
         return lblTitulo;
     }
@@ -247,37 +310,11 @@ public class LoginView extends JFrame {
         this.mensaje = mensaje;
     }
 
-    public String[] getCodigosIdioma() {
-        return codigosIdioma;
-    }
-
-    public void setCodigosIdioma(String[] codigosIdioma) {
-        this.codigosIdioma = codigosIdioma;
-    }
-
-    public String getIdiomaSeleccionado() {
-        return idiomaSeleccionado;
-    }
-
-    public void setIdiomaSeleccionado(String idiomaSeleccionado) {
-        this.idiomaSeleccionado = idiomaSeleccionado;
-    }
-
-    public String getPaisSeleccionado() {
-        return paisSeleccionado;
-    }
-
-    public void setPaisSeleccionado(String paisSeleccionado) {
-        this.paisSeleccionado = paisSeleccionado;
-    }
-
-
     public void mostrarMensaje(String mensajeKey) {
         JOptionPane.showMessageDialog(this, mensaje.get(mensajeKey));
     }
 
     public void limpiarCampos() {
         txtUsuario.setText("");
-        txtPassword.setText("");
     }
 }

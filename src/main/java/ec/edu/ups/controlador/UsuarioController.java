@@ -136,7 +136,7 @@ public class UsuarioController {
 
         usuario = usuarioDAO.autenticar(username, contrasenia);
         if(usuario == null){
-            loginView.mostrarMensaje("Usuario o contraseña incorrectos.");
+            loginView.mostrarMensaje("datos.usuario.incorrectos");
         }else{
             loginView.dispose();
         }
@@ -163,17 +163,17 @@ public class UsuarioController {
 
         if (nombre.isEmpty() || fechaStr.isEmpty() || telefono.isEmpty() ||
                 correo.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            usuarioRegistroView.mostrarMensaje("Todos los campos son obligatorios");
+            usuarioRegistroView.mostrarMensaje("campo.usuario.obligatorio");
             return;
         }
 
         if (!password.equals(confirmPassword)) {
-            usuarioRegistroView.mostrarMensaje("Las contraseñas no coinciden");
+            usuarioRegistroView.mostrarMensaje("contrasenias.no.coinciden");
             return;
         }
 
         if (usuarioDAO.buscarPorUsername(username) != null) {
-            usuarioRegistroView.mostrarMensaje("El nombre de usuario ya existe");
+            usuarioRegistroView.mostrarMensaje("usuario.existente");
             return;
         }
 
@@ -181,15 +181,12 @@ public class UsuarioController {
         try {
             fechaNacimiento = new SimpleDateFormat("dd/MM/yyyy").parse(fechaStr);
         } catch (ParseException e) {
-            usuarioRegistroView.mostrarMensaje("Formato de fecha inválido. Use dd/MM/yyyy");
+            usuarioRegistroView.mostrarMensaje("formato.fecha.incorrecto");
             return;
         }
 
-        List<PreguntaSeguridad> preguntasDisponibles = preguntaDAO.listarTodas();
-        String[] preguntasRespuestas = usuarioRegistroView.mostrarPreguntasSeguridad(preguntasDisponibles);
-
-        if (preguntasRespuestas == null || preguntasRespuestas.length < 6) {
-            usuarioRegistroView.mostrarMensaje("Debe responder 3 preguntas de seguridad");
+        if (usuarioRegistroView.getPreguntaSelecionada().size() < 3) {
+            usuarioRegistroView.mostrarMensaje("preguntas.incompletas");
             return;
         }
 
@@ -202,13 +199,17 @@ public class UsuarioController {
                 password,
                 Rol.USUARIO
         );
-        for (int i = 0; i < preguntasRespuestas.length; i += 2) {
-            nuevoUsuario.addPreguntaSeguridad(preguntasRespuestas[i], preguntasRespuestas[i+1]);
+
+        List<String> preguntas = usuarioRegistroView.getPreguntaSelecionada();
+        List<String> respuestas = usuarioRegistroView.getRespuestas();
+
+        for (int i = 0; i < preguntas.size(); i++) {
+            nuevoUsuario.addPreguntaSeguridad(Integer.parseInt(preguntas.get(i)), respuestas.get(i));
         }
 
         usuarioDAO.crear(nuevoUsuario);
 
-        usuarioRegistroView.mostrarMensaje("¡Registro exitoso!");
+        usuarioRegistroView.mostrarMensaje("registro.exitoso");
         usuarioRegistroView.limpiarCampos();
     }
 
@@ -259,8 +260,8 @@ public class UsuarioController {
         String username = (String) usuarioEliminarView.getTblUsuario().getValueAt(filaSeleccionada, 4);
         int confirmacion = JOptionPane.showConfirmDialog(
                 usuarioEliminarView,
-                mensaje.get("confirmar.eliminar"),
-                mensaje.get("titulo.eliminar"),
+                mensaje.get("pregunta.eliminar.usuario"),
+                mensaje.get("confirmar.eliminacion.usuario"),
                 JOptionPane.YES_NO_OPTION
         );
 
@@ -268,7 +269,7 @@ public class UsuarioController {
             usuarioDAO.eliminar(username);
             DefaultTableModel modelo = (DefaultTableModel) usuarioEliminarView.getTblUsuario().getModel();
             modelo.removeRow(filaSeleccionada);
-            usuarioEliminarView.mostrarMensaje("usuario.elimina.exito");
+            usuarioEliminarView.mostrarMensaje("usuario.eliminar.exito");
         }
 
     }

@@ -100,7 +100,7 @@ public class ProductoController {
         String nombre = productoAnadirView.getTxtNombre().getText();
         double precio = Double.parseDouble(productoAnadirView.getTxtPrecio().getText());
         productoDAO.crear(new Producto(codigo, nombre, precio));
-        productoAnadirView.mostrarMensaje("Producto guardado correctamente");
+        productoAnadirView.mostrarMensaje("guardado.producto.exito");
         productoAnadirView.limpiarCampos();
     }
 
@@ -113,7 +113,7 @@ public class ProductoController {
             productoEliminarView.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
             productoEliminarView.getBtnEliminar().setEnabled(true);
         } else {
-            productoEliminarView.mostrarMensaje("Producto no encontrado");
+            productoEliminarView.mostrarMensaje("producto.no.encontrado");
             productoEliminarView.getTxtNombre().setText("");
             productoEliminarView.getTxtPrecio().setText("");
             productoEliminarView.getBtnEliminar().setEnabled(false);
@@ -130,7 +130,7 @@ public class ProductoController {
             productoModificarView.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
             productoModificarView.getBtnActualizar().setEnabled(true);
         } else {
-            productoModificarView.mostrarMensaje("Producto no encontrado");
+            productoModificarView.mostrarMensaje("producto.no.encontrado");
             productoModificarView.getTxtNombre().setText("");
             productoModificarView.getTxtPrecio().setText("");
             productoModificarView.getBtnActualizar().setEnabled(false);
@@ -143,19 +143,19 @@ public class ProductoController {
         double precio = Double.parseDouble(productoModificarView.getTxtPrecio().getText());
 
         if (nombre.isEmpty()) {
-            productoModificarView.mostrarMensaje("El nombre no puede estar vacío");
+            productoModificarView.mostrarMensaje("producto.nombre.vacio");
             return;
         }
 
         if (precio <= 0) {
-            productoModificarView.mostrarMensaje("El precio debe ser mayor a 0");
+            productoModificarView.mostrarMensaje("producto.precio.invalido");
             return;
         }
 
         int respuesta = JOptionPane.showConfirmDialog(
                 productoModificarView,
-                "¿Confirmas la modificación del producto?",
-                "Confirmar",
+                "pregunta.modificacion.producto",
+                "confirmar.modificacion.producto",
                 JOptionPane.YES_NO_OPTION
         );
 
@@ -165,7 +165,7 @@ public class ProductoController {
 
         Producto productoActualizado = new Producto(codigo, nombre, precio);
         productoDAO.actualizar(productoActualizado);
-        productoModificarView.mostrarMensaje("Producto actualizado correctamente");
+        productoModificarView.mostrarMensaje("actualizacion.producto.exito");
         productoModificarView.limpiarCampos();
         productoModificarView.getTxtNombre().setEnabled(false);
         productoModificarView.getTxtPrecio().setEnabled(false);
@@ -177,20 +177,20 @@ public class ProductoController {
         Producto producto = productoDAO.buscarPorCodigo(codigo);
 
         if (producto == null) {
-            productoEliminarView.mostrarMensaje("No existe un producto con código " + codigo);
+            productoEliminarView.mostrarMensaje("producto.no.existe");
             return;
         }
 
         int respuesta = JOptionPane.showConfirmDialog(
                 productoEliminarView,
-                "¿Seguro que quieres eliminar '" + producto.getNombre() + "'?",
-                "Confirmar",
+                "pregunta.eliminacion.producto",
+                "confirmar.eliminacion.producto",
                 JOptionPane.YES_NO_OPTION
         );
 
         if (respuesta == JOptionPane.YES_OPTION) {
             productoDAO.eliminar(codigo);
-            productoEliminarView.mostrarMensaje("Producto eliminado");
+            productoEliminarView.mostrarMensaje("eliminacion.producto.exito");
             productoEliminarView.limpiarCampos();
             productoEliminarView.getTxtNombre().setText("");
             productoEliminarView.getTxtPrecio().setText("");
@@ -211,7 +211,7 @@ public class ProductoController {
         int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
         if (producto == null) {
-            carritoAnadirView.mostrarMensaje("No se encontro el producto");
+            carritoAnadirView.mostrarMensaje("producto.no.encontrado");
             carritoAnadirView.getTxtNombre().setText("");
             carritoAnadirView.getTxtPrecio().setText("");
         } else {

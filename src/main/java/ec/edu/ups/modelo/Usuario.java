@@ -1,6 +1,7 @@
 package ec.edu.ups.modelo;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Usuario {
     private String nombreCompleto;
@@ -10,7 +11,7 @@ public class Usuario {
     private String username;
     private String contrasenia;
     private Rol rol;
-    private List<String> preguntas;
+    private List<Integer> idPreguntas;
     private List<String> respuestas;
 
     public Usuario(String nombreCompleto, Date fechaNacimiento, String telefono,
@@ -22,22 +23,34 @@ public class Usuario {
         this.username = username;
         this.contrasenia = contrasenia;
         this.rol = rol;
-        this.preguntas = new ArrayList<>();
+        this.idPreguntas = new ArrayList<>();
         this.respuestas = new ArrayList<>();
     }
 
     public Usuario() {
-        this.preguntas = new ArrayList<>();
+        this.idPreguntas = new ArrayList<>();
         this.respuestas = new ArrayList<>();
     }
 
-    public void addPreguntaSeguridad(String pregunta, String respuesta) {
-        preguntas.add(pregunta);
-        respuestas.add(respuesta);
+    public void addPreguntaSeguridad(int idPregunta, String respuesta) {
+        idPreguntas.add(idPregunta);
+        respuestas.add(respuesta.toLowerCase().trim());
     }
 
-    public List<String> getPreguntas() {
-        return preguntas;
+    public boolean verificarRespuesta(int idPregunta, String respuesta) {
+        int indice = idPreguntas.indexOf(idPregunta);
+        if(indice == -1) {
+            return  false;
+        }
+        return respuestas.get(indice).equalsIgnoreCase(respuesta.trim());
+    }
+
+    public int obtenerPreguntaAleatoria() {
+        if(idPreguntas.isEmpty()) {
+            return -1;
+        }
+        int random = ThreadLocalRandom.current().nextInt(idPreguntas.size());
+        return idPreguntas.get(random);
     }
 
     public List<String> getRespuestas() {
@@ -100,38 +113,5 @@ public class Usuario {
         this.rol = rol;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Usuario usuario = (Usuario) o;
-        return Objects.equals(nombreCompleto, usuario.nombreCompleto) &&
-                Objects.equals(fechaNacimiento, usuario.fechaNacimiento) &&
-                Objects.equals(telefono, usuario.telefono) &&
-                Objects.equals(correo, usuario.correo) &&
-                Objects.equals(username, usuario.username) &&
-                Objects.equals(contrasenia, usuario.contrasenia) &&
-                rol == usuario.rol &&
-                Objects.equals(preguntas, usuario.preguntas) &&
-                Objects.equals(respuestas, usuario.respuestas);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(nombreCompleto, fechaNacimiento, telefono, correo, username, contrasenia, rol, preguntas, respuestas);
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "nombreCompleto='" + nombreCompleto + '\'' +
-                ", fechaNacimiento=" + fechaNacimiento +
-                ", telefono='" + telefono + '\'' +
-                ", correo='" + correo + '\'' +
-                ", username='" + username + '\'' +
-                ", contrasenia='" + contrasenia + '\'' +
-                ", rol=" + rol +
-                ", preguntas=" + preguntas +
-                ", respuestas=" + respuestas +
-                '}';
-    }
 }
