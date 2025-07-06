@@ -75,6 +75,14 @@ public class CarritoActualizarView extends JInternalFrame {
             System.out.println("error");
         }
 
+        URL guardarURL = CarritoActualizarView.class.getClassLoader().getResource("imagenes/guardar.png");
+        if(guardarURL != null) {
+            ImageIcon iconBtnGuardar = new ImageIcon(guardarURL);
+            btnGuardar.setIcon(iconBtnGuardar);
+        } else {
+            System.out.println("error");
+        }
+
         configurarTabla();
     }
 

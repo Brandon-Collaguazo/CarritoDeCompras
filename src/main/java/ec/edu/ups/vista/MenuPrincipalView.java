@@ -16,6 +16,7 @@ public class MenuPrincipalView extends JFrame {
 
     private JMenu menuProducto;
     private JMenu menuCarrito;
+    private JMenu menuUsuario;
     private JMenu menuIdioma;
     private JMenu menuSalir;
 
@@ -29,6 +30,10 @@ public class MenuPrincipalView extends JFrame {
     private JMenuItem menuItemEliminarCarrito;
     private JMenuItem menuItemActualizarCarrito;
     private JMenuItem menuItemListarCarrito;
+
+    private JMenuItem menuItemListarUsuario;
+    private JMenuItem menuItemEliminarUsuario;
+    private JMenuItem menuItemModificarUsuario;
 
     private JMenuItem menuItemEspaniol;
     private JMenuItem menuItemIngles;
@@ -53,6 +58,7 @@ public class MenuPrincipalView extends JFrame {
 
         menuProducto = new JMenu(mensaje.get("menu.producto"));
         menuCarrito = new JMenu(mensaje.get("menu.carrito"));
+        menuUsuario = new JMenu(mensaje.get("menu.usuario"));
         menuIdioma = new JMenu(mensaje.get("menu.idioma"));
         menuSalir = new JMenu(mensaje.get("menu.salir"));
 
@@ -67,6 +73,10 @@ public class MenuPrincipalView extends JFrame {
         menuItemActualizarCarrito = new JMenuItem(mensaje.get("menu.carrito.actualizar"));
         menuItemListarCarrito = new JMenuItem(mensaje.get("menu.carrito.listar"));
 
+        menuItemListarUsuario = new JMenuItem(mensaje.get("menu.usuario.listar"));
+        menuItemEliminarUsuario = new JMenuItem(mensaje.get("menu.usuario.eliminar"));
+        menuItemModificarUsuario = new JMenuItem(mensaje.get("menu.usuario.modificar"));
+
         menuItemEspaniol = new JMenuItem(mensaje.get("menu.idioma.es"));
         menuItemIngles = new JMenuItem(mensaje.get("menu.idioma.en"));
         menuItemFrances = new JMenuItem(mensaje.get("menu.idioma.fr"));
@@ -76,6 +86,7 @@ public class MenuPrincipalView extends JFrame {
 
         menuBar.add(menuProducto);
         menuBar.add(menuCarrito);
+        menuBar.add(menuUsuario);
         menuBar.add(menuIdioma);
         menuBar.add(menuSalir);
 
@@ -89,6 +100,10 @@ public class MenuPrincipalView extends JFrame {
         menuCarrito.add(menuItemEliminarCarrito);
         menuCarrito.add(menuItemActualizarCarrito);
         menuCarrito.add(menuItemListarCarrito);
+
+        menuUsuario.add(menuItemListarUsuario);
+        menuUsuario.add(menuItemEliminarUsuario);
+        menuUsuario.add(menuItemModificarUsuario);
 
         menuIdioma.add(menuItemEspaniol);
         menuIdioma.add(menuItemIngles);
@@ -180,6 +195,31 @@ public class MenuPrincipalView extends JFrame {
             System.err.println("No se cargó el listar carrito");
         }
 
+        //MENÚ USUARIO
+        URL listarUsuarioURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/listar_usuario.png");
+        if(listarUsuarioURL != null) {
+            ImageIcon iconListarUsuarios = new ImageIcon(listarUsuarioURL);
+            menuItemListarUsuario.setIcon(iconListarUsuarios);
+        } else {
+            System.err.println("No se cargó el listar usuario");
+        }
+
+        URL eliminarUsuarioURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/eliminar_usuario.png");
+        if(eliminarUsuarioURL != null) {
+            ImageIcon iconEliminarUsuarios = new ImageIcon(eliminarUsuarioURL);
+            menuItemEliminarUsuario.setIcon(iconEliminarUsuarios);
+        } else {
+            System.err.println("No se cargó el eliminar usuario en menu principal");
+        }
+
+        URL modificarUsuarioURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/modificar.png");
+        if(modificarUsuarioURL != null) {
+            ImageIcon iconModificarUsuario = new ImageIcon(modificarUsuarioURL);
+            menuItemModificarUsuario.setIcon(iconModificarUsuario);
+        } else {
+            System.err.println("No se cargó el modificar usuario");
+        }
+
         //MENÚ SALIR
         URL salirURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/salir_sistema.png");
         if(salirURL != null) {
@@ -259,6 +299,18 @@ public class MenuPrincipalView extends JFrame {
         return menuItemListarCarrito;
     }
 
+    public JMenuItem getMenuItemListarUsuario() {
+        return menuItemListarUsuario;
+    }
+
+    public JMenuItem getMenuItemEliminarUsuario() {
+        return menuItemEliminarUsuario;
+    }
+
+    public JMenuItem getMenuItemModificarUsuario() {
+        return menuItemModificarUsuario;
+    }
+
     public JDesktopPane getjDesktopPane() {
         return jDesktopPane;
     }
@@ -299,8 +351,6 @@ public class MenuPrincipalView extends JFrame {
         return mensaje;
     }
 
-
-
     public JMenuItem getMenuItemFrances() {
         return menuItemFrances;
     }
@@ -340,6 +390,11 @@ public class MenuPrincipalView extends JFrame {
         menuItemEliminarCarrito.setText(mensaje.get("menu.carrito.eliminar"));
         menuItemActualizarCarrito.setText(mensaje.get("menu.carrito.actualizar"));
         menuItemListarCarrito.setText(mensaje.get("menu.carrito.listar"));
+
+        // Actualizar opciones de menú Usuario
+        menuItemListarUsuario.setText(mensaje.get("menu.usuario.listar"));
+        menuItemEliminarUsuario.setText(mensaje.get("menu.usuario.eliminar"));
+        menuItemModificarUsuario.setText(mensaje.get("menu.usuario.modificar"));
 
         // Actualizar opciones de idioma
         menuItemEspaniol.setText(mensaje.get("menu.idioma.es"));

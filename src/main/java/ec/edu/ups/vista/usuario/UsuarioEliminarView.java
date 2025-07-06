@@ -31,15 +31,15 @@ public class UsuarioEliminarView extends JInternalFrame {
         setContentPane(pnlPrincipal);
         setClosable(true);
         setResizable(true);
-        setSize(500, 500);
+        setSize(600, 500);
 
         //Íconos para los botones
-        URL buscarURL = UsuarioEliminarView.class.getClassLoader().getResource("imagenes/buscarUsario.png");
+        URL buscarURL = UsuarioEliminarView.class.getClassLoader().getResource("imagenes/buscarUsuario.png");
         if(buscarURL != null) {
             ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
             btnBuscar.setIcon(iconBtnBuscar);
         } else {
-            System.err.println("Error");
+            System.out.println("No se cargó el buscar en eliminar usuario");
         }
 
         URL eliminarURL = UsuarioEliminarView.class.getClassLoader().getResource("imagenes/eliminar_usuario.png");
@@ -47,7 +47,7 @@ public class UsuarioEliminarView extends JInternalFrame {
             ImageIcon iconBtnEliminar = new ImageIcon(eliminarURL);
             btnEliminar.setIcon(iconBtnEliminar);
         } else {
-            System.out.println("Error");
+            System.out.println("No se cargó el eliminar en su ventana usuario");
         }
 
         URL cancelarURL = UsuarioEliminarView.class.getClassLoader().getResource("imagenes/cancelar.png");
@@ -55,7 +55,7 @@ public class UsuarioEliminarView extends JInternalFrame {
             ImageIcon iconBtnCancelar = new ImageIcon(cancelarURL);
             btnCancelar.setIcon(iconBtnCancelar);
         } else {
-            System.out.println("Error");
+            System.out.println("No se cargó el cancelar en eliminar usuairo");
         }
 
         configurarTabla();

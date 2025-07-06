@@ -28,7 +28,10 @@ public class UsuarioRegistroView extends JFrame {
     private JTextField txtCorreo;
     private JComboBox<String> cbxPregunta;
     private JTextField txtRespuesta;
+    private JLabel lblPregunta;
+    private JLabel lblRespuesta;
     private JButton btnSiguiente;
+    private JLabel lblPreguntas;
     private MensajeInternacionalizacionHandler mensaje;
     private List<String> preguntaSelecionada = new ArrayList<>();
     private List<String> respuestas = new ArrayList<>();
@@ -44,6 +47,7 @@ public class UsuarioRegistroView extends JFrame {
         setTitle("Registro de Usuario");
         setSize(750, 500);
         setLocationRelativeTo(null);
+        setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         //Íconos para los botones
@@ -68,6 +72,8 @@ public class UsuarioRegistroView extends JFrame {
         setTitle(mensaje.get("usuario.registro.titulo"));
 
         lblTitulo.setText(mensaje.get("usuario.registro.titulo"));
+        lblPregunta.setText(mensaje.get("usuario.pregunta"));
+        lblRespuesta.setText(mensaje.get("usuario.respuesta"));
         lblNombre.setText(mensaje.get("registro.nombre"));
         lblFechaDeNacimiento.setText(mensaje.get("fecha.nacimiento"));
         lblTelefono.setText(mensaje.get("telefono"));
@@ -85,31 +91,30 @@ public class UsuarioRegistroView extends JFrame {
         actualizarTextos();
     }
 
-    public void mostrarPreguntasSeguridad(List<PreguntaSeguridad> preguntas) {
-        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
-        for(PreguntaSeguridad pregunta : preguntas) {
-            modelo.addElement(pregunta.getTextoPregunta());
-        }
-        cbxPregunta.setModel(modelo);
-        cbxPregunta.setSelectedIndex(-1);
+    public void habilitarCampos() {
+        txtNombre.setEnabled(true);
+        txtFechaNacimiento.setEnabled(true);
+        txtTelefono.setEnabled(true);
+        txtCorreo.setEnabled(true);
+        txtUsername.setEnabled(true);
+        txtPassword.setEnabled(true);
+        txtConfirmarPassword.setEnabled(true);
+
+        // Deshabilitar las preguntas ya respondidas
+        txtRespuesta.setEnabled(false);
     }
 
-    private void guardarPreguntaYAvanzar() {
-        String pregunta = (String) cbxPregunta.getSelectedItem();
-        String respuesta = txtRespuesta.getText().trim();
-        if (pregunta == null || respuesta.isEmpty()) {
-            mostrarMensaje("seleccion.pregunta");
-            return;
-        }
+    public void configurarPreguntaSeguridad(PreguntaSeguridad pregunta, int numPregunta) {
+        if (pregunta == null) return;
 
-        preguntaSelecionada.add(pregunta);
-        respuestas.add(respuesta);
+        lblPreguntas.setText(pregunta.getTextoPregunta());
         txtRespuesta.setText("");
-        cbxPregunta.setSelectedIndex(-1);
-        if (preguntaSelecionada.size() >= 3) {
-            btnSiguiente.setEnabled(false);
-            mostrarMensaje(mensaje.get("preguntas.guardadas"));
-        }
+        txtRespuesta.requestFocus();
+        btnSiguiente.setText(numPregunta == 3 ? mensaje.get("finalizar.preguntas") : mensaje.get("siguiente"));
+    }
+
+    public String obtenerRespuestaSeguridad() {
+        return txtRespuesta.getText().trim();
     }
 
     public JPanel getPnlPrincipal() {
@@ -192,14 +197,6 @@ public class UsuarioRegistroView extends JFrame {
         this.cbxPregunta = cbxPregunta;
     }
 
-    public JButton getBtnSiguiente() {
-        return btnSiguiente;
-    }
-
-    public void setBtnSiguiente(JButton btnSiguiente) {
-        this.btnSiguiente = btnSiguiente;
-    }
-
     public List<String> getPreguntaSelecionada() {
         return preguntaSelecionada;
     }
@@ -224,6 +221,14 @@ public class UsuarioRegistroView extends JFrame {
         this.btnRegistrar = btnRegistrar;
     }
 
+    public JButton getBtnSiguiente() {
+        return btnSiguiente;
+    }
+
+    public void setBtnSiguiente(JButton btnSiguiente) {
+        this.btnSiguiente = btnSiguiente;
+    }
+
     public MensajeInternacionalizacionHandler getMensaje() {
         return mensaje;
     }
@@ -236,8 +241,11 @@ public class UsuarioRegistroView extends JFrame {
         JOptionPane.showMessageDialog(this, mensaje.get(keyMensaje));
     }
 
-
     public void limpiarCampos() {
+        txtNombre.setText("");
+        txtFechaNacimiento.setText("");
+        txtTelefono.setText("");
+        txtCorreo.setText("");
         txtUsername.setText("");
         txtPassword.setText("");
         txtConfirmarPassword.setText("");

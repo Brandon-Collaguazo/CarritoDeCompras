@@ -12,7 +12,21 @@ public class ProductoDAOMemoria implements ProductoDAO {
     private List<Producto> productos;
 
     public ProductoDAOMemoria() {
-        productos = new ArrayList<Producto>();
+        productos = new ArrayList<>();
+        inicializarProductos();
+    }
+
+    private void inicializarProductos() {
+        productos.add(new Producto(1, "Pantalla", 250.00));
+        productos.add(new Producto(2, "Mouse", 15.00));
+        productos.add(new Producto(3, "Teclado", 20.00));
+        productos.add(new Producto(4, "Laptop", 850.00));
+        productos.add(new Producto(5, "Impresora", 120.00));
+        productos.add(new Producto(6, "Parlantes", 35.00));
+        productos.add(new Producto(7, "Webcam", 40.00));
+        productos.add(new Producto(8, "Micrófono", 30.00));
+        productos.add(new Producto(9, "Router", 60.00));
+        productos.add(new Producto(10, "Disco Duro", 100.00));
     }
 
     @Override

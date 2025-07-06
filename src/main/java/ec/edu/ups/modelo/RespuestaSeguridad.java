@@ -3,26 +3,34 @@ package ec.edu.ups.modelo;
 import java.util.Objects;
 
 public class RespuestaSeguridad {
-    private PreguntaSeguridad pregunta;
+    private String username;
+    private int idPregunta;
     private String respuesta;
-    private Usuario usuario;
 
     public RespuestaSeguridad() {
 
     }
 
-    public RespuestaSeguridad(PreguntaSeguridad pregunta, String respuesta, Usuario usuario) {
-        this.pregunta = pregunta;
+    public RespuestaSeguridad(String username, int idPregunta, String respuesta) {
+        this.username = username;
+        this.idPregunta = idPregunta;
         this.respuesta = respuesta;
-        this.usuario = usuario;
     }
 
-    public PreguntaSeguridad getPregunta() {
-        return pregunta;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPregunta(PreguntaSeguridad pregunta) {
-        this.pregunta = pregunta;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getIdPregunta() {
+        return idPregunta;
+    }
+
+    public void setIdPregunta(int idPregunta) {
+        this.idPregunta = idPregunta;
     }
 
     public String getRespuesta() {
@@ -33,32 +41,24 @@ public class RespuestaSeguridad {
         this.respuesta = respuesta;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RespuestaSeguridad that = (RespuestaSeguridad) o;
-        return Objects.equals(pregunta, that.pregunta) && Objects.equals(respuesta, that.respuesta) && Objects.equals(usuario, that.usuario);
+        return idPregunta == that.idPregunta && Objects.equals(username, that.username) && Objects.equals(respuesta, that.respuesta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pregunta, respuesta, usuario);
+        return Objects.hash(username, idPregunta, respuesta);
     }
 
     @Override
     public String toString() {
         return "RespuestaSeguridad{" +
-                "pregunta=" + pregunta +
+                "username='" + username + '\'' +
+                ", idPregunta=" + idPregunta +
                 ", respuesta='" + respuesta + '\'' +
-                ", usuario=" + usuario +
                 '}';
     }
 }

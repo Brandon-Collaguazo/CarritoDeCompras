@@ -4,10 +4,7 @@ package ec.edu.ups.controlador;
 import ec.edu.ups.dao.CarritoDAO;
 import ec.edu.ups.dao.PreguntaSeguridadDAO;
 import ec.edu.ups.dao.UsuarioDAO;
-import ec.edu.ups.modelo.Carrito;
-import ec.edu.ups.modelo.PreguntaSeguridad;
-import ec.edu.ups.modelo.Rol;
-import ec.edu.ups.modelo.Usuario;
+import ec.edu.ups.modelo.*;
 import ec.edu.ups.utils.FormateadorUtils;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import ec.edu.ups.vista.usuario.*;
@@ -27,11 +24,16 @@ public class UsuarioController {
 
     private Usuario usuario;
     private MensajeInternacionalizacionHandler mensaje;
+    private List<PreguntaSeguridad> preguntasSeleccionadas;
+    private int pasoActual = 0;
+    private String usernameEnRegistro;
+    private String passwordEnRegistro;
     private final UsuarioDAO usuarioDAO;
     private final CarritoDAO carritoDAO;
     private final PreguntaSeguridadDAO preguntaDAO;
     private final LoginView loginView;
     private final UsuarioRegistroView usuarioRegistroView;
+    private final RecuperarContraseniaView recuperarContraseniaView;
     private final UsuarioEliminarView usuarioEliminarView;
     private final UsuarioListaView usuarioListaView;
     private final UsuarioModificarView usuarioModificarView;
@@ -41,9 +43,11 @@ public class UsuarioController {
                              LoginView loginView,
                              PreguntaSeguridadDAO preguntaDAO,
                              UsuarioRegistroView usuarioRegistroView,
+                             RecuperarContraseniaView recuperarContraseniaView,
                              UsuarioEliminarView usuarioEliminarView,
                              UsuarioListaView usuarioListaView,
-                             UsuarioModificarView usuarioModificarView) {
+                             UsuarioModificarView usuarioModificarView,
+                             MensajeInternacionalizacionHandler mensaje) {
         this.usuarioDAO = usuarioDAO;
         this.carritoDAO = carritoDAO;
         this.preguntaDAO = preguntaDAO;
@@ -51,6 +55,7 @@ public class UsuarioController {
         this.usuario = null;
         this.mensaje = mensaje;
         this.usuarioRegistroView = usuarioRegistroView;
+        this.recuperarContraseniaView = recuperarContraseniaView;
         this.usuarioEliminarView = usuarioEliminarView;
         this.usuarioListaView = usuarioListaView;
         this.usuarioModificarView = usuarioModificarView;
@@ -74,11 +79,29 @@ public class UsuarioController {
             }
         });
 
+        loginView.getBtnRecuperar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                recuperarContraseniaView.setVisible(true);
+            }
+        });
+
         //EVENTOS DE REGISTRAR
         usuarioRegistroView.getBtnRegistrar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registrarUsuario();
+                completarRegistro();
+            }
+        });
+
+        usuarioRegistroView.getBtnSiguiente().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(pasoActual == 0 && preguntasSeleccionadas == null) {
+                    iniciarRegistro();
+                } else {
+                    procesarRegistro();
+                }
             }
         });
 
@@ -149,44 +172,106 @@ public class UsuarioController {
     }
 
     //Métodos en "USUARIOREGISTROVIEW"
-    public void registrarUsuario() {
+    private void iniciarRegistro() {
+        pasoActual = 0;
+        preguntasSeleccionadas = preguntaDAO.obtenerPreguntasAleatorias(3);
+        usuarioRegistroView.limpiarCampos();
+        mostrarPreguntaSeguridad();
+        usuarioRegistroView.setVisible(true);
+    }
+
+    private void procesarRegistro() {
+        if(pasoActual < 3) {
+            if(procesarRespuestaSeguridad()) {
+                pasoActual++;
+
+                if(pasoActual < 3) {
+                    mostrarPreguntaSeguridad();
+                } else {
+                    usuarioRegistroView.habilitarCampos();
+                }
+            }
+        }
+    }
+
+    private boolean validarDatos() {
+        if(pasoActual < 3) {
+            return true;
+        }
         String nombre = usuarioRegistroView.getTxtNombre().getText();
-        String fechaStr = usuarioRegistroView.getTxtFechaNacimiento().getText();
+        String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText();
         String telefono = usuarioRegistroView.getTxtTelefono().getText();
         String correo = usuarioRegistroView.getTxtCorreo().getText();
         String username = usuarioRegistroView.getTxtUsername().getText();
-        char[] passwordChars = usuarioRegistroView.getTxtPassword().getPassword();
-        char[] confirmPasswordChars = usuarioRegistroView.getTxtConfirmarPassword().getPassword();
+        String password = new String(usuarioRegistroView.getTxtPassword().getPassword());
+        String confirmarPassword = new String(usuarioRegistroView.getTxtConfirmarPassword().getPassword());
 
-        String password = new String(passwordChars);
-        String confirmPassword = new String(confirmPasswordChars);
-
-        if (nombre.isEmpty() || fechaStr.isEmpty() || telefono.isEmpty() ||
+        if (nombre.isEmpty() || fecha.isEmpty() || telefono.isEmpty() ||
                 correo.isEmpty() || username.isEmpty() || password.isEmpty()) {
             usuarioRegistroView.mostrarMensaje("campo.usuario.obligatorio");
-            return;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            usuarioRegistroView.mostrarMensaje("contrasenias.no.coinciden");
-            return;
+            return false;
         }
 
         if (usuarioDAO.buscarPorUsername(username) != null) {
             usuarioRegistroView.mostrarMensaje("usuario.existente");
-            return;
+            return false;
         }
 
         Date fechaNacimiento;
         try {
-            fechaNacimiento = new SimpleDateFormat("dd/MM/yyyy").parse(fechaStr);
+            fechaNacimiento = new SimpleDateFormat("dd/MM/yyyy").parse(fecha);
         } catch (ParseException e) {
             usuarioRegistroView.mostrarMensaje("formato.fecha.incorrecto");
-            return;
+            return false;
         }
 
-        if (usuarioRegistroView.getPreguntaSelecionada().size() < 3) {
-            usuarioRegistroView.mostrarMensaje("preguntas.incompletas");
+        if (!password.equals(confirmarPassword)) {
+            usuarioRegistroView.mostrarMensaje("contrasenia.no.coinciden");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void mostrarPreguntaSeguridad() {
+        if(pasoActual >= 0 && pasoActual < 3) {
+            PreguntaSeguridad pregunta = preguntasSeleccionadas.get(pasoActual);
+            usuarioRegistroView.configurarPreguntaSeguridad(pregunta, pasoActual + 1);
+        }
+
+    }
+
+    private boolean procesarRespuestaSeguridad() {
+        String respuesta = usuarioRegistroView.obtenerRespuestaSeguridad();
+        if (respuesta.isEmpty()) {
+            usuarioRegistroView.mostrarMensaje("respuestas.vacias");
+            return false;
+        }
+
+        PreguntaSeguridad pregunta = preguntasSeleccionadas.get(pasoActual);
+        RespuestaSeguridad respuestaSeguridad = new RespuestaSeguridad(
+                usernameEnRegistro,
+                pregunta.getId(),
+                respuesta
+        );
+
+        preguntaDAO.guardarRespuesta(respuestaSeguridad);
+        return true;
+    }
+
+    private void completarRegistro() {
+        String nombre = usuarioRegistroView.getTxtNombre().getText();
+        String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText();
+        String telefono = usuarioRegistroView.getTxtTelefono().getText();
+        String correo = usuarioRegistroView.getTxtCorreo().getText();
+        String username = usuarioRegistroView.getTxtUsername().getText();
+        String password = new String(usuarioRegistroView.getTxtPassword().getPassword());
+
+        Date fechaNacimiento;
+        try {
+            fechaNacimiento = new SimpleDateFormat("dd/MM/yyyy").parse(fecha);
+        } catch (ParseException exception) {
+            usuarioRegistroView.mostrarMensaje("formato.fecha.incorrecto");
             return;
         }
 
@@ -200,17 +285,18 @@ public class UsuarioController {
                 Rol.USUARIO
         );
 
-        List<String> preguntas = usuarioRegistroView.getPreguntaSelecionada();
-        List<String> respuestas = usuarioRegistroView.getRespuestas();
+        try {
+            usuarioDAO.crear(nuevoUsuario);
+            usuarioRegistroView.mostrarMensaje("registro.exitoso");
+            usuarioRegistroView.dispose();
 
-        for (int i = 0; i < preguntas.size(); i++) {
-            nuevoUsuario.addPreguntaSeguridad(Integer.parseInt(preguntas.get(i)), respuestas.get(i));
+            pasoActual = 0;
+            preguntasSeleccionadas = null;
+            usernameEnRegistro = null;
+            passwordEnRegistro = null;
+        } catch (Exception e) {
+            usuarioRegistroView.mostrarMensaje("error.registro");
         }
-
-        usuarioDAO.crear(nuevoUsuario);
-
-        usuarioRegistroView.mostrarMensaje("registro.exitoso");
-        usuarioRegistroView.limpiarCampos();
     }
 
     //Métodos de la ventana "USUARIOELIMINARVIEW"
@@ -377,7 +463,12 @@ public class UsuarioController {
     }
 
     private void seleccionCombo() {
+        if(mensaje == null) {
+            JOptionPane.showMessageDialog(null, "Error");
+            return;
+        }
         String opcion = (String) usuarioModificarView.getCbxModificar().getSelectedItem();
+        if(opcion == null) return;
         boolean esContrasenia = opcion.equals(mensaje.get("modificar.contrasenia"));
         usuarioModificarView.getTxtContrasenia().setEnabled(esContrasenia);
         usuarioModificarView.getTxtConfirmar().setEnabled(esContrasenia);

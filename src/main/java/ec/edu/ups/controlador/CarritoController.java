@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,7 +28,6 @@ public class CarritoController {
     private final CarritoDetalleView carritoDetalleView;
     private Carrito carrito;
     private Usuario usuarioAutenticado;
-    private MensajeInternacionalizacionHandler mensaje;
     private int productoSeleccionado = -1;
 
     public CarritoController(CarritoDAO carritoDAO,
@@ -38,8 +38,7 @@ public class CarritoController {
                              CarritoActualizarView carritoActualizarView,
                              CarritoListaView carritoListaView,
                              CarritoDetalleView carritoDetalleView,
-                             Usuario usuarioAutenticado,
-                             MensajeInternacionalizacionHandler mensaje) {
+                             Usuario usuarioAutenticado) {
         this.carritoDAO = carritoDAO;
         this.productoDAO = productoDAO;
         this.carritoAnadirView = carritoAnadirView;
@@ -50,7 +49,6 @@ public class CarritoController {
         this.carritoDetalleView = carritoDetalleView;
         this.carrito = new Carrito(usuarioAutenticado);
         this.usuarioAutenticado = usuarioAutenticado;
-        this.mensaje = mensaje;
         configurarEventosEnVistas();
     }
 
@@ -457,8 +455,9 @@ public class CarritoController {
         }
 
         for(Carrito carrito : carritos) {
+            Date fecha = carrito.getFechaCreacion().getTime();
             modelo.addRow(new Object[]{
-                    dateFormat.format(carrito.getFechaCreacion()),
+                    dateFormat.format(fecha),
                     carrito.getCodigo(),
                     carrito.getUsuario().getUsername(),
                     carrito.getItems().size(),
@@ -481,8 +480,9 @@ public class CarritoController {
         }
 
         for(Carrito carrito : carritos) {
+            Date fecha = carrito.getFechaCreacion().getTime();
             modelo.addRow(new Object[]{
-                    dateFormat.format(carrito.getFechaCreacion()),
+                    dateFormat.format(fecha),
                     carrito.getCodigo(),
                     carrito.getUsuario().getUsername(),
                     carrito.getItems().size(),
@@ -513,15 +513,17 @@ public class CarritoController {
     private void mostrarVentanaDetalla(Carrito carrito) {
         CarritoDetalleView carritoDetalleView = new CarritoDetalleView(carritoListaView.getMensaje());
 
-        //Llenar campos básicos
+        // Llenar campos básicos
         Locale locale = carritoDetalleView.getMensaje().getLocale();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         carritoDetalleView.getTxtCodigo().setText(String.valueOf(carrito.getCodigo()));
         carritoDetalleView.getTxtUsuario().setText(carrito.getUsuario().getUsername());
-        carritoDetalleView.getTxtFecha().setText(dateFormat.format(carrito.getFechaCreacion()));
 
-        //Calcular valores y mostrarlos
+        Date fecha = carrito.getFechaCreacion().getTime();
+        carritoDetalleView.getTxtFecha().setText(dateFormat.format(fecha));
+
+        // Calcular valores y mostrarlos
         double subtotal = carrito.calcularSubtotal();
         double iva = subtotal * carrito.getIVA();
         double total = subtotal + iva;
@@ -530,7 +532,7 @@ public class CarritoController {
         carritoDetalleView.getTxtIva().setText(FormateadorUtils.formatearMoneda(iva, locale));
         carritoDetalleView.getTxtTotal().setText(FormateadorUtils.formatearMoneda(total, locale));
 
-        //Cargar productos (items en la tabla)
+        // Cargar productos (items en la tabla)
         DefaultTableModel modelo = carritoDetalleView.getModelo();
         modelo.setRowCount(0);
         for(ItemCarrito itemCarrito : carrito.getItems()) {
@@ -547,6 +549,5 @@ public class CarritoController {
         carritoDetalleView.setLocationRelativeTo(carritoListaView);
         cargarCarritos();
         carritoDetalleView.setVisible(true);
-
     }
 }

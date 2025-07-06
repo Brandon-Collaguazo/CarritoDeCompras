@@ -45,11 +45,12 @@ public class Main {
                 PreguntaSeguridadDAO preguntaSeguridadDAO = new PreguntaSeguridadDAOMemoria();
 
                 UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView(loginView.getMensaje());
+                RecuperarContraseniaView recuperarContraseniaView = new RecuperarContraseniaView(loginView.getMensaje());
                 UsuarioEliminarView usuarioEliminarView = new UsuarioEliminarView(loginView.getMensaje());
                 UsuarioListaView usuarioListaView = new UsuarioListaView(loginView.getMensaje());
                 UsuarioModificarView usuarioModificarView = new UsuarioModificarView(loginView.getMensaje());
 
-                UsuarioController usuarioController = new UsuarioController(usuarioDAO, carritoDAO, loginView, preguntaSeguridadDAO ,usuarioRegistroView, usuarioEliminarView, usuarioListaView, usuarioModificarView);
+                UsuarioController usuarioController = new UsuarioController(usuarioDAO, carritoDAO, loginView, preguntaSeguridadDAO ,usuarioRegistroView, recuperarContraseniaView, usuarioEliminarView, usuarioListaView, usuarioModificarView, loginView.getMensaje());
 
                 loginView.addWindowListener(new WindowAdapter() {
                     @Override
@@ -94,8 +95,7 @@ public class Main {
                                     carritoActualizarView,
                                     carritoListaView,
                                     carritoDetalleView,
-                                    usuarioAutenticado,
-                                    mensaje
+                                    usuarioAutenticado
                             );
 
                             productoController.configurarEventosAnadir();
@@ -200,6 +200,36 @@ public class Main {
                                 }
                             });
 
+                            principalView.getMenuItemListarUsuario().addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    if(!usuarioListaView.isVisible()) {
+                                        principalView.getMiJDesktopPane().add(usuarioListaView);
+                                        usuarioListaView.setVisible(true);
+                                    }
+                                }
+                            });
+
+                            principalView.getMenuItemEliminarUsuario().addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    if(!usuarioEliminarView.isVisible()) {
+                                        principalView.getMiJDesktopPane().add(usuarioEliminarView);
+                                        usuarioEliminarView.setVisible(true);
+                                    }
+                                }
+                            });
+
+                            principalView.getMenuItemModificarUsuario().addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    if(!usuarioModificarView.isVisible()) {
+                                        principalView.getMiJDesktopPane().add(usuarioModificarView);
+                                        usuarioModificarView.setVisible(true);
+                                    }
+                                }
+                            });
+
                             // Listeners para cambiar el idioma desde el MenuPrincipalView
                             principalView.getMenuItemEspaniol().addActionListener(new ActionListener() {
                                 @Override
@@ -220,6 +250,9 @@ public class Main {
                                     carritoDetalleView.cambiarIdioma("es", "EC");
 
                                     usuarioRegistroView.cambiarIdioma("es", "EC");
+                                    usuarioListaView.cambiarIdioma("es", "EC");
+                                    usuarioEliminarView.cambiarIdioma("es","EC");
+                                    usuarioModificarView.cambiarIdioma("es", "EC");
                                 }
                             });
 
@@ -242,6 +275,9 @@ public class Main {
                                     carritoDetalleView.cambiarIdioma("en", "US");
 
                                     usuarioRegistroView.cambiarIdioma("en", "US");
+                                    usuarioListaView.cambiarIdioma("en", "US");
+                                    usuarioEliminarView.cambiarIdioma("en","US");
+                                    usuarioModificarView.cambiarIdioma("en", "US");
                                 }
                             });
 
@@ -264,6 +300,9 @@ public class Main {
                                     carritoDetalleView.cambiarIdioma("fr", "FR");
 
                                     usuarioRegistroView.cambiarIdioma("fr", "FR");
+                                    usuarioListaView.cambiarIdioma("fr", "FR");
+                                    usuarioEliminarView.cambiarIdioma("fr","FR");
+                                    usuarioModificarView.cambiarIdioma("fr", "FR");
                                 }
                             });
                         }

@@ -5,7 +5,7 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class CarritoDetalleView extends JDialog {
+public class CarritoDetalleView extends JFrame {
     private JPanel pnlPrincipal;
     private JPanel pnlSuperior;
     private JPanel pnlInferior;
@@ -35,7 +35,7 @@ public class CarritoDetalleView extends JDialog {
     private void initComponents() {
         setContentPane(pnlPrincipal);
         setSize(600, 400);
-        setModal(true);
+        setResizable(true);
 
         configurarTabla();
     }
