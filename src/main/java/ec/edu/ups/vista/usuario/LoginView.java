@@ -31,6 +31,8 @@ public class LoginView extends JFrame {
     private String[] codigosIdioma = {"es", "en", "fr"};
     private String idiomaSeleccionado = "es";
     private String paisSeleccionado = "EC";
+    private UsuarioRegistroView usuarioRegistroView;
+    private RecuperarContraseniaView recuperarContraseniaView;
 
     public LoginView() {
         mensaje = new MensajeInternacionalizacionHandler(idiomaSeleccionado, paisSeleccionado);
@@ -160,10 +162,27 @@ public class LoginView extends JFrame {
             idiomaSeleccionado = codigosIdioma[indice];
             paisSeleccionado = idiomaSeleccionado.equals("es") ? "EC" :
                     idiomaSeleccionado.equals("fr") ? "FR" : "US";
-
             mensaje.setLenguaje(idiomaSeleccionado, paisSeleccionado);
             actualizarTextos();
+
+            if(usuarioRegistroView != null) {
+                usuarioRegistroView.cambiarIdioma(idiomaSeleccionado, paisSeleccionado);
+            }
+
+            if(recuperarContraseniaView != null) {
+                recuperarContraseniaView.cambiarIdioma(idiomaSeleccionado, paisSeleccionado);
+            }
         }
+    }
+
+    public void setUsuarioRegistroView(UsuarioRegistroView usuarioRegistroView) {
+        this.usuarioRegistroView = usuarioRegistroView;
+        usuarioRegistroView.setMensaje(this.mensaje);
+    }
+
+    public void setRecuperarContraseniaView(RecuperarContraseniaView recuperarContraseniaView) {
+        this.recuperarContraseniaView = recuperarContraseniaView;
+        recuperarContraseniaView.setMensaje(this.mensaje);
     }
 
     public JPanel getPnlPrincipal() {
@@ -316,5 +335,6 @@ public class LoginView extends JFrame {
 
     public void limpiarCampos() {
         txtUsuario.setText("");
+        txtPassword.setText("");
     }
 }

@@ -94,6 +94,14 @@ public class ProductoListaView extends JInternalFrame {
         return  modelo;
     }
 
+    public MensajeInternacionalizacionHandler getMensaje() {
+        return mensaje;
+    }
+
+    public void mostrarMensaje(String keyMensaje) {
+        JOptionPane.showMessageDialog(this, mensaje.get(keyMensaje));
+    }
+
     public void setModelo(DefaultTableModel modelo) {
         this.modelo = modelo;
     }
@@ -108,5 +116,9 @@ public class ProductoListaView extends JInternalFrame {
             };
             modelo.addRow(fila);
         }
+    }
+
+    public void limpiarCampos() {
+        txtBuscar.setText("");
     }
 }

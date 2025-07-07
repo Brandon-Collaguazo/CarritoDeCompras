@@ -4,7 +4,6 @@ import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import ec.edu.ups.vista.usuario.LoginView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -114,7 +113,7 @@ public class MenuPrincipalView extends JFrame {
 
         setJMenuBar(menuBar);
         setContentPane(miJDesktopPane);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(mensaje.get("app.titulo"));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
@@ -347,6 +346,10 @@ public class MenuPrincipalView extends JFrame {
         return menuItemCerrarSesion;
     }
 
+    public JMenu getMenuProducto() {
+        return menuProducto;
+    }
+
     public MensajeInternacionalizacionHandler getMensaje() {
         return mensaje;
     }
@@ -355,14 +358,13 @@ public class MenuPrincipalView extends JFrame {
         return menuItemFrances;
     }
     public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+        JOptionPane.showMessageDialog(this,mensaje);
     }
 
     public void deshabilitarMenusAdministrador() {
-        getMenuItemCrear().setEnabled(false);
-        getMenuItemBuscar().setEnabled(false);
-        getMenuItemActualizar().setEnabled(false);
-        getMenuItemEliminar().setEnabled(false);
+        getMenuProducto().setVisible(false);
+        getMenuItemListarUsuario().setVisible(false);
+        getMenuItemEliminarUsuario().setVisible(false);
     }
 
     public void cambiarIdioma(String lenguaje, String pais) {
@@ -424,8 +426,6 @@ public class MenuPrincipalView extends JFrame {
 
                 if (respuesta == JOptionPane.YES_OPTION) {
                     dispose();
-                    new LoginView().setVisible(true);
-
                     JOptionPane.showMessageDialog(
                             MenuPrincipalView.this,
                             mensaje.get("mensaje.sesion.cerrada"),
@@ -447,7 +447,6 @@ public class MenuPrincipalView extends JFrame {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE
                 );
-
                 if (respuesta == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }

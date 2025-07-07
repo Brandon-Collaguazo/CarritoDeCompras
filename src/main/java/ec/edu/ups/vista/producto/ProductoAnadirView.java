@@ -133,19 +133,13 @@ public class ProductoAnadirView extends JInternalFrame {
         this.btnLimpiar = btnLimpiar;
     }
 
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+    public void mostrarMensaje(String keyMensaje) {
+        JOptionPane.showMessageDialog(this, mensaje.get(keyMensaje));
     }
 
     public void limpiarCampos() {
         txtCodigo.setText("");
         txtNombre.setText("");
         txtPrecio.setText("");
-    }
-
-    public void mostrarProductos(List<Producto> productos) {
-        for (Producto producto : productos) {
-            System.out.println(producto);
-        }
     }
 }

@@ -61,9 +61,9 @@ public class PreguntaSeguridadDAOMemoria implements PreguntaSeguridadDAO {
     public List<PreguntaSeguridad> obtenerPreguntasPorUsuario(String username) {
         List<PreguntaSeguridad> preguntasUsuario = new ArrayList<>();
         for(RespuestaSeguridad respuesta : respuestas) {
-            if(respuesta.getUsername().equals(username)) {
+            if(respuesta.getUsername() != null && respuesta.getUsername().equals(username)) {
                 PreguntaSeguridad pregunta = buscarPorId(respuesta.getIdPregunta());
-                if(pregunta != null) {
+                if(pregunta != null && !preguntasUsuario.contains(pregunta)) {
                     preguntasUsuario.add(pregunta);
                 }
             }
@@ -85,8 +85,8 @@ public class PreguntaSeguridadDAOMemoria implements PreguntaSeguridadDAO {
     public boolean validarRespuesta(String username, int idPregunta, String respuesta) {
         for(RespuestaSeguridad respuestaGuardada : respuestas) {
             if (respuestaGuardada.getUsername().equals(username) &&
-                respuestaGuardada.getIdPregunta() == idPregunta &&
-                respuestaGuardada.getRespuesta().equalsIgnoreCase(respuesta.trim())) {
+                    respuestaGuardada.getIdPregunta() == idPregunta &&
+                    respuestaGuardada.getRespuesta().equalsIgnoreCase(respuesta.trim())) {
                 return true;
             }
         }

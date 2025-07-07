@@ -4,17 +4,13 @@ import ec.edu.ups.dao.CarritoDAO;
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.modelo.*;
 import ec.edu.ups.utils.FormateadorUtils;
-import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
 import ec.edu.ups.vista.carrito.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class CarritoController {
 
@@ -52,7 +48,7 @@ public class CarritoController {
         configurarEventosEnVistas();
     }
 
-    private void configurarEventosEnVistas() {
+    public void configurarEventosEnVistas() {
 
         //Eventos para la ventana "CarritoAnadirView"
         carritoAnadirView.getBtnAnadir().addActionListener(new ActionListener() {
@@ -173,19 +169,38 @@ public class CarritoController {
 
     //Métodos para la ventana "CarritoAnadirView"
     private void guardarCarrito() {
-        if(this.carrito.getUsuario() == null) {
+        if (this.carrito.getUsuario() == null) {
             this.carrito.setUsuario(this.usuarioAutenticado);
+        }
+        if (carritoDAO.buscarPorCodigo(carrito.getCodigo()) != null) {
+            carritoAnadirView.mostrarMensaje("carrito.ya.existe");
+            return;
         }
         carritoDAO.crear(carrito);
         carritoAnadirView.mostrarMensaje("creacion.carrito.exito");
-        System.out.println(carritoDAO.listarTodos());
     }
 
     private void anadirProducto() {
         int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
+        if(producto == null) {
+            carritoAnadirView.mostrarMensaje("producto.no.encontrado");
+            return;
+        }
+
         int cantidad =  Integer.parseInt(carritoAnadirView.getCbxCantidad().getSelectedItem().toString());
-        carrito.agregarProducto(producto, cantidad);
+        boolean productoExiste = false;
+        for(ItemCarrito item : carrito.obtenerItems()) {
+            if(item.getProducto().getCodigo() == codigo) {
+                item.setCantidad(item.getCantidad() + cantidad);
+                productoExiste = true;
+                break;
+            }
+        }
+
+        if(!productoExiste) {
+            carrito.agregarProducto(producto, cantidad);
+        }
 
         cargarProductos();
         mostrarTotales();
@@ -229,50 +244,59 @@ public class CarritoController {
     }
 
     private void limpiarDatos() {
+        Locale locale = carritoAnadirView.getMensaje().getLocale();
+        String valorCero = FormateadorUtils.formatearMoneda(0.0, locale);
+
         carritoAnadirView.getTxtCodigo().setText("");
         carritoAnadirView.getTxtNombre().setText("");
-        carritoAnadirView.getTxtPrecio().setText("$0.00");
+        carritoAnadirView.getTxtPrecio().setText(valorCero);
         carritoAnadirView.getCbxCantidad().setSelectedIndex(0);
-        carritoAnadirView.getTxtSubtotal().setText("$0.00");
-        carritoAnadirView.getTxtIva().setText("$0.00");
-        carritoAnadirView.getTxtTotal().setText("$0.00");
+        carritoAnadirView.getTxtSubtotal().setText(valorCero);
+        carritoAnadirView.getTxtIva().setText(valorCero);
+        carritoAnadirView.getTxtTotal().setText(valorCero);
     }
 
     //Métodos para la ventana "CarritoBuscarView"
     private void buscarCarritoPorCodigo() {
         int codigo = Integer.parseInt(carritoBuscarView.getTxtCodigo().getText());
         carrito = carritoDAO.buscarPorCodigo(codigo);
+        Locale locale = carritoBuscarView.getMensaje().getLocale();
+
         if(carrito == null) {
             carritoBuscarView.mostrarMensaje("carrito.no.encontrado");
             limpiarCampos();
         } else {
             mostrarProductosEnCarrito(carrito);
-            carritoBuscarView.getTxtSubtotal().setText(String.format("$%,.2f", carrito.calcularSubtotal()));
-            carritoBuscarView.getTxtIva().setText(String.format("$%,.2f", carrito.calcularIVA()));
-            carritoBuscarView.getTxtTotal().setText(String.format("$%,.2f", carrito.calcularTotal()));
+            carritoBuscarView.getTxtSubtotal().setText(FormateadorUtils.formatearMoneda(carrito.calcularSubtotal(), locale));
+            carritoBuscarView.getTxtIva().setText(FormateadorUtils.formatearMoneda(carrito.calcularIVA(), locale));
+            carritoBuscarView.getTxtTotal().setText(FormateadorUtils.formatearMoneda(carrito.calcularTotal(), locale));
         }
     }
 
     private void mostrarProductosEnCarrito(Carrito carrito) {
         DefaultTableModel modelo = (DefaultTableModel) carritoBuscarView.getTblProducto().getModel();
         modelo.setRowCount(0);
+        Locale locale = carritoBuscarView.getMensaje().getLocale();
+        Set<Integer> productosAgregados = new HashSet<>();
 
         for(ItemCarrito item : carrito.obtenerItems()) {
-            Producto producto = item.getProducto();
-            double subtotal = producto.getPrecio() * item.getCantidad();
-            double iva = subtotal * carrito.calcularIVA();
-            double total = subtotal + iva;
+            if(!productosAgregados.contains(item.getProducto().getCodigo())) {
+                Producto producto = item.getProducto();
+                double subtotal = producto.getPrecio() * item.getCantidad();
+                double iva = carrito.calcularIVA();
+                double total = subtotal + iva;
 
-            modelo.addRow(new Object[]{
-                    producto.getCodigo(),
-                    producto.getNombre(),
-                    String.format("$%,.2f", producto.getPrecio()),
-                    item.getCantidad(),
-                    String.format("$%,.2f", subtotal),
-                    String.format("$%,.2f", iva),
-                    String.format("$%,.2f", total)
-            });
-
+                modelo.addRow(new Object[]{
+                        producto.getCodigo(),
+                        producto.getNombre(),
+                        FormateadorUtils.formatearMoneda(producto.getPrecio(), locale),
+                        item.getCantidad(),
+                        FormateadorUtils.formatearMoneda(subtotal, locale),
+                        FormateadorUtils.formatearMoneda(iva, locale),
+                        FormateadorUtils.formatearMoneda(total, locale)
+                });
+                productosAgregados.add(item.getProducto().getCodigo());
+            }
         }
     }
 
@@ -309,7 +333,7 @@ public class CarritoController {
                 "confirmar.eliminacion.carrito",
                 JOptionPane.YES_NO_OPTION
         );
-        if(confirmacion == JOptionPane.YES_NO_OPTION) {
+        if(confirmacion == JOptionPane.YES_OPTION) {
             carritoDAO.eliminar(codigo);
             carritoEliminarView.mostrarMensaje("eliminacion.carrito.exito");
             limpiarCamposEliminar();
@@ -319,18 +343,20 @@ public class CarritoController {
     private void mostrarDetallesCarrito(Carrito carrito) {
         DefaultTableModel modelo = (DefaultTableModel) carritoEliminarView.getTblProducto().getModel();
         modelo.setRowCount(0);
+        Locale locale = carritoEliminarView.getMensaje().getLocale();
+
         for(ItemCarrito item : carrito.obtenerItems()) {
             modelo.addRow(new Object[]{
                     item.getProducto().getCodigo(),
                     item.getProducto().getNombre(),
-                    String.format("$%,.2f", item.getProducto().getPrecio()),
+                    FormateadorUtils.formatearMoneda(item.getProducto().getPrecio(), locale),
                     item.getCantidad(),
-                    String.format("$%,.2f", item.getProducto().getPrecio() * item.getCantidad())
+                    FormateadorUtils.formatearMoneda(item.getProducto().getPrecio() * item.getCantidad(), locale)
             });
         }
-        carritoEliminarView.getTxtSubtotal().setText(String.format("$%,.2f", carrito.calcularSubtotal()));
-        carritoEliminarView.getTxtIva().setText(String.format("$%,.2f", carrito.calcularIVA()));
-        carritoEliminarView.getTxtTotal().setText(String.format("$%,.2f", carrito.calcularTotal()));
+        carritoEliminarView.getTxtSubtotal().setText(FormateadorUtils.formatearMoneda(carrito.calcularSubtotal(), locale));
+        carritoEliminarView.getTxtIva().setText(FormateadorUtils.formatearMoneda(carrito.calcularIVA(), locale));
+        carritoEliminarView.getTxtTotal().setText(FormateadorUtils.formatearMoneda(carrito.calcularTotal(), locale));
     }
 
     private void limpiarCamposEliminar() {
@@ -403,16 +429,30 @@ public class CarritoController {
     private void cargarProductosEnTabla() {
         DefaultTableModel modelo = (DefaultTableModel) carritoActualizarView.getTblProducto().getModel();
         modelo.setRowCount(0);
+        Locale locale = carritoActualizarView.getMensaje().getLocale();
 
         for (ItemCarrito item : carrito.obtenerItems()) {
-            modelo.addRow(new Object[]{
-                    item.getProducto().getCodigo(),
-                    item.getProducto().getNombre(),
-                    item.getProducto().getPrecio(),
-                    item.getCantidad(),
-                    item.getProducto().getPrecio() * item.getCantidad(),
-                    ""
-            });
+            boolean productoYaExiste = false;
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                int codigoEnTabla = (int) modelo.getValueAt(i, 0);
+                if (codigoEnTabla == item.getProducto().getCodigo()) {
+                    productoYaExiste = true;
+                    int cantidadActual = (int) modelo.getValueAt(i, 3);
+                    modelo.setValueAt(cantidadActual + item.getCantidad(), i, 3);
+                    break;
+                }
+            }
+
+            if (!productoYaExiste) {
+                modelo.addRow(new Object[]{
+                        item.getProducto().getCodigo(),
+                        item.getProducto().getNombre(),
+                        FormateadorUtils.formatearMoneda(item.getProducto().getPrecio(), locale),
+                        item.getCantidad(),
+                        FormateadorUtils.formatearMoneda(item.getProducto().getPrecio() * item.getCantidad(), locale),
+                        ""
+                });
+            }
         }
     }
 
@@ -428,61 +468,32 @@ public class CarritoController {
     private void buscarCarritos() {
         DefaultTableModel modelo = carritoListaView.getModelo();
         modelo.setRowCount(0);
+        List<Carrito> carritos;
 
-        if(usuarioAutenticado.getRol() == Rol.ADMINISTRADOR) {
-            String username = carritoListaView.getTxtCodigo().getText().trim();
-            if(!username.isEmpty()) {
-                cargarCarritosUsuario(username);
+        if (usuarioAutenticado.getRol() == Rol.ADMINISTRADOR) {
+            String usernameFiltro = carritoListaView.getTxtCodigo().getText().trim();
+            if (usernameFiltro.isEmpty()) {
+                carritos = carritoDAO.listarTodos();
             } else {
-                cargarCarritos();
+                carritos = carritoDAO.listarPorUsuario(usernameFiltro);
             }
         } else {
-            cargarCarritosUsuario(usuarioAutenticado.getUsername());
+            carritos = carritoDAO.listarPorUsuario(usuarioAutenticado.getUsername());
         }
-    }
 
-    private void cargarCarritosUsuario(String username) {
-        DefaultTableModel modelo = carritoListaView.getModelo();
-        modelo.setRowCount(0);
-
-        List<Carrito> carritos = carritoDAO.listarPorUsuario(username);
-        Locale locale = carritoListaView.getMensaje().getLocale();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        if(carritos.isEmpty()) {
-            carritoListaView.mostrarMensaje("usuario.sin.carritos");
+        if (carritos.isEmpty()) {
+            if (usuarioAutenticado.getRol() == Rol.ADMINISTRADOR) {
+                carritoListaView.mostrarMensaje("no.hay.carritos");
+            } else {
+                carritoListaView.mostrarMensaje("usuario.sin.carritos");
+            }
             return;
         }
 
-        for(Carrito carrito : carritos) {
-            Date fecha = carrito.getFechaCreacion().getTime();
-            modelo.addRow(new Object[]{
-                    dateFormat.format(fecha),
-                    carrito.getCodigo(),
-                    carrito.getUsuario().getUsername(),
-                    carrito.getItems().size(),
-                    FormateadorUtils.formatearMoneda(carrito.calcularTotal(), locale)
-            });
-        }
-    }
-
-    private void cargarCarritos() {
-        DefaultTableModel modelo = carritoListaView.getModelo();
-        modelo.setRowCount(0);
-
-        List<Carrito> carritos = carritoDAO.listarTodos();
         Locale locale = carritoListaView.getMensaje().getLocale();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        if(carritos.isEmpty()) {
-            carritoListaView.mostrarMensaje("no.hay.carritos");
-            return;
-        }
-
-        for(Carrito carrito : carritos) {
-            Date fecha = carrito.getFechaCreacion().getTime();
+        for (Carrito carrito : carritos) {
             modelo.addRow(new Object[]{
-                    dateFormat.format(fecha),
+                    FormateadorUtils.formatearFecha(carrito.getFechaCreacion().getTime(), locale),
                     carrito.getCodigo(),
                     carrito.getUsuario().getUsername(),
                     carrito.getItems().size(),
@@ -511,21 +522,18 @@ public class CarritoController {
     }
 
     private void mostrarVentanaDetalla(Carrito carrito) {
-        CarritoDetalleView carritoDetalleView = new CarritoDetalleView(carritoListaView.getMensaje());
-
         // Llenar campos básicos
         Locale locale = carritoDetalleView.getMensaje().getLocale();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         carritoDetalleView.getTxtCodigo().setText(String.valueOf(carrito.getCodigo()));
         carritoDetalleView.getTxtUsuario().setText(carrito.getUsuario().getUsername());
 
         Date fecha = carrito.getFechaCreacion().getTime();
-        carritoDetalleView.getTxtFecha().setText(dateFormat.format(fecha));
+        carritoDetalleView.getTxtFecha().setText(FormateadorUtils.formatearFecha(fecha, locale));
 
         // Calcular valores y mostrarlos
         double subtotal = carrito.calcularSubtotal();
-        double iva = subtotal * carrito.getIVA();
+        double iva = carrito.calcularIVA();
         double total = subtotal + iva;
 
         carritoDetalleView.getTxtSubtotal().setText(FormateadorUtils.formatearMoneda(subtotal, locale));
@@ -547,7 +555,6 @@ public class CarritoController {
         carritoDetalleView.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         carritoDetalleView.pack();
         carritoDetalleView.setLocationRelativeTo(carritoListaView);
-        cargarCarritos();
         carritoDetalleView.setVisible(true);
     }
 }

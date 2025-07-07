@@ -2,6 +2,7 @@ package ec.edu.ups.vista;
 
 import ec.edu.ups.controlador.CarritoController;
 import ec.edu.ups.controlador.ProductoController;
+import ec.edu.ups.controlador.RecuperarContraseniaController;
 import ec.edu.ups.controlador.UsuarioController;
 
 import ec.edu.ups.dao.CarritoDAO;
@@ -25,18 +26,18 @@ import ec.edu.ups.vista.producto.ProductoListaView;
 import ec.edu.ups.vista.producto.ProductoModificarView;
 import ec.edu.ups.vista.usuario.*;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.MessageFormat;
 
 public class Main {
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                // Iniciar sesión
                 UsuarioDAO usuarioDAO = new UsuarioDAOMemoria();
-
                 LoginView loginView = new LoginView();
                 loginView.setVisible(true);
 
@@ -44,13 +45,39 @@ public class Main {
 
                 PreguntaSeguridadDAO preguntaSeguridadDAO = new PreguntaSeguridadDAOMemoria();
 
-                UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView(loginView.getMensaje());
-                RecuperarContraseniaView recuperarContraseniaView = new RecuperarContraseniaView(loginView.getMensaje());
+                UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView();
+                RecuperarContraseniaView recuperarContraseniaView = new RecuperarContraseniaView();
+
                 UsuarioEliminarView usuarioEliminarView = new UsuarioEliminarView(loginView.getMensaje());
                 UsuarioListaView usuarioListaView = new UsuarioListaView(loginView.getMensaje());
                 UsuarioModificarView usuarioModificarView = new UsuarioModificarView(loginView.getMensaje());
+                AdminModificarView adminModificarView = new AdminModificarView(loginView.getMensaje());
 
-                UsuarioController usuarioController = new UsuarioController(usuarioDAO, carritoDAO, loginView, preguntaSeguridadDAO ,usuarioRegistroView, recuperarContraseniaView, usuarioEliminarView, usuarioListaView, usuarioModificarView, loginView.getMensaje());
+                loginView.setUsuarioRegistroView(usuarioRegistroView);
+                loginView.setRecuperarContraseniaView(recuperarContraseniaView);
+
+                UsuarioController usuarioController = new UsuarioController(
+                        usuarioDAO,
+                        carritoDAO,
+                        loginView,
+                        preguntaSeguridadDAO,
+                        usuarioRegistroView,
+                        recuperarContraseniaView,
+                        usuarioEliminarView,
+                        usuarioListaView,
+                        usuarioModificarView,
+                        adminModificarView,
+                        loginView.getMensaje()
+                );
+
+                RecuperarContraseniaController recuperarController = new RecuperarContraseniaController(
+                        recuperarContraseniaView,
+                        usuarioDAO,
+                        preguntaSeguridadDAO,
+                        loginView.getMensaje()
+                );
+
+                recuperarController.configurarEventos();
 
                 loginView.addWindowListener(new WindowAdapter() {
                     @Override
@@ -58,13 +85,10 @@ public class Main {
                         Usuario usuarioAutenticado = usuarioController.getUsuarioAutenticado();
 
                         if(usuarioAutenticado != null) {
-                            //Instanciamos MensajeHandler (SINGLETON)
                             MensajeInternacionalizacionHandler mensaje = loginView.getMensaje();
 
-                            // Instanciamos DAO
                             ProductoDAO productoDAO = new ProductoDAOMemoria();
 
-                            // Instancia Vistas, pasando el objeto 'mensaje' a cada una
                             MenuPrincipalView principalView = new MenuPrincipalView(mensaje);
 
                             ProductoAnadirView productoAnadirView = new ProductoAnadirView(mensaje);
@@ -79,7 +103,6 @@ public class Main {
                             CarritoListaView carritoListaView = new CarritoListaView(mensaje, usuarioAutenticado.getRol());
                             CarritoDetalleView carritoDetalleView = new CarritoDetalleView(mensaje);
 
-                            // Instancia Controlador
                             ProductoController productoController = new ProductoController(productoDAO,
                                     productoAnadirView,
                                     productoListaView,
@@ -98,18 +121,26 @@ public class Main {
                                     usuarioAutenticado
                             );
 
+
+
                             productoController.configurarEventosAnadir();
                             productoController.configurarEventosModificar();
                             productoController.configurarEventosEliminar();
                             productoController.configurarEventosLista();
                             productoController.configurarEventosCarrito();
 
-                            principalView.mostrarMensaje("Bienvenido: " + usuarioAutenticado.getNombreCompleto() + " :D");
+                            carritoController.configurarEventosEnVistas();
+
+                            principalView.mostrarMensaje(
+                                    MessageFormat.format(mensaje.get("mensaje.bienvenida"),
+                                            usuarioAutenticado.getNombreCompleto()
+                                    )
+                            );
+
                             if(usuarioAutenticado.getRol().equals(Rol.USUARIO)) {
                                 principalView.deshabilitarMenusAdministrador();
                             }
 
-                            // Configuración de ActionListeners para abrir las vistas
                             principalView.getMenuItemCrear().addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
@@ -223,14 +254,32 @@ public class Main {
                             principalView.getMenuItemModificarUsuario().addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
-                                    if(!usuarioModificarView.isVisible()) {
-                                        principalView.getMiJDesktopPane().add(usuarioModificarView);
-                                        usuarioModificarView.setVisible(true);
+                                    Usuario usuarioAutenticado = usuarioController.getUsuarioAutenticado();
+
+                                    if(usuarioAutenticado == null) {
+                                        JOptionPane.showMessageDialog(principalView, "Primero debe autenticarse");
+                                        return;
+                                    }
+
+                                    if(usuarioAutenticado.getRol() == Rol.ADMINISTRADOR) {
+                                        // Comportamiento para ADMIN
+                                        if(!adminModificarView.isVisible()) {
+                                            principalView.getMiJDesktopPane().add(adminModificarView);
+                                            adminModificarView.setVisible(true);
+                                            adminModificarView.limpiar();
+                                        }
+                                    } else {
+
+                                        if(!usuarioModificarView.isVisible()) {
+                                            principalView.getMiJDesktopPane().add(usuarioModificarView);
+                                            usuarioModificarView.setVisible(true);
+                                            // Cargar datos automáticamente
+                                            usuarioModificarView.cargarDatosUsuario(usuarioAutenticado);
+                                        }
                                     }
                                 }
                             });
 
-                            // Listeners para cambiar el idioma desde el MenuPrincipalView
                             principalView.getMenuItemEspaniol().addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
@@ -305,6 +354,22 @@ public class Main {
                                     usuarioModificarView.cambiarIdioma("fr", "FR");
                                 }
                             });
+
+                            principalView.addWindowListener(new WindowAdapter() {
+                                @Override
+                                public void windowClosed(WindowEvent e) {
+                                    usuarioController.setUsuario(null);
+                                    loginView.limpiarCampos();
+                                    loginView.setVisible(true);
+                                    loginView.setState(JFrame.NORMAL);
+                                    loginView.toFront();
+                                    loginView.requestFocus();
+                                }
+                            });
+
+                            principalView.setVisible(true);
+                        } else {
+                            System.exit(0);
                         }
                     }
                 });

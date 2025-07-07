@@ -62,7 +62,7 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
             Usuario usuarioAux = usuarios.get(i);
             if(usuarioAux.getUsername().equals(usuario.getUsername())){
                 usuarios.set(i, usuario);
-                break;
+                return true;
             }
         }
         return false;

@@ -7,22 +7,25 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.net.URL;
 
-public class UsuarioModificarView extends JInternalFrame {
+public class AdminModificarView extends JInternalFrame {
     private JPanel pnlPrincipal;
-    private JLabel lblTitulo;
-    private JLabel lblUsuario;
-    private JLabel lblContrasenia;
-    private JLabel lblConfirmar;
     private JTextField txtUsuario;
+    private JButton btnBuscar;
+    private JTable tblDatos;
+    private JTextField txtUsuario1;
     private JPasswordField txtContrasenia;
     private JPasswordField txtConfirmar;
-    private JButton btnMostrar;
-    private JTable tblDatos;
+    private JLabel lblTitulo;
+    private JLabel lblUsuario;
+    private JLabel lblUsuario1;
+    private JLabel lblContrasenia;
+    private JLabel lblConfirmar;
     private JComboBox cbxModificar;
+    private JButton btnMostrar;
     private JButton btnGuardar;
     private MensajeInternacionalizacionHandler mensaje;
 
-    public UsuarioModificarView(MensajeInternacionalizacionHandler mensaje) {
+    public AdminModificarView(MensajeInternacionalizacionHandler mensaje) {
         this.mensaje = mensaje;
         initComponent();
         actualizarTextos();
@@ -35,7 +38,15 @@ public class UsuarioModificarView extends JInternalFrame {
         setSize(500, 500);
 
         //Íconos para los botones
-        URL mostrarURL = UsuarioModificarView.class.getClassLoader().getResource("imagenes/mostrar.png");
+        URL buscarURL = AdminModificarView.class.getClassLoader().getResource("imagenes/buscarUsuario.png");
+        if(buscarURL != null) {
+            ImageIcon iconBtnBuscar = new ImageIcon(buscarURL);
+            btnBuscar.setIcon(iconBtnBuscar);
+        } else {
+            System.out.println("Error, no se mostró el buscar en admin modificar");
+        }
+
+        URL mostrarURL = AdminModificarView.class.getClassLoader().getResource("imagenes/mostrar.png");
         if(mostrarURL != null) {
             ImageIcon iconBtnMostrar = new ImageIcon(mostrarURL);
             btnMostrar.setIcon(iconBtnMostrar);
@@ -43,10 +54,10 @@ public class UsuarioModificarView extends JInternalFrame {
             System.out.println("Error");
         }
 
-        URL guardarURL = UsuarioModificarView.class.getClassLoader().getResource("imagenes/guardar.png");
+        URL guardarURL = AdminModificarView.class.getClassLoader().getResource("imagenes/guardar.png");
         if(guardarURL != null) {
             ImageIcon iconBtnGuardar = new ImageIcon(guardarURL);
-            btnGuardar.setIcon(iconBtnGuardar);
+            btnMostrar.setIcon(iconBtnGuardar);
         } else {
             System.out.println("Error");
         }
@@ -79,9 +90,11 @@ public class UsuarioModificarView extends JInternalFrame {
 
         lblTitulo.setText(mensaje.get("usuario.modificar.titulo"));
         lblUsuario.setText(mensaje.get("usuario"));
+        lblUsuario1.setText(mensaje.get("usuario"));
         lblContrasenia.setText(mensaje.get("contrasenia"));
         lblConfirmar.setText(mensaje.get("confirmar.password"));
 
+        btnBuscar.setText(mensaje.get("buscar"));
         btnGuardar.setText(mensaje.get("guardar"));
         btnMostrar.setText(mensaje.get("mostrar"));
         configurarComboBox();
@@ -124,6 +137,30 @@ public class UsuarioModificarView extends JInternalFrame {
         this.txtUsuario = txtUsuario;
     }
 
+    public JButton getBtnBuscar() {
+        return btnBuscar;
+    }
+
+    public void setBtnBuscar(JButton btnBuscar) {
+        this.btnBuscar = btnBuscar;
+    }
+
+    public JTable getTblDatos() {
+        return tblDatos;
+    }
+
+    public void setTblDatos(JTable tblDatos) {
+        this.tblDatos = tblDatos;
+    }
+
+    public JTextField getTxtUsuario1() {
+        return txtUsuario1;
+    }
+
+    public void setTxtUsuario1(JTextField txtUsuario1) {
+        this.txtUsuario1 = txtUsuario1;
+    }
+
     public JPasswordField getTxtContrasenia() {
         return txtContrasenia;
     }
@@ -138,6 +175,54 @@ public class UsuarioModificarView extends JInternalFrame {
 
     public void setTxtConfirmar(JPasswordField txtConfirmar) {
         this.txtConfirmar = txtConfirmar;
+    }
+
+    public JLabel getLblTitulo() {
+        return lblTitulo;
+    }
+
+    public void setLblTitulo(JLabel lblTitulo) {
+        this.lblTitulo = lblTitulo;
+    }
+
+    public JLabel getLblUsuario() {
+        return lblUsuario;
+    }
+
+    public void setLblUsuario(JLabel lblUsuario) {
+        this.lblUsuario = lblUsuario;
+    }
+
+    public JLabel getLblUsuario1() {
+        return lblUsuario1;
+    }
+
+    public void setLblUsuario1(JLabel lblUsuario1) {
+        this.lblUsuario1 = lblUsuario1;
+    }
+
+    public JLabel getLblContrasenia() {
+        return lblContrasenia;
+    }
+
+    public void setLblContrasenia(JLabel lblContrasenia) {
+        this.lblContrasenia = lblContrasenia;
+    }
+
+    public JLabel getLblConfirmar() {
+        return lblConfirmar;
+    }
+
+    public void setLblConfirmar(JLabel lblConfirmar) {
+        this.lblConfirmar = lblConfirmar;
+    }
+
+    public JComboBox getCbxModificar() {
+        return cbxModificar;
+    }
+
+    public void setCbxModificar(JComboBox cbxModificar) {
+        this.cbxModificar = cbxModificar;
     }
 
     public JButton getBtnMostrar() {
@@ -156,22 +241,6 @@ public class UsuarioModificarView extends JInternalFrame {
         this.btnGuardar = btnGuardar;
     }
 
-    public JTable getTblDatos() {
-        return tblDatos;
-    }
-
-    public void setTblDatos(JTable tblDatos) {
-        this.tblDatos = tblDatos;
-    }
-
-    public JComboBox getCbxModificar() {
-        return cbxModificar;
-    }
-
-    public void setCbxModificar(JComboBox cbxModificar) {
-        this.cbxModificar = cbxModificar;
-    }
-
     public MensajeInternacionalizacionHandler getMensaje() {
         return mensaje;
     }
@@ -181,12 +250,10 @@ public class UsuarioModificarView extends JInternalFrame {
     }
 
     public void mostrarMensaje(String keyMensaje) {
-        JOptionPane.showMessageDialog(this,mensaje.get(keyMensaje));
+        JOptionPane.showMessageDialog(this, mensaje.get(keyMensaje));
     }
 
-    public void limpiarCampos() {
+    public void limpiar() {
         txtUsuario.setText("");
-        txtContrasenia.setText("");
-        txtConfirmar.setText("");
     }
 }

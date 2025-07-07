@@ -209,6 +209,11 @@ public class CarritoEliminarView extends JInternalFrame {
         this.tblProducto = tblProducto;
     }
 
+
+    public MensajeInternacionalizacionHandler getMensaje() {
+        return mensaje;
+    }
+
     public void mostrarMensaje(String keyMensaje) {
         JOptionPane.showMessageDialog(this, mensaje.get(keyMensaje));
     }

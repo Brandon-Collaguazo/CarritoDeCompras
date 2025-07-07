@@ -36,6 +36,12 @@ public class UsuarioRegistroView extends JFrame {
     private List<String> preguntaSelecionada = new ArrayList<>();
     private List<String> respuestas = new ArrayList<>();
 
+    public UsuarioRegistroView() {
+        this.mensaje = new MensajeInternacionalizacionHandler("es", "EC");
+        initComponents();
+        actualizarTextos();
+    }
+
     public UsuarioRegistroView(MensajeInternacionalizacionHandler mensaje) {
         this.mensaje = mensaje;
         initComponents();

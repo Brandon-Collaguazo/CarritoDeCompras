@@ -1,4 +1,3 @@
-
 package ec.edu.ups.controlador;
 
 import ec.edu.ups.dao.CarritoDAO;
@@ -23,6 +22,7 @@ import java.util.Locale;
 public class UsuarioController {
 
     private Usuario usuario;
+    private boolean administrador;
     private MensajeInternacionalizacionHandler mensaje;
     private List<PreguntaSeguridad> preguntasSeleccionadas;
     private int pasoActual = 0;
@@ -37,6 +37,7 @@ public class UsuarioController {
     private final UsuarioEliminarView usuarioEliminarView;
     private final UsuarioListaView usuarioListaView;
     private final UsuarioModificarView usuarioModificarView;
+    private final AdminModificarView adminModificarView;
 
     public UsuarioController(UsuarioDAO usuarioDAO,
                              CarritoDAO carritoDAO,
@@ -47,23 +48,38 @@ public class UsuarioController {
                              UsuarioEliminarView usuarioEliminarView,
                              UsuarioListaView usuarioListaView,
                              UsuarioModificarView usuarioModificarView,
+                             AdminModificarView adminModificarView,
                              MensajeInternacionalizacionHandler mensaje) {
         this.usuarioDAO = usuarioDAO;
         this.carritoDAO = carritoDAO;
         this.preguntaDAO = preguntaDAO;
         this.loginView = loginView;
-        this.usuario = null;
+        this.usuario = usuario;
+        this.administrador = false;
         this.mensaje = mensaje;
         this.usuarioRegistroView = usuarioRegistroView;
         this.recuperarContraseniaView = recuperarContraseniaView;
         this.usuarioEliminarView = usuarioEliminarView;
         this.usuarioListaView = usuarioListaView;
         this.usuarioModificarView = usuarioModificarView;
+        this.adminModificarView = adminModificarView;
+
         configurarEventosEnVistas();
+
+        if (this.usuarioModificarView != null) {
+            inicializarCampos();
+            seleccionCombo();
+        }
+        if (this.adminModificarView != null) {
+            if (this.administrador) {
+                inicializarCamposAdmin();
+                seleccionComboAdmin();
+            }
+        }
     }
 
     private void configurarEventosEnVistas(){
-        //EVENTOS EN "LOGINVIEW"
+        // Eventos en "LOGINVIEW"
         loginView.getBtnIniciar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,7 +102,7 @@ public class UsuarioController {
             }
         });
 
-        //EVENTOS DE REGISTRAR
+        // Eventos de registro
         usuarioRegistroView.getBtnRegistrar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,7 +121,7 @@ public class UsuarioController {
             }
         });
 
-        //EVENTOS EN "USUARIOELIMINARVIEW"
+        // Eventos en "USUARIOELIMINARVIEW"
         usuarioEliminarView.getBtnBuscar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -120,7 +136,7 @@ public class UsuarioController {
             }
         });
 
-        //EVENTOS EN "USUARIOLISTAVIEW"
+        // Eventos en "USUARIOLISTAVIEW"
         usuarioListaView.getBtnBuscar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -135,24 +151,69 @@ public class UsuarioController {
             }
         });
 
-        //EVENTOS EN "USUARIOMODIFICARVIEW"
-        usuarioModificarView.getBtnMostrar().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mostrarContrasenia();
-            }
-        });
-
-        usuarioModificarView.getCbxModificar().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                seleccionCombo();
-            }
-        });
+        configurarModificacionUsuarios();
     }
 
+    private void configurarModificacionUsuarios() {
+        if(usuarioModificarView != null) {
+            usuarioModificarView.getBtnMostrar().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mostrarContrasenia();
+                }
+            });
+            usuarioModificarView.getCbxModificar().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    seleccionCombo();
+                }
+            });
+            // Añadir ActionListener para el botón Guardar del usuario normal
+            usuarioModificarView.getBtnGuardar().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    guardarCambios();
+                }
+            });
 
-    //Métodos en "LOGINVIEW"
+            if(!administrador) {
+                usuarioModificarView.cargarDatosUsuario(usuario);
+            }
+        }
+
+        // Configuración para ADMIN
+        if(adminModificarView != null && administrador) {
+            adminModificarView.getBtnBuscar().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    buscarUsuarioAdmin();
+                }
+            });
+
+            adminModificarView.getBtnMostrar().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mostrarContraseniaAdmin();
+                }
+            });
+
+            adminModificarView.getCbxModificar().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    seleccionComboAdmin();
+                }
+            });
+            // Añadir ActionListener para el botón Guardar del administrador
+            adminModificarView.getBtnGuardar().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    guardarCambiosAdmin();
+                }
+            });
+        }
+    }
+
+    // Métodos en "LOGINVIEW"
     private void autenticar(){
         String username = loginView.getTxtUsuario().getText();
         String contrasenia = loginView.getTxtPassword().getText();
@@ -161,7 +222,15 @@ public class UsuarioController {
         if(usuario == null){
             loginView.mostrarMensaje("datos.usuario.incorrectos");
         }else{
+            this.administrador = (usuario.getRol() == Rol.ADMINISTRADOR);
+
             loginView.dispose();
+            if (this.administrador && this.adminModificarView != null) {
+                inicializarCamposAdmin();
+            } else if (!this.administrador && this.usuarioModificarView != null) {
+                usuarioModificarView.cargarDatosUsuario(usuario);
+                seleccionCombo();
+            }
         }
 
         loginView.limpiarCampos();
@@ -171,7 +240,7 @@ public class UsuarioController {
         return usuario;
     }
 
-    //Métodos en "USUARIOREGISTROVIEW"
+    // Métodos en "USUARIOREGISTROVIEW"
     private void iniciarRegistro() {
         pasoActual = 0;
         preguntasSeleccionadas = preguntaDAO.obtenerPreguntasAleatorias(3);
@@ -195,9 +264,6 @@ public class UsuarioController {
     }
 
     private boolean validarDatos() {
-        if(pasoActual < 3) {
-            return true;
-        }
         String nombre = usuarioRegistroView.getTxtNombre().getText();
         String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText();
         String telefono = usuarioRegistroView.getTxtTelefono().getText();
@@ -238,7 +304,6 @@ public class UsuarioController {
             PreguntaSeguridad pregunta = preguntasSeleccionadas.get(pasoActual);
             usuarioRegistroView.configurarPreguntaSeguridad(pregunta, pasoActual + 1);
         }
-
     }
 
     private boolean procesarRespuestaSeguridad() {
@@ -299,41 +364,30 @@ public class UsuarioController {
         }
     }
 
-    //Métodos de la ventana "USUARIOELIMINARVIEW"
+    // Métodos de la ventana "USUARIOELIMINARVIEW"
     private void buscarUsuario() {
         String username = usuarioEliminarView.getTxtUsuario().getText().trim();
 
-        if(username.isEmpty()) {
+        if (username.isEmpty()) {
             usuarioEliminarView.mostrarMensaje("ingrese.username");
             return;
         }
 
         Usuario usuario = usuarioDAO.buscarPorUsername(username);
-        if(usuario != null) {
-            int numCarritos = contarCarristosUsuario(usuario);
-            cargarDatosTabla(usuario, numCarritos);
+        if (usuario != null) {
+            List<Carrito> carritos = carritoDAO.listarPorUsuario(username);
+            cargarDatosTabla(usuario, carritos.size());
         } else {
             limpiarCamposEliminar();
             usuarioEliminarView.mostrarMensaje("usuario.no.encontrado");
         }
     }
 
-    private int contarCarristosUsuario(Usuario usuario) {
-        if(usuario == null) {
-            return  0;
+    private int contarCarritosUsuario(Usuario usuario) {
+        if (usuario == null || usuario.getUsername() == null) {
+            return 0;
         }
-        List<Carrito> carritos = carritoDAO.listarTodos();
-        int contador = 0;
-
-        for(Carrito carrito : carritos) {
-            if(carrito != null &&
-                    carrito.getUsuario() != null &&
-                    carrito.getUsuario().getUsername() != null &&
-                    carrito.getUsuario().getUsername().equals(usuario.getUsername())) {
-                contador++;
-            }
-        }
-        return contador;
+        return carritoDAO.listarPorUsuario(usuario.getUsername()).size();
     }
 
     private void eliminarUsuario() {
@@ -357,16 +411,16 @@ public class UsuarioController {
             modelo.removeRow(filaSeleccionada);
             usuarioEliminarView.mostrarMensaje("usuario.eliminar.exito");
         }
-
     }
 
     private void cargarDatosTabla(Usuario usuario, int numCarritos) {
         DefaultTableModel modelo = (DefaultTableModel) usuarioEliminarView.getTblUsuario().getModel();
         modelo.setRowCount(0);
+        Locale locale = usuarioEliminarView.getMensaje().getLocale();
 
         modelo.addRow(new Object[]{
                 usuario.getNombreCompleto(),
-                usuario.getFechaNacimiento(),
+                FormateadorUtils.formatearFecha(usuario.getFechaNacimiento(), locale),
                 usuario.getTelefono(),
                 usuario.getCorreo(),
                 usuario.getUsername(),
@@ -383,7 +437,7 @@ public class UsuarioController {
         modelo.setRowCount(0);
     }
 
-    //Métodos de la ventana "USUARIOLISTAVIEW"
+    // Métodos de la ventana "USUARIOLISTAVIEW"
     private void buscarUsuarioLista() {
         String username = usuarioListaView.getTxtUsuario().getText().trim();
         List<Usuario> usuarios;
@@ -437,11 +491,20 @@ public class UsuarioController {
         usuarioListaView.getTxtUsuario().setText("");
     }
 
-    //Métodos en la ventana "USUARIOMODIFICARVIEW"
-    public void cargarUsuario(String username) {
-        usuario = usuarioDAO.buscarPorUsername(username);
-        if(usuario != null) {
-            usuarioModificarView.cargarDatosUsuario(usuario);
+    // Métodos en la ventana "USUARIOMODIFICARVIEW"
+    private void cargarUsuario(String username, Usuario usuarioAutenticado) {
+        if(usuarioAutenticado.getRol() == Rol.ADMINISTRADOR && username != null) {
+            this.usuario = usuarioDAO.buscarPorUsername(username);
+        } else {
+            this.usuario = usuarioAutenticado;
+        }
+
+        if(this.usuario != null) {
+            usuarioModificarView.cargarDatosUsuario(this.usuario);
+            usuarioModificarView.getTxtUsuario().setEnabled(
+                    usuarioAutenticado.getRol() == Rol.ADMINISTRADOR
+            );
+            seleccionCombo();
         } else {
             usuarioModificarView.mostrarMensaje("usuario.no.encontrado");
         }
@@ -469,16 +532,22 @@ public class UsuarioController {
         }
         String opcion = (String) usuarioModificarView.getCbxModificar().getSelectedItem();
         if(opcion == null) return;
+
         boolean esContrasenia = opcion.equals(mensaje.get("modificar.contrasenia"));
+
         usuarioModificarView.getTxtContrasenia().setEnabled(esContrasenia);
         usuarioModificarView.getTxtConfirmar().setEnabled(esContrasenia);
         usuarioModificarView.getTxtUsuario().setEnabled(!esContrasenia);
+
+        usuarioModificarView.revalidate();
+        usuarioModificarView.repaint();
     }
 
     public void guardarCambios() {
-        if(usuario == null)
-            return;
+        if(usuario == null) return;
+
         String opcion = (String) usuarioModificarView.getCbxModificar().getSelectedItem();
+        if(opcion == null) return;
 
         if(opcion.equals(mensaje.get("modificar.contrasenia"))) {
             actualizarContrasenia();
@@ -490,7 +559,6 @@ public class UsuarioController {
     private void actualizarContrasenia() {
         String nuevaContra = new String(usuarioModificarView.getTxtContrasenia().getPassword());
         String confirmacion = new String(usuarioModificarView.getTxtConfirmar().getPassword());
-
         if(!nuevaContra.equals(confirmacion)) {
             usuarioModificarView.mostrarMensaje("contrasenias.no.coinciden");
             return;
@@ -512,24 +580,157 @@ public class UsuarioController {
 
     private void actualizarUsername() {
         String nuevoUsername = usuarioModificarView.getTxtUsuario().getText().trim();
-
-        if (nuevoUsername.isEmpty()) {
+        if(nuevoUsername.isEmpty()) {
             usuarioModificarView.mostrarMensaje("usuario.vacio");
             return;
         }
 
-        if (!nuevoUsername.equals(usuario.getUsername()) &&
+        if(!nuevoUsername.equals(usuario.getUsername()) &&
                 usuarioDAO.buscarPorUsername(nuevoUsername) != null) {
             usuarioModificarView.mostrarMensaje("usuario.ya.existe");
             return;
         }
 
         usuario.setUsername(nuevoUsername);
-        if (usuarioDAO.actualizar(usuario)) {
+        if(usuarioDAO.actualizar(usuario)) {
             usuarioModificarView.mostrarMensaje("usuario.actualizado");
             usuarioModificarView.cargarDatosUsuario(usuario);
         } else {
             usuarioModificarView.mostrarMensaje("error.actualizar");
         }
+    }
+
+    // Métodos para "ADMIN"
+    private void buscarUsuarioAdmin() {
+        String username = adminModificarView.getTxtUsuario().getText();
+
+        if (username.isEmpty()) {
+            adminModificarView.mostrarMensaje(mensaje.get("ingrese.username"));
+            return;
+        }
+
+        this.usuario = usuarioDAO.buscarPorUsername(username);
+
+        if(this.usuario != null) {
+            adminModificarView.cargarDatosUsuario(this.usuario);
+            seleccionComboAdmin();
+        } else {
+            adminModificarView.mostrarMensaje(mensaje.get("usuario.no.encontrado"));
+            adminModificarView.limpiar();
+            inicializarCamposAdmin();
+        }
+    }
+
+    private void mostrarContraseniaAdmin() {
+        JPasswordField contrasenia = adminModificarView.getTxtContrasenia();
+        JPasswordField confirmacion = adminModificarView.getTxtConfirmar();
+
+        if(contrasenia.getEchoChar() == '*') {
+            contrasenia.setEchoChar((char) 0);
+            confirmacion.setEchoChar((char) 0);
+            adminModificarView.getBtnMostrar().setText(mensaje.get("ocultar"));
+        } else {
+            contrasenia.setEchoChar('*');
+            confirmacion.setEchoChar('*');
+            adminModificarView.getBtnMostrar().setText(mensaje.get("mostrar"));
+        }
+    }
+
+    private void seleccionComboAdmin() {
+        if(mensaje == null) {
+            JOptionPane.showMessageDialog(null, "Error");
+            return;
+        }
+        String opcion = (String) adminModificarView.getCbxModificar().getSelectedItem();
+        if(opcion == null) return;
+
+        boolean esContrasenia = opcion.equals(mensaje.get("modificar.contrasenia"));
+
+        adminModificarView.getTxtContrasenia().setEnabled(esContrasenia);
+        adminModificarView.getTxtConfirmar().setEnabled(esContrasenia);
+        adminModificarView.getTxtUsuario1().setEnabled(!esContrasenia); // Asumiendo que !esContrasenia significa "modificar usuario"
+
+        adminModificarView.revalidate();
+        adminModificarView.repaint();
+    }
+
+    public void guardarCambiosAdmin() {
+        if(usuario == null) {
+            adminModificarView.mostrarMensaje("primero.buscar.usuario");
+            return;
+        }
+
+        String opcion = (String) adminModificarView.getCbxModificar().getSelectedItem();
+        if(opcion == null) return;
+
+        if(opcion.equals(mensaje.get("modificar.contrasenia"))) {
+            actualizarContraseniaAdmin();
+        } else {
+            actualizarUsernameAdmin();
+        }
+    }
+
+    private void actualizarContraseniaAdmin() {
+        String nuevaContra = new String(adminModificarView.getTxtContrasenia().getPassword());
+        String confirmacion = new String(adminModificarView.getTxtConfirmar().getPassword());
+
+        if(!nuevaContra.equals(confirmacion)) {
+            adminModificarView.mostrarMensaje("contrasenias.no.coinciden");
+            return;
+        }
+
+        if(nuevaContra.length() < 5) {
+            adminModificarView.mostrarMensaje("contrasenia.invalida");
+            return;
+        }
+
+        usuario.setContrasenia(nuevaContra);
+        if(usuarioDAO.actualizar(usuario)) {
+            adminModificarView.mostrarMensaje("contrasenia.actualizada");
+            adminModificarView.limpiar();
+        } else {
+            adminModificarView.mostrarMensaje("error.actualizar");
+        }
+    }
+
+    private void actualizarUsernameAdmin() {
+        String nuevoUsername = adminModificarView.getTxtUsuario().getText().trim();
+        if(nuevoUsername.isEmpty()) {
+            adminModificarView.mostrarMensaje("usuario.vacio");
+            return;
+        }
+
+        if(!nuevoUsername.equals(usuario.getUsername()) &&
+                usuarioDAO.buscarPorUsername(nuevoUsername) != null) {
+            adminModificarView.mostrarMensaje("usuario.ya.existe");
+            return;
+        }
+
+        usuario.setUsername(nuevoUsername);
+        if(usuarioDAO.actualizar(usuario)) {
+            adminModificarView.mostrarMensaje("usuario.actualizado");
+            adminModificarView.cargarDatosUsuario(usuario);
+        } else {
+            adminModificarView.mostrarMensaje("error.actualizar");
+        }
+    }
+
+    private void inicializarCampos() {
+        usuarioModificarView.getTxtContrasenia().setEnabled(false);
+        usuarioModificarView.getTxtConfirmar().setEnabled(false);
+        usuarioModificarView.getTxtUsuario().setEnabled(false);
+    }
+    private void inicializarCamposAdmin() {
+        adminModificarView.getTxtContrasenia().setEnabled(false);
+        adminModificarView.getTxtConfirmar().setEnabled(false);
+        adminModificarView.getTxtUsuario1().setEnabled(false);
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

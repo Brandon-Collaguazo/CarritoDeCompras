@@ -81,7 +81,7 @@
             </constraints>
             <properties>
               <background color="-8011287"/>
-              <enabled value="false"/>
+              <enabled value="true"/>
               <font name="DialogInput" size="13" style="1"/>
               <text value="Buscar Producto"/>
             </properties>

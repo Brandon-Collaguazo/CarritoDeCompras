@@ -2,6 +2,7 @@ package ec.edu.ups.controlador;
 
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.modelo.Producto;
+import ec.edu.ups.utils.FormateadorUtils;
 import ec.edu.ups.vista.carrito.CarritoAnadirView;
 import ec.edu.ups.vista.producto.ProductoAnadirView;
 import ec.edu.ups.vista.producto.ProductoEliminarView;
@@ -11,7 +12,9 @@ import ec.edu.ups.vista.producto.ProductoModificarView;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductoController {
 
@@ -49,7 +52,7 @@ public class ProductoController {
         productoListaView.getBtnListar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                productoListaView.cargarDatos(productoDAO.listarTodos());
+                buscarProducto();
             }
         });
     }
@@ -104,6 +107,21 @@ public class ProductoController {
         productoAnadirView.limpiarCampos();
     }
 
+    private void buscarProducto() {
+        String codigoStr = productoListaView.getTxtBuscar().getText();
+        int codigo = Integer.parseInt(codigoStr);
+        Producto producto = productoDAO.buscarPorCodigo(codigo);
+        if(producto != null) {
+            List<Producto> productos = new ArrayList<>();
+            productos.add(producto);
+            productoListaView.cargarDatos(productos);
+            productoListaView.limpiarCampos();
+        } else {
+            productoListaView.mostrarMensaje("producto.no.encontrado");
+            productoListaView.cargarDatos(new ArrayList<>());
+        }
+    }
+
     private void buscarProductoEliminar() {
         int codigo = Integer.parseInt(productoEliminarView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
@@ -121,13 +139,13 @@ public class ProductoController {
     }
 
     private void buscarProductoModificar() {
-        // Corrección: Usar productoModificarView en lugar de productoEliminarView
         int codigo = Integer.parseInt(productoModificarView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
+        Locale locale = productoModificarView.getMensaje().getLocale();
 
         if (producto != null) {
             productoModificarView.getTxtNombre().setText(producto.getNombre());
-            productoModificarView.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
+            productoModificarView.getTxtPrecio().setText(FormateadorUtils.formatearMoneda(producto.getPrecio(), locale));
             productoModificarView.getBtnActualizar().setEnabled(true);
         } else {
             productoModificarView.mostrarMensaje("producto.no.encontrado");
@@ -210,13 +228,14 @@ public class ProductoController {
     private void buscarProductoPorCodigo() {
         int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
+        Locale locale = carritoAnadirView.getMensaje().getLocale();
         if (producto == null) {
             carritoAnadirView.mostrarMensaje("producto.no.encontrado");
             carritoAnadirView.getTxtNombre().setText("");
             carritoAnadirView.getTxtPrecio().setText("");
         } else {
             carritoAnadirView.getTxtNombre().setText(producto.getNombre());
-            carritoAnadirView.getTxtPrecio().setText(String.valueOf(producto.getPrecio()));
+            carritoAnadirView.getTxtPrecio().setText(FormateadorUtils.formatearMoneda(producto.getPrecio(), locale));
         }
     }
 }

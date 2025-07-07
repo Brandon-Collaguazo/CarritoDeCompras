@@ -330,7 +330,7 @@ public class CarritoAnadirView extends JInternalFrame {
         this.mensaje = mensaje;
     }
 
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+    public void mostrarMensaje(String keymensaje) {
+        JOptionPane.showMessageDialog(this, mensaje.get(keymensaje));
     }
 }

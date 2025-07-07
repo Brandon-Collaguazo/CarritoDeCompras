@@ -230,8 +230,8 @@ public class CarritoActualizarView extends JInternalFrame {
         txtTotal.setText(formatoMoneda.format(total));
     }
 
-    public void mostrarMensaje(String claveMensaje) {
-        JOptionPane.showMessageDialog(this, mensaje.get(claveMensaje));
+    public void mostrarMensaje(String keyMensaje) {
+        JOptionPane.showMessageDialog(this, mensaje.get(keyMensaje));
     }
 
     public JPanel getPnlPrincipal() {

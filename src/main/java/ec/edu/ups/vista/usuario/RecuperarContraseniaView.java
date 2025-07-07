@@ -28,6 +28,12 @@ public class RecuperarContraseniaView extends JFrame {
     private List<PreguntaSeguridad> preguntas;
     private List<String> respuestas = new ArrayList<>();
 
+    public RecuperarContraseniaView() {
+        this.mensaje = new MensajeInternacionalizacionHandler("es", "EC");
+        initComponents();
+        actualizarTextos();
+    }
+
     public RecuperarContraseniaView(MensajeInternacionalizacionHandler mensaje) {
         this.mensaje = mensaje;
         initComponents();
@@ -36,7 +42,7 @@ public class RecuperarContraseniaView extends JFrame {
 
     private void initComponents() {
         setContentPane(pnlPrincipal);
-        setSize(600,500);
+        setSize(700,400);
         setResizable(true);
         setLocationRelativeTo(getParent());
 
