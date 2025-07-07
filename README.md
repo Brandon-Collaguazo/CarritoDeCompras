@@ -1,13 +1,27 @@
 # 🛒 Proyecto de Ejemplo - Carrito de Compras
-
-Este proyecto fue desarrollado como parte del **período 66** de la asignatura **Programación Orientada a Objetos** en la Universidad Politécnica Salesiana.  
-Su objetivo principal es demostrar el uso de **patrones de diseño** aplicados a una aplicación Java con interfaz gráfica construida con **Swing**.
+### **Estudiante:** Brandon Collaguazo
+### **Universidad Politécnica Salesiana** - POO Periodo 66
 
 ---
 
-## 🎯 Objetivo del proyecto
+## 📚 **Contexto Académico**
+Proyecto desarrollado inicialmente en clases con el profesor y finalizado por el estudiante, demostrando la aplicación de:
+- ✅ Patrones de diseño avanzados.
+- ✅ Principios SOLID.
+- ✅ Buenas prácticas de programación Java.
 
-Implementar un sistema educativo que simula un **carrito de compras**, utilizando buenas prácticas de diseño y una arquitectura desacoplada basada en **MVC** (Modelo-Vista-Controlador), **DAO** (Data Access Object) y principios de **POO** y **SOLID**.
+---
+
+## 🌍 Características Destacadas
+### 🔤 Internacionalización
+Soporte para 3 idiomas: Español (default), Inglés y Francés
+Cambio dinámico de idioma durante la ejecución
+Todos los textos cargados desde archivos .properties
+### 🎨 Elementos Visuales Mejorados
+Iconos profesionales en botones principales
+Gráficos de tablas personalizados (JTable)
+Renderizado especial para botones en celdas
+Diseño responsive para diferentes resoluciones
 
 ---
 
@@ -34,15 +48,19 @@ Implementar un sistema educativo que simula un **carrito de compras**, utilizand
 ---
 
 
-## 📚 Recomendaciones
-
-- Ejecutar el proyecto desde `Main.java`
-- Usar IntelliJ IDEA para aprovechar el editor visual de formularios `.form`
-- Probar con diferentes implementaciones del DAO para observar la flexibilidad del patrón
+## 💡 Aprendizajes Obtenidos
+- Implementación práctica de MVC y DAO
+- Uso de ResourceBundle para internacionalización
+- Personalización avanzada de componentes Swing
+- Aplicación de principios SOLID en proyecto real
 
 ---
 
-## © Créditos
+## 🖼️ Diagrama de Clase
 
-Desarrollado como parte de la práctica académica en **Programación Orientada a Objetos – Periodo 66**.
+![image](https://github.com/user-attachments/assets/8bea2e30-4618-43c3-945b-11d6b410fc79)
+
+![image](https://github.com/user-attachments/assets/71eef49b-0179-47e4-badc-079c0d1176c1)
+
+![image](https://github.com/user-attachments/assets/6047d08e-52f2-4e3a-a4b1-13618cdc25d9)
 
