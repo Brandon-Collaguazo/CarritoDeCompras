@@ -1,6 +1,7 @@
 # 🛒 Proyecto de Ejemplo - Carrito de Compras
 ### **Estudiante:** Brandon Collaguazo
 ### **Universidad Politécnica Salesiana** - POO Periodo 66
+### 📹 **Link Video**: https://youtu.be/spVSWkvdZW8
 
 ---
 
