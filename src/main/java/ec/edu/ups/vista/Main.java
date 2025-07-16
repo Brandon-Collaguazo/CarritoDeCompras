@@ -19,6 +19,9 @@ import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
 
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
+import ec.edu.ups.vista.autenticacion.LoginView;
+import ec.edu.ups.vista.autenticacion.RecuperarContraseniaView;
+import ec.edu.ups.vista.autenticacion.UsuarioRegistroView;
 import ec.edu.ups.vista.carrito.*;
 import ec.edu.ups.vista.producto.ProductoAnadirView;
 import ec.edu.ups.vista.producto.ProductoEliminarView;

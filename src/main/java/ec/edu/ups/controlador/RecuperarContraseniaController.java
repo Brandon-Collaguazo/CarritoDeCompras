@@ -5,7 +5,7 @@ import ec.edu.ups.dao.UsuarioDAO;
 import ec.edu.ups.modelo.PreguntaSeguridad;
 import ec.edu.ups.modelo.Usuario;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
-import ec.edu.ups.vista.usuario.RecuperarContraseniaView;
+import ec.edu.ups.vista.autenticacion.RecuperarContraseniaView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

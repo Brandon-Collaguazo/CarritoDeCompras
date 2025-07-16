@@ -50,7 +50,7 @@ public class CarritoActualizarView extends JInternalFrame {
         setContentPane(pnlPrincipal);
         setClosable(true);
         setResizable(true);
-        setSize(900, 500);
+        setSize(1200, 500);
 
         URL buscarCarritoURL = CarritoActualizarView.class.getClassLoader().getResource("imagenes/buscar_carrito.png");
         if(buscarCarritoURL != null) {

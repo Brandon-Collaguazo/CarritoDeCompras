@@ -1,7 +1,6 @@
 package ec.edu.ups.vista;
 
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
-import ec.edu.ups.vista.usuario.LoginView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

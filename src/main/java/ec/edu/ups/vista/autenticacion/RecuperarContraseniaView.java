@@ -1,4 +1,4 @@
-package ec.edu.ups.vista.usuario;
+package ec.edu.ups.vista.autenticacion;
 
 import ec.edu.ups.modelo.PreguntaSeguridad;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
