@@ -3,6 +3,10 @@ package ec.edu.ups.controlador;
 import ec.edu.ups.dao.CarritoDAO;
 import ec.edu.ups.dao.PreguntaSeguridadDAO;
 import ec.edu.ups.dao.UsuarioDAO;
+import ec.edu.ups.excepciones.CedulaException;
+import ec.edu.ups.excepciones.ContraseniaException;
+import ec.edu.ups.excepciones.CorreoException;
+import ec.edu.ups.excepciones.FechaException;
 import ec.edu.ups.modelo.*;
 import ec.edu.ups.utils.FormateadorUtils;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
@@ -267,6 +271,7 @@ public class UsuarioController {
     }
 
     private boolean validarDatos() {
+        String cedula = usuarioRegistroView.getTxtCedula().getText();
         String nombre = usuarioRegistroView.getTxtNombre().getText();
         String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText();
         String telefono = usuarioRegistroView.getTxtTelefono().getText();
@@ -299,6 +304,28 @@ public class UsuarioController {
             return false;
         }
 
+        Usuario nuevoUsuario = new Usuario(
+                cedula,
+                nombre,
+                fechaNacimiento,
+                telefono,
+                correo,
+                username,
+                password,
+                Rol.USUARIO);
+        try {
+            nuevoUsuario.validarCedula();
+        } catch (CedulaException e) {
+            usuarioRegistroView.mostrarMensaje(e.getMessage());
+            return  false;
+        }
+
+        try {
+            nuevoUsuario.validarContrasenia();
+        } catch (ContraseniaException e) {
+            usuarioRegistroView.mostrarMensaje(e.getMessage());
+        }
+
         return true;
     }
 
@@ -328,6 +355,10 @@ public class UsuarioController {
     }
 
     private void completarRegistro() {
+        if (!usuarioRegistroView.validarCampos()) {
+            return;
+        }
+        String cedula = usuarioRegistroView.getTxtCedula().getText();
         String nombre = usuarioRegistroView.getTxtNombre().getText();
         String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText();
         String telefono = usuarioRegistroView.getTxtTelefono().getText();
@@ -335,17 +366,10 @@ public class UsuarioController {
         String username = usuarioRegistroView.getTxtUsername().getText();
         String password = new String(usuarioRegistroView.getTxtPassword().getPassword());
 
-        Date fechaNacimiento;
-        try {
-            fechaNacimiento = new SimpleDateFormat("dd/MM/yyyy").parse(fecha);
-        } catch (ParseException exception) {
-            usuarioRegistroView.mostrarMensaje("formato.fecha.incorrecto");
-            return;
-        }
-
         Usuario nuevoUsuario = new Usuario(
+                cedula,
                 nombre,
-                fechaNacimiento,
+                null,
                 telefono,
                 correo,
                 username,
@@ -354,6 +378,8 @@ public class UsuarioController {
         );
 
         try {
+            nuevoUsuario.validarFecha(fecha);
+            nuevoUsuario.validar();
             usuarioDAO.crear(nuevoUsuario);
             usuarioRegistroView.mostrarMensaje("registro.exitoso");
             usuarioRegistroView.dispose();
@@ -362,6 +388,9 @@ public class UsuarioController {
             preguntasSeleccionadas = null;
             usernameEnRegistro = null;
             passwordEnRegistro = null;
+
+        } catch (CedulaException | ContraseniaException | FechaException | CorreoException e) {
+            usuarioRegistroView.mostrarMensaje(e.getMessage());
         } catch (Exception e) {
             usuarioRegistroView.mostrarMensaje("error.registro");
         }

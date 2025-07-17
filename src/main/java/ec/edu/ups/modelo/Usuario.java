@@ -1,5 +1,12 @@
 package ec.edu.ups.modelo;
 
+import ec.edu.ups.excepciones.CedulaException;
+import ec.edu.ups.excepciones.ContraseniaException;
+import ec.edu.ups.excepciones.CorreoException;
+import ec.edu.ups.excepciones.FechaException;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -9,6 +16,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * Contiene información general, credenciales de acceso, rol y preguntas de seguridad.
  */
 public class Usuario {
+    /**
+     * Cédula de identidad del usuario
+     */
+    private String cedula;
+
     /**
      * Nombre completo del usuario
      */
@@ -64,8 +76,9 @@ public class Usuario {
      * @param contrasenia Contraseña
      * @param rol Rol del usuario
      */
-    public Usuario(String nombreCompleto, Date fechaNacimiento, String telefono,
+    public Usuario(String cedula, String nombreCompleto, Date fechaNacimiento, String telefono,
                    String correo, String username, String contrasenia, Rol rol) {
+        this.cedula = cedula;
         this.nombreCompleto = nombreCompleto;
         this.fechaNacimiento = fechaNacimiento;
         this.telefono = telefono;
@@ -121,7 +134,75 @@ public class Usuario {
         return idPreguntas.get(random);
     }
 
+    public void validarCedula() throws CedulaException {
+        if(cedula == null || cedula.length() != 10 || !cedula.matches("\\d+")) {
+            throw new CedulaException("La cédula debe tener al menos 10 dígitos numéricos");
+        }
+
+        int ultimoDigito = Character.getNumericValue(cedula.charAt(9));
+        int suma = 0;
+        for (int i = 0; i < 9; i++) {
+            int digito = Character.getNumericValue(cedula.charAt(i));
+            suma += (i % 2 == 0) ? digito * 2 : digito;
+        }
+
+        int verfificadorCalculado = (10 - (suma % 10)) % 10;
+        if (verfificadorCalculado != ultimoDigito) {
+            throw new CedulaException("El ´digito verificador es inválido");
+        }
+    }
+
+    public void validarContrasenia() throws ContraseniaException {
+        if (contrasenia == null || contrasenia.length() < 8) {
+            throw new ContraseniaException("La contraseña debe tener al menos 8 caracteres");
+        }
+
+        if (!contrasenia.matches(".[A-Z].*") ||
+            !contrasenia.matches(".[a-z].*") ||
+            !contrasenia.matches(".*\\d.*")) {
+            throw new ContraseniaException("Debe contener mayúsculas, minúsculas y números");
+        }
+    }
+
+    public void validarCorreo() throws CorreoException {
+        if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new CorreoException();
+        }
+    }
+
+    public void validarFecha(String fecha) throws FechaException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        simpleDateFormat.setLenient(false);
+
+        try {
+            fechaNacimiento = simpleDateFormat.parse(fecha);
+        } catch (ParseException e) {
+            throw new FechaException();
+        }
+    }
+
+    public void validar() throws CedulaException, ContraseniaException, CorreoException, FechaException {
+        validarCedula();
+        validarContrasenia();
+        validarCorreo();
+        validarFecha(String.valueOf(fechaNacimiento));
+    }
+
     //Métodos Getters y Setters
+
+    /**
+     * @return Cédula de identidad del usuario
+     */
+    public String getCedula() {
+        return cedula;
+    }
+
+    /**
+     * @param cedula Nueva cédula para el usuario
+     */
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
+    }
 
     /**
      * @return Lista de respuestas de seguridad

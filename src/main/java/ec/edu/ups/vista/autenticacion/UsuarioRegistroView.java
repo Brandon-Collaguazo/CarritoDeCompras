@@ -32,6 +32,8 @@ public class UsuarioRegistroView extends JFrame {
     private JLabel lblRespuesta;
     private JButton btnSiguiente;
     private JLabel lblPreguntas;
+    private JLabel lblCedula;
+    private JTextField txtCedula;
     private MensajeInternacionalizacionHandler mensaje;
     private List<String> preguntaSelecionada = new ArrayList<>();
     private List<String> respuestas = new ArrayList<>();
@@ -78,8 +80,11 @@ public class UsuarioRegistroView extends JFrame {
         setTitle(mensaje.get("usuario.registro.titulo"));
 
         lblTitulo.setText(mensaje.get("usuario.registro.titulo"));
+
         lblPregunta.setText(mensaje.get("usuario.pregunta"));
         lblRespuesta.setText(mensaje.get("usuario.respuesta"));
+
+        lblCedula.setText(mensaje.get("usuario.cedula"));
         lblNombre.setText(mensaje.get("registro.nombre"));
         lblFechaDeNacimiento.setText(mensaje.get("fecha.nacimiento"));
         lblTelefono.setText(mensaje.get("telefono"));
@@ -98,6 +103,7 @@ public class UsuarioRegistroView extends JFrame {
     }
 
     public void habilitarCampos() {
+        txtCedula.setEnabled(true);
         txtNombre.setEnabled(true);
         txtFechaNacimiento.setEnabled(true);
         txtTelefono.setEnabled(true);
@@ -123,12 +129,74 @@ public class UsuarioRegistroView extends JFrame {
         return txtRespuesta.getText().trim();
     }
 
+    public boolean validarCampos() {
+        if (getTxtCedula().getText().trim().isEmpty()) {
+            mostrarMensaje("usuario.cedula.vacio");
+            txtCedula.requestFocus();
+            return  false;
+        }
+
+        if (getTxtNombre().getText().trim().isEmpty()) {
+            mostrarMensaje("usuario.nombre.vacio");
+            txtNombre.requestFocus();
+            return false;
+        }
+
+        if (getTxtFechaNacimiento().getText().trim().isEmpty()) {
+            mostrarMensaje("usuario.fecha.vacio");
+            txtFechaNacimiento.requestFocus();
+            return false;
+        }
+
+        if (getTxtTelefono().getText().trim().isEmpty()) {
+            mostrarMensaje("usuario.telefono.vacio");
+            txtTelefono.requestFocus();
+            return false;
+        }
+
+        if (getTxtCorreo().getText().trim().isEmpty()) {
+            mostrarMensaje("usuario.correo.vacio");
+            txtCorreo.requestFocus();
+            return false;
+        }
+
+        if (getTxtUsername().getText().trim().isEmpty()) {
+            mostrarMensaje("usuario.username.vacio");
+            txtUsername.requestFocus();
+            return false;
+        }
+
+        String password = new String(getTxtPassword().getPassword());
+        if (password.trim().isEmpty()) {
+            mostrarMensaje("usuario.contrasenia.vacio");
+            getTxtPassword().requestFocus();
+            return false;
+        }
+
+        String confirmar = new String(getTxtConfirmarPassword().getPassword());
+        if (!password.equals(confirmar)) {
+            mostrarMensaje("contrasenia.no.coincide");
+            getTxtConfirmarPassword().requestFocus();
+            return false;
+        }
+
+        return  true;
+    }
+
     public JPanel getPnlPrincipal() {
         return pnlPrincipal;
     }
 
     public void setPnlPrincipal(JPanel pnlPrincipal) {
         this.pnlPrincipal = pnlPrincipal;
+    }
+
+    public JTextField getTxtCedula() {
+        return txtCedula;
+    }
+
+    public void setTxtCedula(JTextField txtCedula) {
+        this.txtCedula = txtCedula;
     }
 
     public JTextField getTxtUsername() {
