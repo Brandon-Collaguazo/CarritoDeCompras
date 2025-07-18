@@ -175,7 +175,7 @@ public class UsuarioRegistroView extends JFrame {
 
         String confirmar = new String(getTxtConfirmarPassword().getPassword());
         if (!password.equals(confirmar)) {
-            mostrarMensaje("contrasenia.no.coincide");
+            mostrarMensaje("contrasenias.no.coinciden");
             getTxtConfirmarPassword().requestFocus();
             return false;
         }
