@@ -27,6 +27,11 @@ public class LoginView extends JFrame {
     private JButton btnRecuperar;
     private JLabel lblRecuperar;
     private JPasswordField txtPassword;
+    private JLabel lblAlmacenamiento;
+    private JComboBox<String> cbxAlmacenamiento;
+    private JTextField txtRuta;
+    private JLabel lblRuta;
+    private String[] opcionesAlmacenamiento = {"Memoria", "Archivos Txt", "Archivos Binarios"};
     private MensajeInternacionalizacionHandler mensaje;
     private String[] codigosIdioma = {"es", "en", "fr"};
     private String idiomaSeleccionado = "es";
@@ -46,6 +51,11 @@ public class LoginView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null);
+
+        cbxAlmacenamiento.setModel(new DefaultComboBoxModel<>(
+                new String[]{"Memoria", "Archivos Txt", "Archivos Binarios"}
+        ));
+        cbxAlmacenamiento.setSelectedIndex(0);
 
         menuBar = new JMenuBar();
 
@@ -135,15 +145,25 @@ public class LoginView extends JFrame {
                 cambiarIdioma(2);
             }
         });
+
+        cbxAlmacenamiento.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean mostrarRuta = !cbxAlmacenamiento.getSelectedItem().equals("Memoria");
+                lblRuta.setVisible(mostrarRuta);
+                txtRuta.setVisible(mostrarRuta);
+            }
+        });
     }
 
     private void actualizarTextos() {
         setTitle(mensaje.get("login.titulo"));
-
         lblTitulo.setText(mensaje.get("login.titulo"));
+
         lblUsuario.setText(mensaje.get("usuario"));
         lblPassword.setText(mensaje.get("contrasenia"));
-
+        lblAlmacenamiento.setText(mensaje.get("almacenamiento"));
+        lblRuta.setText(mensaje.get("ruta"));
         lblRecuperar.setText(mensaje.get("recuperar"));
 
         btnIniciar.setText(mensaje.get("iniciar"));
@@ -151,7 +171,6 @@ public class LoginView extends JFrame {
         btnRecuperar.setText(mensaje.get("btn.recuperar"));
 
         menuIdioma.setText(mensaje.get("menu.idioma"));
-
         menuItemEspaniol.setText(mensaje.get("menu.idioma.es"));
         menuItemIngles.setText(mensaje.get("menu.idioma.en"));
         menuItemFrances.setText(mensaje.get("menu.idioma.fr"));
@@ -297,6 +316,14 @@ public class LoginView extends JFrame {
         this.txtPassword = txtPassword;
     }
 
+    public JTextField getTxtRuta() {
+        return txtRuta;
+    }
+
+    public void setTxtRuta(JTextField txtRuta) {
+        this.txtRuta = txtRuta;
+    }
+
     public JButton getBtnIniciar() {
         return btnIniciar;
     }
@@ -317,6 +344,14 @@ public class LoginView extends JFrame {
         return lblTitulo;
     }
 
+    public JComboBox getCbxAlmacenamiento() {
+        return cbxAlmacenamiento;
+    }
+
+    public void setCbxAlmacenamiento(JComboBox cbxAlmacenamiento) {
+        this.cbxAlmacenamiento = cbxAlmacenamiento;
+    }
+
     public void setLblTitulo(JLabel lblTitulo) {
         this.lblTitulo = lblTitulo;
     }
@@ -329,6 +364,15 @@ public class LoginView extends JFrame {
         this.mensaje = mensaje;
     }
 
+    public String getTipoAlmacenamiento() {
+        return (String) cbxAlmacenamiento.getSelectedItem();
+    }
+
+    public String getRutaArchivo() {
+        return txtRuta.getText().trim();
+    }
+
+
     public void mostrarMensaje(String mensajeKey) {
         JOptionPane.showMessageDialog(this, mensaje.get(mensajeKey));
     }
@@ -336,5 +380,9 @@ public class LoginView extends JFrame {
     public void limpiarCampos() {
         txtUsuario.setText("");
         txtPassword.setText("");
+    }
+
+    public void setRutaArchivo(String rutaDefault) {
+        txtRuta.setText(rutaDefault);
     }
 }

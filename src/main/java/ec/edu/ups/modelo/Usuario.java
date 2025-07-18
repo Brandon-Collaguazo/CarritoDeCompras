@@ -136,7 +136,7 @@ public class Usuario {
 
     public void validarCedula() throws CedulaException {
         if(cedula == null || cedula.length() != 10 || !cedula.matches("\\d+")) {
-            throw new CedulaException("La cédula debe tener al menos 10 dígitos numéricos");
+            throw new CedulaException("cedula.invalida");
         }
 
         int ultimoDigito = Character.getNumericValue(cedula.charAt(9));
@@ -148,19 +148,29 @@ public class Usuario {
 
         int verfificadorCalculado = (10 - (suma % 10)) % 10;
         if (verfificadorCalculado != ultimoDigito) {
-            throw new CedulaException("El ´digito verificador es inválido");
+            throw new CedulaException("digito.verificador");
         }
     }
 
     public void validarContrasenia() throws ContraseniaException {
-        if (contrasenia == null || contrasenia.length() < 8) {
-            throw new ContraseniaException("La contraseña debe tener al menos 8 caracteres");
+        if (contrasenia == null || contrasenia.isEmpty()) {
+            throw new ContraseniaException("contrasenia.vacia");
         }
 
-        if (!contrasenia.matches(".[A-Z].*") ||
-            !contrasenia.matches(".[a-z].*") ||
-            !contrasenia.matches(".*\\d.*")) {
-            throw new ContraseniaException("Debe contener mayúsculas, minúsculas y números");
+        if (contrasenia == null || contrasenia.length() < 8) {
+            throw new ContraseniaException("contrasenia.corta");
+        }
+
+        if (!contrasenia.matches(".*[A-Z].*")) {
+            throw new ContraseniaException("contrasenia.sin.mayuscula");
+        }
+
+        if (!contrasenia.matches(".*\\d.*")) {
+            throw new ContraseniaException("contrasenia.sin.numero");
+        }
+
+        if (!contrasenia.matches(".*[!@#$%^&*()_+].*")) {
+            throw new ContraseniaException("contrasenia.sin.caracter");
         }
     }
 
@@ -181,11 +191,11 @@ public class Usuario {
         }
     }
 
-    public void validar() throws CedulaException, ContraseniaException, CorreoException, FechaException {
+    public void validar(String fechaNacimientoStr) throws CedulaException, ContraseniaException, CorreoException, FechaException {
         validarCedula();
         validarContrasenia();
         validarCorreo();
-        validarFecha(String.valueOf(fechaNacimiento));
+        validarFecha(fechaNacimientoStr);
     }
 
     //Métodos Getters y Setters

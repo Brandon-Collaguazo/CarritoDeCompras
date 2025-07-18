@@ -11,7 +11,7 @@ public interface UsuarioDAO {
 
     /**
      * Verifica las credenciales del usuario
-     * @param username Nombre de usuario
+     * @param username Username del usuario
      * @param contrasenia Contraseña del usuario
      * @return Objeto si las credenciales son válidas, null si la autenticación falla
      */
@@ -39,9 +39,8 @@ public interface UsuarioDAO {
     /**
      * Actualiza la información de un usuario existente
      * @param usuario Objeto Usuario con datos actualizados
-     * @return true si la actualización fue exitosa, false si falló
      */
-    boolean actualizar(Usuario usuario);
+    void actualizar(Usuario usuario);
 
     /**
      * Obtiene todos los usuarios registrados

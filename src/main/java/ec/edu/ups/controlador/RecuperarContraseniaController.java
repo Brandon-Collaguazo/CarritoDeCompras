@@ -12,14 +12,50 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Controlador para el proceso de recuperación de contraseñas.
+ * Gestiona la autenticación mediante preguntas de seguridad y
+ * el proceso de restablecimiento de contraseñas para usuarios.
+ */
 public class RecuperarContraseniaController {
+    /**
+     * Vista para la recuperación de contraseña.
+     */
     private final RecuperarContraseniaView recuperarContraseniaView;
+
+    /**
+     * DAO para operaciones con usuarios.
+     */
     private final UsuarioDAO usuarioDAO;
+
+    /**
+     * DAO para operaciones con preguntas de seguridad.
+     */
     private final PreguntaSeguridadDAO preguntaDAO;
+
+    /**
+     * Pregunta de seguridad actual para el usuario.
+     */
     private PreguntaSeguridad preguntaActual;
+
+    /**
+     * Manejador de mensajes internacionalizados.
+     */
     private MensajeInternacionalizacionHandler mensaje;
+
+    /**
+     * Manejador de mensajes internacionalizados.
+     */
     private boolean respuestaVerificada = false; // Flag para controlar el flujo
 
+    /**
+     * Constructor principal del controlador.
+     *
+     * @param recuperarContraseniaView Vista de recuperación de contraseña
+     * @param usuarioDAO DAO para operaciones de usuario
+     * @param preguntaDAO DAO para preguntas de seguridad
+     * @param mensaje Manejador de mensajes internacionalizados
+     */
     public RecuperarContraseniaController(RecuperarContraseniaView recuperarContraseniaView,
                                           UsuarioDAO usuarioDAO,
                                           PreguntaSeguridadDAO preguntaDAO,
@@ -31,6 +67,9 @@ public class RecuperarContraseniaController {
         configurarEventos();
     }
 
+    /**
+     * Configura los eventos de la vista de recuperación de contraseña.
+     */
     public void configurarEventos() {
         recuperarContraseniaView.getBtnBuscar().addActionListener(new ActionListener() {
             @Override
@@ -59,6 +98,10 @@ public class RecuperarContraseniaController {
         });
     }
 
+    /**
+     * Busca un usuario para iniciar el proceso de recuperación.
+     * Verifica la existencia del usuario y selecciona una pregunta de seguridad aleatoria.
+     */
     private void buscarUsuario() {
         String username = recuperarContraseniaView.getTxtUsuario().getText().trim();
         if(username.isEmpty()) {
@@ -102,6 +145,10 @@ public class RecuperarContraseniaController {
         respuestaVerificada = false;
     }
 
+    /**
+     * Verifica la respuesta del usuario a la pregunta de seguridad.
+     * Si es correcta, habilita los campos para ingresar una nueva contraseña.
+     */
     private void verificarRespuesta() {
         String respuesta = recuperarContraseniaView.getTxtRespuesta().getText().trim();
         String username = recuperarContraseniaView.getTxtUsuario().getText().trim();
@@ -136,6 +183,10 @@ public class RecuperarContraseniaController {
         }
     }
 
+    /**
+     * Procesa el cambio de contraseña del usuario.
+     * Valida que las contraseñas coincidan y cumplan con los requisitos mínimos.
+     */
     private void recuperarContrasenia() {
         String nuevaContrasenia = new String(recuperarContraseniaView.getTxtContrasenia().getPassword());
         String confirmacion = new String(recuperarContraseniaView.getTxtConfirmar().getPassword());
@@ -159,20 +210,27 @@ public class RecuperarContraseniaController {
 
         // Actualizar la contraseña del usuario
         Usuario usuario = usuarioDAO.buscarPorUsername(username);
-        if(usuario != null) {
+
+        if (usuario != null) {
             usuario.setContrasenia(nuevaContrasenia);
-            if(usuarioDAO.actualizar(usuario)) {
+
+            try {
+                usuarioDAO.actualizar(usuario); // Llamada directa sin evaluación
                 recuperarContraseniaView.mostrarMensaje("contrasenia.actualizada");
                 limpiarFormulario();
                 recuperarContraseniaView.dispose();
-            } else {
+            } catch (Exception e) {
                 recuperarContraseniaView.mostrarMensaje("error.actualizar.contrasenia");
+                e.printStackTrace(); // Para debug
             }
         } else {
             recuperarContraseniaView.mostrarMensaje("usuario.no.encontrado");
         }
     }
 
+    /**
+     * Limpia los campos relacionados con la pregunta de seguridad.
+     */
     private void limpiarCamposPregunta() {
         recuperarContraseniaView.getTxtPregunta().setText("");
         recuperarContraseniaView.getTxtRespuesta().setText("");
@@ -182,7 +240,10 @@ public class RecuperarContraseniaController {
         recuperarContraseniaView.getBtnRecuperar().setEnabled(false);
     }
 
-    private void limpiarFormulario() {
+    /**
+     * Limpia completamente el formulario de recuperación.
+     * Restablece todos los campos y estados a sus valores iniciales.
+     */    private void limpiarFormulario() {
         recuperarContraseniaView.getTxtUsuario().setText("");
         recuperarContraseniaView.getTxtPregunta().setText("");
         recuperarContraseniaView.getTxtRespuesta().setText("");

@@ -16,15 +16,53 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Controlador para la gestión de productos en el sistema.
+ * Maneja las operaciones CRUD de productos y coordina las interacciones
+ * entre las vistas de productos y el modelo de datos.
+ */
 public class ProductoController {
 
+    /**
+     * DAO para operaciones de persistencia de productos.
+     */
     private final ProductoDAO productoDAO;
+
+    /**
+     * Vista para añadir nuevos productos.
+     */
     private final ProductoAnadirView productoAnadirView;
+
+    /**
+     * Vista para listar productos existentes.
+     */
     private final ProductoListaView productoListaView;
+
+    /**
+     * Vista para eliminar productos.
+     */
     private final ProductoEliminarView productoEliminarView;
+
+    /**
+     * Vista para modificar productos existentes.
+     */
     private final ProductoModificarView productoModificarView;
+
+    /**
+     * Vista del carrito de compras (para integración).
+     */
     private final CarritoAnadirView carritoAnadirView;
 
+    /**
+     * Constructor principal del controlador de productos.
+     *
+     * @param productoDAO DAO para operaciones de productos
+     * @param productoAnadirView Vista de añadir productos
+     * @param productoListaView Vista de listar productos
+     * @param productoEliminarView Vista de eliminar productos
+     * @param productoModificarView Vista de modificar productos
+     * @param carritoAnadirView Vista del carrito para integración
+     */
     public ProductoController(ProductoDAO productoDAO,
                               ProductoAnadirView productoAnadirView,
                               ProductoListaView productoListaView,
@@ -39,6 +77,9 @@ public class ProductoController {
         this.carritoAnadirView = carritoAnadirView;
     }
 
+    /**
+     * Configura los eventos para la vista de añadir productos.
+     */
     public void configurarEventosAnadir() {
         productoAnadirView.getBtnAceptar().addActionListener(new ActionListener() {
             @Override
@@ -48,6 +89,9 @@ public class ProductoController {
         });
     }
 
+    /**
+     * Configura los eventos para la vista de listar productos.
+     */
     public void configurarEventosLista() {
         productoListaView.getBtnListar().addActionListener(new ActionListener() {
             @Override
@@ -57,6 +101,9 @@ public class ProductoController {
         });
     }
 
+    /**
+     * Configura los eventos para la vista de eliminar productos.
+     */
     public void configurarEventosEliminar() {
         productoEliminarView.getBtnBuscar().addActionListener(new ActionListener() {
             @Override
@@ -73,6 +120,9 @@ public class ProductoController {
         });
     }
 
+    /**
+     * Configura los eventos para la vista de modificar productos.
+     */
     public void configurarEventosModificar() {
         productoModificarView.getBtnBuscar().addActionListener(new ActionListener() {
             @Override
@@ -89,6 +139,9 @@ public class ProductoController {
         });
     }
 
+    /**
+     * Configura los eventos relacionados con productos en el carrito.
+     */
     public void configurarEventosCarrito() {
         carritoAnadirView.getBtnBuscar().addActionListener(new ActionListener() {
             @Override
@@ -98,6 +151,9 @@ public class ProductoController {
         });
     }
 
+    /**
+     * Guarda un nuevo producto en la base de datos.
+     */
     private void guardarProducto() {
         int codigo = Integer.parseInt(productoAnadirView.getTxtCodigo().getText());
         String nombre = productoAnadirView.getTxtNombre().getText();
@@ -107,6 +163,9 @@ public class ProductoController {
         productoAnadirView.limpiarCampos();
     }
 
+    /**
+     * Busca un producto por su código y lo muestra en la lista.
+     */
     private void buscarProducto() {
         String codigoStr = productoListaView.getTxtBuscar().getText();
         int codigo = Integer.parseInt(codigoStr);
@@ -122,6 +181,9 @@ public class ProductoController {
         }
     }
 
+    /**
+     * Busca un producto para su posterior eliminación.
+     */
     private void buscarProductoEliminar() {
         int codigo = Integer.parseInt(productoEliminarView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
@@ -138,6 +200,9 @@ public class ProductoController {
         }
     }
 
+    /**
+     * Busca un producto para su modificación.
+     */
     private void buscarProductoModificar() {
         int codigo = Integer.parseInt(productoModificarView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
@@ -155,6 +220,9 @@ public class ProductoController {
         }
     }
 
+    /**
+     * Modifica los datos de un producto existente.
+     */
     private void modificarProducto() {
         int codigo = Integer.parseInt(productoModificarView.getTxtCodigo().getText());
         String nombre = productoModificarView.getTxtNombre().getText().trim();
@@ -190,6 +258,9 @@ public class ProductoController {
         productoModificarView.getBtnActualizar().setEnabled(false);
     }
 
+    /**
+     * Elimina un producto de la base de datos.
+     */
     private void eliminarProducto() {
         int codigo = Integer.parseInt(productoEliminarView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);
@@ -216,15 +287,24 @@ public class ProductoController {
         }
     }
 
+    /**
+     * Lista todos los productos disponibles.
+     */
     private void listarProductos() {
         actualizarVistas();
     }
 
+    /**
+     * Actualiza las vistas con la lista completa de productos.
+     */
     private void actualizarVistas() {
         List<Producto> productos = productoDAO.listarTodos();
         productoListaView.cargarDatos(productos);
     }
 
+    /**
+     * Busca un producto por código para añadirlo al carrito.
+     */
     private void buscarProductoPorCodigo() {
         int codigo = Integer.parseInt(carritoAnadirView.getTxtCodigo().getText());
         Producto producto = productoDAO.buscarPorCodigo(codigo);

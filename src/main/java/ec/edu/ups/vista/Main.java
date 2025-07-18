@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.text.MessageFormat;
 
 public class Main {
@@ -41,11 +42,14 @@ public class Main {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 UsuarioDAO usuarioDAO = new UsuarioDAOMemoria();
+                String rutaDefault = "./data/";
+                new File(rutaDefault).mkdirs();
                 LoginView loginView = new LoginView();
+                loginView.setRutaArchivo(rutaDefault);
                 loginView.setVisible(true);
 
                 CarritoDAO carritoDAO = new CarritoDAOMemoria();
-
+                ProductoDAO productoDAO = new ProductoDAOMemoria();
                 PreguntaSeguridadDAO preguntaSeguridadDAO = new PreguntaSeguridadDAOMemoria();
 
                 UsuarioRegistroView usuarioRegistroView = new UsuarioRegistroView();
@@ -62,6 +66,7 @@ public class Main {
                 UsuarioController usuarioController = new UsuarioController(
                         usuarioDAO,
                         carritoDAO,
+                        productoDAO,
                         loginView,
                         preguntaSeguridadDAO,
                         usuarioRegistroView,

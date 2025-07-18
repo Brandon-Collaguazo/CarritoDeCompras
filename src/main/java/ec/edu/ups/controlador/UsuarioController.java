@@ -2,7 +2,9 @@ package ec.edu.ups.controlador;
 
 import ec.edu.ups.dao.CarritoDAO;
 import ec.edu.ups.dao.PreguntaSeguridadDAO;
+import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.dao.UsuarioDAO;
+import ec.edu.ups.dao.impl.*;
 import ec.edu.ups.excepciones.CedulaException;
 import ec.edu.ups.excepciones.ContraseniaException;
 import ec.edu.ups.excepciones.CorreoException;
@@ -19,6 +21,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,8 +38,9 @@ public class UsuarioController {
     private int pasoActual = 0;
     private String usernameEnRegistro;
     private String passwordEnRegistro;
-    private final UsuarioDAO usuarioDAO;
-    private final CarritoDAO carritoDAO;
+    private UsuarioDAO usuarioDAO;
+    private CarritoDAO carritoDAO;
+    private ProductoDAO productoDAO;
     private final PreguntaSeguridadDAO preguntaDAO;
     private final LoginView loginView;
     private final UsuarioRegistroView usuarioRegistroView;
@@ -48,6 +52,7 @@ public class UsuarioController {
 
     public UsuarioController(UsuarioDAO usuarioDAO,
                              CarritoDAO carritoDAO,
+                             ProductoDAO productoDAO,
                              LoginView loginView,
                              PreguntaSeguridadDAO preguntaDAO,
                              UsuarioRegistroView usuarioRegistroView,
@@ -59,6 +64,7 @@ public class UsuarioController {
                              MensajeInternacionalizacionHandler mensaje) {
         this.usuarioDAO = usuarioDAO;
         this.carritoDAO = carritoDAO;
+        this.productoDAO = productoDAO;
         this.preguntaDAO = preguntaDAO;
         this.loginView = loginView;
         this.usuario = usuario;
@@ -243,6 +249,33 @@ public class UsuarioController {
         loginView.limpiarCampos();
     }
 
+    private void configurarDAOs(String tipo, String ruta) {
+        // Asegurar que la ruta termine con separador
+        if (!tipo.equals("Memoria") && !ruta.endsWith(File.separator)) {
+            ruta += File.separator;
+        }
+
+        switch (tipo) {
+            case "Archivos Txt":
+                this.usuarioDAO = new UsuarioDAOArchivoTxt(ruta);
+                this.carritoDAO = new CarritoDAOArchivoTxt(ruta);
+                this.productoDAO = new ProductoDAOArchivoTxt(ruta);
+                break;
+
+            case "Archivos Binarios":
+                this.usuarioDAO = new UsuarioDAOBinario(ruta);
+                this.carritoDAO = new CarritoDAOBinario(ruta);
+                this.productoDAO = new ProductoDAOBinario(ruta);
+                break;
+
+            default:  // Memoria
+                this.usuarioDAO = new UsuarioDAOMemoria();
+                this.carritoDAO = new CarritoDAOMemoria();
+                this.productoDAO = new ProductoDAOMemoria();
+        }
+    }
+
+
     public Usuario getUsuarioAutenticado(){
         return usuario;
     }
@@ -358,9 +391,10 @@ public class UsuarioController {
         if (!usuarioRegistroView.validarCampos()) {
             return;
         }
+
         String cedula = usuarioRegistroView.getTxtCedula().getText();
         String nombre = usuarioRegistroView.getTxtNombre().getText();
-        String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText();
+        String fechaStr = usuarioRegistroView.getTxtFechaNacimiento().getText();
         String telefono = usuarioRegistroView.getTxtTelefono().getText();
         String correo = usuarioRegistroView.getTxtCorreo().getText();
         String username = usuarioRegistroView.getTxtUsername().getText();
@@ -378,8 +412,13 @@ public class UsuarioController {
         );
 
         try {
-            nuevoUsuario.validarFecha(fecha);
-            nuevoUsuario.validar();
+            nuevoUsuario.validar(fechaStr);
+
+            if (usuarioDAO.buscarPorUsername(username) != null) {
+                usuarioRegistroView.mostrarMensaje("usuario.existente");
+                return;
+            }
+
             usuarioDAO.crear(nuevoUsuario);
             usuarioRegistroView.mostrarMensaje("registro.exitoso");
             usuarioRegistroView.dispose();
@@ -388,13 +427,16 @@ public class UsuarioController {
             preguntasSeleccionadas = null;
             usernameEnRegistro = null;
             passwordEnRegistro = null;
+            usuarioRegistroView.limpiarCampos();
 
         } catch (CedulaException | ContraseniaException | FechaException | CorreoException e) {
             usuarioRegistroView.mostrarMensaje(e.getMessage());
         } catch (Exception e) {
             usuarioRegistroView.mostrarMensaje("error.registro");
+            e.printStackTrace();
         }
     }
+
 
     // Métodos de la ventana "USUARIOELIMINARVIEW"
     private void buscarUsuario() {
@@ -591,21 +633,25 @@ public class UsuarioController {
     private void actualizarContrasenia() {
         String nuevaContra = new String(usuarioModificarView.getTxtContrasenia().getPassword());
         String confirmacion = new String(usuarioModificarView.getTxtConfirmar().getPassword());
-        if(!nuevaContra.equals(confirmacion)) {
-            usuarioModificarView.mostrarMensaje("contrasenias.no.coinciden");
-            return;
-        }
 
-        if(nuevaContra.length() < 5) {
-            usuarioModificarView.mostrarMensaje("contrasenia.invalida");
-            return;
-        }
+        try {
+            if (!nuevaContra.equals(confirmacion)) {
+                throw new ContraseniaException("contrasenias.no.coinciden");
+            }
 
-        usuario.setContrasenia(nuevaContra);
-        if(usuarioDAO.actualizar(usuario)) {
+            if (nuevaContra.length() < 8) {
+                throw new ContraseniaException("contrasenia.corta");
+            }
+
+            usuario.setContrasenia(nuevaContra);
+            usuarioDAO.actualizar(usuario);
+
             usuarioModificarView.mostrarMensaje("contrasenia.actualizada");
             usuarioModificarView.limpiarCampos();
-        } else {
+
+        } catch (ContraseniaException e) {
+            usuarioModificarView.mostrarMensaje(e.getMessage());
+        } catch (Exception e) {
             usuarioModificarView.mostrarMensaje("error.actualizar");
         }
     }
@@ -616,7 +662,6 @@ public class UsuarioController {
             usuarioModificarView.mostrarMensaje("usuario.vacio");
             return;
         }
-
         if(!nuevoUsername.equals(usuario.getUsername()) &&
                 usuarioDAO.buscarPorUsername(nuevoUsername) != null) {
             usuarioModificarView.mostrarMensaje("usuario.ya.existe");
@@ -624,12 +669,9 @@ public class UsuarioController {
         }
 
         usuario.setUsername(nuevoUsername);
-        if(usuarioDAO.actualizar(usuario)) {
-            usuarioModificarView.mostrarMensaje("usuario.actualizado");
-            usuarioModificarView.cargarDatosUsuario(usuario);
-        } else {
-            usuarioModificarView.mostrarMensaje("error.actualizar");
-        }
+        usuarioDAO.actualizar(usuario);
+        usuarioModificarView.mostrarMensaje("usuario.actualizado");
+        usuarioModificarView.cargarDatosUsuario(usuario);
     }
 
     // Métodos para "ADMIN"
@@ -706,21 +748,24 @@ public class UsuarioController {
         String nuevaContra = new String(adminModificarView.getTxtContrasenia().getPassword());
         String confirmacion = new String(adminModificarView.getTxtConfirmar().getPassword());
 
-        if(!nuevaContra.equals(confirmacion)) {
-            adminModificarView.mostrarMensaje("contrasenias.no.coinciden");
-            return;
-        }
+        try {
+            if (!nuevaContra.equals(confirmacion)) {
+                throw new ContraseniaException("contrasenias.no.coinciden");
+            }
 
-        if(nuevaContra.length() < 5) {
-            adminModificarView.mostrarMensaje("contrasenia.invalida");
-            return;
-        }
+            if (nuevaContra.length() < 8) {
+                throw new ContraseniaException("contrasenia.corta");
+            }
 
-        usuario.setContrasenia(nuevaContra);
-        if(usuarioDAO.actualizar(usuario)) {
+            usuario.setContrasenia(nuevaContra);
+            usuarioDAO.actualizar(usuario);
+
             adminModificarView.mostrarMensaje("contrasenia.actualizada");
             adminModificarView.limpiar();
-        } else {
+
+        } catch (ContraseniaException e) {
+            adminModificarView.mostrarMensaje(e.getMessage());
+        } catch (Exception e) {
             adminModificarView.mostrarMensaje("error.actualizar");
         }
     }
@@ -731,20 +776,15 @@ public class UsuarioController {
             adminModificarView.mostrarMensaje("usuario.vacio");
             return;
         }
-
         if(!nuevoUsername.equals(usuario.getUsername()) &&
                 usuarioDAO.buscarPorUsername(nuevoUsername) != null) {
             adminModificarView.mostrarMensaje("usuario.ya.existe");
             return;
         }
-
         usuario.setUsername(nuevoUsername);
-        if(usuarioDAO.actualizar(usuario)) {
-            adminModificarView.mostrarMensaje("usuario.actualizado");
-            adminModificarView.cargarDatosUsuario(usuario);
-        } else {
-            adminModificarView.mostrarMensaje("error.actualizar");
-        }
+        usuarioDAO.actualizar(usuario);
+        adminModificarView.mostrarMensaje("usuario.actualizado");
+        adminModificarView.cargarDatosUsuario(usuario);
     }
 
     private void inicializarCampos() {
