@@ -29,6 +29,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Controlador principal para la gestión de usuarios en el sistema.
+ * Maneja la lógica de negocio relacionada con autenticación, registro,
+ * modificación y eliminación de usuarios, así como la interacción entre
+ * las vistas y los DAOs correspondientes.
+ */
 public class UsuarioController {
 
     private Usuario usuario;
@@ -50,6 +56,22 @@ public class UsuarioController {
     private final UsuarioModificarView usuarioModificarView;
     private final AdminModificarView adminModificarView;
 
+    /**
+     * Constructor principal del controlador de usuarios.
+     *
+     * @param usuarioDAO DAO para operaciones con usuarios
+     * @param carritoDAO DAO para operaciones con carritos
+     * @param productoDAO DAO para operaciones con productos
+     * @param loginView Vista de login
+     * @param preguntaDAO DAO para preguntas de seguridad
+     * @param usuarioRegistroView Vista de registro de usuarios
+     * @param recuperarContraseniaView Vista de recuperación de contraseña
+     * @param usuarioEliminarView Vista de eliminación de usuarios
+     * @param usuarioListaView Vista de listado de usuarios
+     * @param usuarioModificarView Vista de modificación de usuarios (usuario normal)
+     * @param adminModificarView Vista de modificación de usuarios (admin)
+     * @param mensaje Manejador de internacionalización
+     */
     public UsuarioController(UsuarioDAO usuarioDAO,
                              CarritoDAO carritoDAO,
                              ProductoDAO productoDAO,
@@ -77,6 +99,7 @@ public class UsuarioController {
         this.usuarioModificarView = usuarioModificarView;
         this.adminModificarView = adminModificarView;
 
+
         configurarEventosEnVistas();
 
         if (this.usuarioModificarView != null) {
@@ -91,6 +114,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Configura los eventos y listeners para todas las vistas asociadas.
+     */
     private void configurarEventosEnVistas(){
         // Eventos en "LOGINVIEW"
         loginView.getBtnIniciar().addActionListener(new ActionListener() {
@@ -167,6 +193,9 @@ public class UsuarioController {
         configurarModificacionUsuarios();
     }
 
+    /**
+     * Configura los eventos específicos para la modificación de usuarios.
+     */
     private void configurarModificacionUsuarios() {
         if(usuarioModificarView != null) {
             usuarioModificarView.getBtnMostrar().addActionListener(new ActionListener() {
@@ -227,6 +256,11 @@ public class UsuarioController {
     }
 
     // Métodos en "LOGINVIEW"
+
+    /**
+     * Autentica a un usuario en el sistema.
+     * Verifica las credenciales y establece el estado de administrador.
+     */
     private void autenticar(){
         String username = loginView.getTxtUsuario().getText();
         String contrasenia = loginView.getTxtPassword().getText();
@@ -249,6 +283,12 @@ public class UsuarioController {
         loginView.limpiarCampos();
     }
 
+    /**
+     * Configura los DAOs según el tipo de persistencia especificado.
+     *
+     * @param tipo Tipo de persistencia ("Archivos Txt", "Archivos Binarios" o "Memoria")
+     * @param ruta Ruta base para almacenamiento (solo aplica para persistencia en archivos)
+     */
     private void configurarDAOs(String tipo, String ruta) {
         // Asegurar que la ruta termine con separador
         if (!tipo.equals("Memoria") && !ruta.endsWith(File.separator)) {
@@ -275,12 +315,21 @@ public class UsuarioController {
         }
     }
 
-
+    /**
+     * Obtiene el usuario actualmente autenticado.
+     *
+     * @return Usuario autenticado o null si no hay sesión activa
+     */
     public Usuario getUsuarioAutenticado(){
         return usuario;
     }
 
     // Métodos en "USUARIOREGISTROVIEW"
+
+    /**
+     * Inicia el proceso de registro de un nuevo usuario.
+     * Limpia los campos y selecciona preguntas de seguridad aleatorias.
+     */
     private void iniciarRegistro() {
         pasoActual = 0;
         preguntasSeleccionadas = preguntaDAO.obtenerPreguntasAleatorias(3);
@@ -289,6 +338,10 @@ public class UsuarioController {
         usuarioRegistroView.setVisible(true);
     }
 
+    /**
+     * Procesa cada paso del registro de usuario.
+     * Maneja las respuestas de seguridad y avanza en el proceso.
+     */
     private void procesarRegistro() {
         if(pasoActual < 3) {
             if(procesarRespuestaSeguridad()) {
@@ -303,6 +356,11 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Valida los datos ingresados en el formulario de registro.
+     *
+     * @return true si los datos son válidos, false en caso contrario
+     */
     private boolean validarDatos() {
         String cedula = usuarioRegistroView.getTxtCedula().getText();
         String nombre = usuarioRegistroView.getTxtNombre().getText();
@@ -362,6 +420,9 @@ public class UsuarioController {
         return true;
     }
 
+    /**
+     * Muestra la pregunta de seguridad actual en el proceso de registro.
+     */
     private void mostrarPreguntaSeguridad() {
         if(pasoActual >= 0 && pasoActual < 3) {
             PreguntaSeguridad pregunta = preguntasSeleccionadas.get(pasoActual);
@@ -369,6 +430,11 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Procesa la respuesta de seguridad del usuario.
+     *
+     * @return true si la respuesta fue procesada correctamente, false en caso contrario
+     */
     private boolean procesarRespuestaSeguridad() {
         String respuesta = usuarioRegistroView.obtenerRespuestaSeguridad();
         if (respuesta.isEmpty()) {
@@ -387,6 +453,10 @@ public class UsuarioController {
         return true;
     }
 
+    /**
+     * Completa el registro de un nuevo usuario con todos sus datos.
+     * Valida y guarda la información en la base de datos.
+     */
     private void completarRegistro() {
         if (!usuarioRegistroView.validarCampos()) {
             return;
@@ -439,6 +509,11 @@ public class UsuarioController {
 
 
     // Métodos de la ventana "USUARIOELIMINARVIEW"
+
+    /**
+     * Busca un usuario para eliminación.
+     * Muestra los datos del usuario y sus carritos asociados.
+     */
     private void buscarUsuario() {
         String username = usuarioEliminarView.getTxtUsuario().getText().trim();
 
@@ -457,6 +532,12 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Cuenta los carritos asociados a un usuario.
+     *
+     * @param usuario Usuario a verificar
+     * @return Número de carritos asociados al usuario
+     */
     private int contarCarritosUsuario(Usuario usuario) {
         if (usuario == null || usuario.getUsername() == null) {
             return 0;
@@ -464,6 +545,10 @@ public class UsuarioController {
         return carritoDAO.listarPorUsuario(usuario.getUsername()).size();
     }
 
+    /**
+     * Elimina un usuario del sistema.
+     * Realiza validaciones previas y solicita confirmación.
+     */
     private void eliminarUsuario() {
         int filaSeleccionada = usuarioEliminarView.getTblUsuario().getSelectedRow();
         if (filaSeleccionada < 0) {
@@ -487,6 +572,12 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Carga los datos de un usuario en la tabla de eliminación.
+     *
+     * @param usuario Usuario a mostrar
+     * @param numCarritos Número de carritos asociados
+     */
     private void cargarDatosTabla(Usuario usuario, int numCarritos) {
         DefaultTableModel modelo = (DefaultTableModel) usuarioEliminarView.getTblUsuario().getModel();
         modelo.setRowCount(0);
@@ -504,6 +595,9 @@ public class UsuarioController {
         usuarioEliminarView.getBtnEliminar().setEnabled(numCarritos == 0);
     }
 
+    /**
+     * Limpia los campos de la vista de eliminación de usuarios.
+     */
     private void limpiarCamposEliminar() {
         usuarioEliminarView.getTxtUsuario().setText("");
         usuarioEliminarView.getBtnEliminar().setEnabled(false);
@@ -512,6 +606,10 @@ public class UsuarioController {
     }
 
     // Métodos de la ventana "USUARIOLISTAVIEW"
+    /**
+     * Busca usuarios para mostrar en el listado.
+     * Puede buscar un usuario específico o listar todos.
+     */
     private void buscarUsuarioLista() {
         String username = usuarioListaView.getTxtUsuario().getText().trim();
         List<Usuario> usuarios;
@@ -533,6 +631,11 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Carga los datos de usuarios en la tabla de listado.
+     *
+     * @param usuarios Lista de usuarios a mostrar
+     */
     private void cargarDatosTablaLista(List<Usuario> usuarios) {
         DefaultTableModel modelo = (DefaultTableModel) usuarioListaView.getTblDetalle().getModel();
         modelo.setRowCount(0);
@@ -551,6 +654,12 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Calcula el total de compras de una lista de carritos.
+     *
+     * @param carritos Lista de carritos a procesar
+     * @return Suma total de los carritos
+     */
     private double calcularTotalCarritos(List<Carrito> carritos) {
         double total = 0.0;
         for(Carrito carrito : carritos) {
@@ -561,11 +670,21 @@ public class UsuarioController {
         return total;
     }
 
+    /**
+     * Limpia los campos de la vista de listado de usuarios.
+     */
     private void limpiarCamposLista() {
         usuarioListaView.getTxtUsuario().setText("");
     }
 
     // Métodos en la ventana "USUARIOMODIFICARVIEW"
+
+    /**
+     * Carga los datos de un usuario en la vista de modificación.
+     *
+     * @param username Nombre de usuario a cargar
+     * @param usuarioAutenticado Usuario con permisos para la operación
+     */
     private void cargarUsuario(String username, Usuario usuarioAutenticado) {
         if(usuarioAutenticado.getRol() == Rol.ADMINISTRADOR && username != null) {
             this.usuario = usuarioDAO.buscarPorUsername(username);
@@ -584,6 +703,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Alterna entre mostrar/ocultar la contraseña en la vista de modificación.
+     */
     private void mostrarContrasenia() {
         JPasswordField contrasenia = usuarioModificarView.getTxtContrasenia();
         JPasswordField confirmacion = usuarioModificarView.getTxtConfirmar();
@@ -599,6 +721,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Maneja la selección en el combo box de opciones de modificación.
+     */
     private void seleccionCombo() {
         if(mensaje == null) {
             JOptionPane.showMessageDialog(null, "Error");
@@ -617,6 +742,9 @@ public class UsuarioController {
         usuarioModificarView.repaint();
     }
 
+    /**
+     * Guarda los cambios realizados en la modificación de usuario.
+     */
     public void guardarCambios() {
         if(usuario == null) return;
 
@@ -630,6 +758,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Actualiza la contraseña de un usuario.
+     */
     private void actualizarContrasenia() {
         String nuevaContra = new String(usuarioModificarView.getTxtContrasenia().getPassword());
         String confirmacion = new String(usuarioModificarView.getTxtConfirmar().getPassword());
@@ -656,6 +787,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Actualiza el nombre de usuario.
+     */
     private void actualizarUsername() {
         String nuevoUsername = usuarioModificarView.getTxtUsuario().getText().trim();
         if(nuevoUsername.isEmpty()) {
@@ -675,6 +809,10 @@ public class UsuarioController {
     }
 
     // Métodos para "ADMIN"
+
+    /**
+     * Busca un usuario para modificación (vista de administrador).
+     */
     private void buscarUsuarioAdmin() {
         String username = adminModificarView.getTxtUsuario().getText();
 
@@ -695,6 +833,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Alterna entre mostrar/ocultar la contraseña en la vista de administrador.
+     */
     private void mostrarContraseniaAdmin() {
         JPasswordField contrasenia = adminModificarView.getTxtContrasenia();
         JPasswordField confirmacion = adminModificarView.getTxtConfirmar();
@@ -710,6 +851,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Maneja la selección en el combo box de opciones de modificación (admin).
+     */
     private void seleccionComboAdmin() {
         if(mensaje == null) {
             JOptionPane.showMessageDialog(null, "Error");
@@ -728,6 +872,9 @@ public class UsuarioController {
         adminModificarView.repaint();
     }
 
+    /**
+     * Guarda los cambios realizados en la modificación de usuario (admin).
+     */
     public void guardarCambiosAdmin() {
         if(usuario == null) {
             adminModificarView.mostrarMensaje("primero.buscar.usuario");
@@ -744,6 +891,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Actualiza la contraseña de un usuario (vista de administrador).
+     */
     private void actualizarContraseniaAdmin() {
         String nuevaContra = new String(adminModificarView.getTxtContrasenia().getPassword());
         String confirmacion = new String(adminModificarView.getTxtConfirmar().getPassword());
@@ -770,6 +920,9 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Actualiza el nombre de usuario (vista de administrador).
+     */
     private void actualizarUsernameAdmin() {
         String nuevoUsername = adminModificarView.getTxtUsuario().getText().trim();
         if(nuevoUsername.isEmpty()) {
@@ -787,21 +940,36 @@ public class UsuarioController {
         adminModificarView.cargarDatosUsuario(usuario);
     }
 
+    /**
+     * Inicializa los campos de la vista de modificación de usuario normal.
+     */
     private void inicializarCampos() {
         usuarioModificarView.getTxtContrasenia().setEnabled(false);
         usuarioModificarView.getTxtConfirmar().setEnabled(false);
         usuarioModificarView.getTxtUsuario().setEnabled(false);
     }
+
+    /**
+     * Inicializa los campos de la vista de modificación de administrador.
+     */
     private void inicializarCamposAdmin() {
         adminModificarView.getTxtContrasenia().setEnabled(false);
         adminModificarView.getTxtConfirmar().setEnabled(false);
         adminModificarView.getTxtUsuario1().setEnabled(false);
     }
 
+    /**
+     * Obtiene el usuario actual.
+     * @return Usuario actual
+     */
     public Usuario getUsuario() {
         return usuario;
     }
 
+    /**
+     * Establece el usuario actual.
+     * @param usuario Usuario a establecer
+     */
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }

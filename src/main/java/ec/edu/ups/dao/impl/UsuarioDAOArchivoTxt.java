@@ -10,23 +10,60 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Implementación de la interfaz {@link ec.edu.ups.dao.UsuarioDAO} que
+ * gestiona la persistencia de los objetos {@link ec.edu.ups.modelo.Usuario}
+ * utilizando un archivo de texto plano.
+ * <p>
+ * Los usuarios se almacenan en un archivo de texto plano donde cada línea
+ * representa un usuario y los campos están delimitados por el carácter '|'.
+ * </p>
+ * <p>
+ * Esta clase carga todos los usuarios en memoria al inicio de la aplicación
+ * y persiste los cambios de vuelta al archivo después de cada operación
+ * de modificación (creación, eliminación o actualización).
+ * </p>
+ */
 public class UsuarioDAOArchivoTxt implements UsuarioDAO {
+
+    /**
+     * La ruta del archivo de texto donde se almacenarán los datos de los usuarios.
+     */
     private String rutaArchivo;
+
+    /**
+     * Lista en memoria que contiene todos los objetos {@link Usuario} cargados desde el archivo.
+     */
     private List<Usuario> usuarios;
 
+    /**
+     * Constructor de la clase `UsuarioDAOArchivoTxt`.
+     * Inicializa la ruta del archivo, la lista de usuarios y carga los usuarios
+     * existentes desde el archivo al momento de la instanciación.
+     *
+     * @param rutaArchivo La ruta completa al archivo de texto que se usará para la persistencia.
+     */
     public UsuarioDAOArchivoTxt(String rutaArchivo) {
         this.rutaArchivo = rutaArchivo;
         this.usuarios = new ArrayList<>();
         cargarUsuarios();
     }
 
+    /**
+     * Verifica si el archivo de datos de usuarios existe en la ruta especificada.
+     * Si no existe, intenta crear el archivo y sus directorios padres si son necesarios.
+     * Imprime un mensaje de error en caso de que la creación del archivo falle.
+     */
     private void crearSiNoExiste() {
         try {
             File archivo = new File(rutaArchivo);
             if (!archivo.exists()) {
-                archivo.getParentFile().mkdirs();
-                archivo.createNewFile();
+                // Crea los directorios padres si no existen
+                File parentDir = archivo.getParentFile();
+                if (parentDir != null && !parentDir.exists()) {
+                    parentDir.mkdirs();
+                }
+                archivo.createNewFile(); // Crea el archivo
             }
         } catch (IOException e) {
             System.err.println("Error al crear archivo: " + rutaArchivo);
@@ -34,6 +71,14 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
         }
     }
 
+    /**
+     * Autentica un usuario verificando el nombre de usuario y la contraseña.
+     * Itera sobre la lista de usuarios en memoria para encontrar una coincidencia.
+     *
+     * @param username    El nombre de usuario para la autenticación.
+     * @param contrasenia La contraseña para la autenticación.
+     * @return El objeto {@link Usuario} si la autenticación es exitosa, de lo contrario, `null`.
+     */
     @Override
     public Usuario autenticar(String username, String contrasenia) {
         for (Usuario usuario : usuarios) {
@@ -45,6 +90,14 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
         return null;
     }
 
+    /**
+     * Crea un nuevo {@link Usuario} en el sistema.
+     * Antes de añadir el usuario, verifica si ya existe un usuario con el mismo
+     * nombre de usuario. Si no existe, lo añade a la lista en memoria y guarda
+     * la lista actualizada en el archivo.
+     *
+     * @param usuario El objeto {@link Usuario} a ser creado.
+     */
     @Override
     public void crear(Usuario usuario) {
         if (buscarPorUsername(usuario.getUsername()) == null) {
@@ -53,6 +106,12 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
         }
     }
 
+    /**
+     * Busca y recupera un {@link Usuario} por su nombre de usuario.
+     *
+     * @param username El nombre de usuario del usuario a buscar.
+     * @return El objeto {@link Usuario} si se encuentra, de lo contrario, `null`.
+     */
     @Override
     public Usuario buscarPorUsername(String username) {
         for (Usuario usuario : usuarios) {
@@ -63,6 +122,13 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
         return null;
     }
 
+    /**
+     * Elimina un {@link Usuario} del sistema utilizando su nombre de usuario.
+     * Si el usuario es encontrado, se remueve de la lista en memoria y
+     * la lista actualizada se guarda en el archivo.
+     *
+     * @param username El nombre de usuario del usuario a eliminar.
+     */
     @Override
     public void eliminar(String username) {
         Usuario usuario = buscarPorUsername(username);
@@ -72,6 +138,14 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
         }
     }
 
+    /**
+     * Actualiza la información de un {@link Usuario} existente.
+     * Busca el usuario por su nombre de usuario. Si lo encuentra,
+     * reemplaza sus datos en la lista en memoria con los datos del
+     * objeto {@link Usuario} proporcionado y guarda la lista actualizada en el archivo.
+     *
+     * @param usuario El objeto {@link Usuario} con la información actualizada.
+     */
     @Override
     public void actualizar(Usuario usuario) {
         int index = usuarios.indexOf(buscarPorUsername(usuario.getUsername()));
@@ -81,53 +155,121 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
         }
     }
 
+    /**
+     * Recupera una lista de todos los {@link Usuario}s almacenados en el sistema.
+     * Se devuelve una nueva {@link ArrayList} para evitar modificaciones directas
+     * de la lista interna.
+     *
+     * @return Una {@link List} que contiene todos los usuarios.
+     */
     @Override
     public List<Usuario> listarTodos() {
         return new ArrayList<>(usuarios);
     }
 
+    /**
+     * Recupera una lista de {@link Usuario}s que tienen un rol específico.
+     * <p>
+     * Actualmente, esta implementación devuelve una lista inmutable vacía.
+     * Este método debería ser implementado para filtrar usuarios por su rol.
+     * </p>
+     *
+     * @param rol El {@link Rol} por el cual se filtrarán los usuarios.
+     * @return Una {@link List} de {@link Usuario}s que coinciden con el rol especificado.
+     */
     @Override
     public List<Usuario> listarPorRol(Rol rol) {
-        return List.of();
+        // TODO: Implementar la lógica para filtrar usuarios por Rol.
+        // Ejemplo de implementación:
+        /*
+        List<Usuario> usuariosPorRol = new ArrayList<>();
+        for (Usuario usuario : usuarios) {
+            if (usuario.getRol() != null && usuario.getRol().equals(rol)) {
+                usuariosPorRol.add(usuario);
+            }
+        }
+        return usuariosPorRol;
+        */
+        return List.of(); // Devuelve una lista inmutable vacía como implementación actual.
     }
 
+    /**
+     * Carga los datos de los usuarios desde el archivo de texto especificado por `rutaArchivo`
+     * a la lista en memoria (`usuarios`).
+     * <p>
+     * Se espera que cada línea del archivo contenga los datos de un usuario
+     * en el siguiente formato, delimitados por '|':
+     * Cédula|NombreCompleto|FechaNacimiento(dd/MM/yyyy)|Teléfono|Correo|Username|Contraseña|Rol
+     * </p>
+     * Si ocurre un error durante la lectura del archivo o el parseo de la fecha,
+     * se imprime un mensaje de error y se salta la línea problemática.
+     */
     private void cargarUsuarios() {
+        // Se inicializa un SimpleDateFormat para parsear la fecha.
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] datos = linea.split("\\|");
-                if (datos.length == 8) {
+                if (datos.length == 8) { // Asegura que la línea tiene el número esperado de campos
                     Usuario usuario = new Usuario();
                     usuario.setCedula(datos[0]);
                     usuario.setNombreCompleto(datos[1]);
 
                     try {
+                        // Intenta validar y setear la fecha de nacimiento.
+                        // El método validarFecha en Usuario probablemente ya se encarga del parseo.
                         usuario.validarFecha(datos[2]);
                     } catch (FechaException e) {
-                        System.err.println("Error al validar la fecha: " + e.getMessage());
-                        continue; // O maneja el error como prefieras
+                        System.err.println("Error al validar la fecha para el usuario en línea: '" + linea + "'. Mensaje: " + e.getMessage());
+                        continue; // Salta esta línea y procesa la siguiente.
+                    } catch (Exception e) { // Captura cualquier otra excepción que pueda surgir del parseo/validación de fecha.
+                        System.err.println("Error inesperado al procesar la fecha para el usuario en línea: '" + linea + "'. Mensaje: " + e.getMessage());
+                        continue;
                     }
 
                     usuario.setTelefono(datos[3]);
                     usuario.setCorreo(datos[4]);
                     usuario.setUsername(datos[5]);
                     usuario.setContrasenia(datos[6]);
-                    usuario.setRol(Rol.valueOf(datos[7]));
+                    try {
+                        // Convierte la cadena del rol a su correspondiente enumeración Rol.
+                        usuario.setRol(Rol.valueOf(datos[7]));
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Rol inválido para el usuario en línea: '" + linea + "'. Rol recibido: '" + datos[7] + "'. Mensaje: " + e.getMessage());
+                        continue; // Salta esta línea si el rol no es válido.
+                    }
                     usuarios.add(usuario);
+                } else {
+                    System.err.println("Advertencia: Línea de usuario con formato incorrecto ignorada: '" + linea + "'");
                 }
             }
+        } catch (FileNotFoundException e) {
+            // Se ignora si el archivo no existe, ya que se creará automáticamente cuando se guarde el primer usuario.
+            System.out.println("Información: El archivo de usuarios no fue encontrado. Se creará uno nuevo al guardar.");
         } catch (IOException e) {
-            // Archivo no existe, se creará al guardar
+            System.err.println("Error de E/S al cargar usuarios desde el archivo: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Guarda la lista actual de {@link Usuario}s en memoria en el archivo de texto.
+     * <p>
+     * Cada usuario se escribe en una nueva línea con sus propiedades delimitadas por '|'.
+     * El formato de guardado es:
+     * Cédula|NombreCompleto|FechaNacimiento(como String)|Teléfono|Correo|Username|Contraseña|Rol
+     * </p>
+     * Si ocurre un error de E/S durante la escritura, imprime la traza de la pila.
+     */
     private void guardarUsuarios() {
         try (PrintWriter pw = new PrintWriter(new FileWriter(rutaArchivo))) {
             for (Usuario usuario : usuarios) {
+                String fechaNacimientoStr = (usuario.getFechaNacimiento() != null) ? usuario.getFechaNacimiento().toString() : "";
+
                 pw.println(usuario.getCedula() + "|" +
                         usuario.getNombreCompleto() + "|" +
-                        usuario.getFechaNacimiento() + "|" +
+                        fechaNacimientoStr + "|" +
                         usuario.getTelefono() + "|" +
                         usuario.getCorreo() + "|" +
                         usuario.getUsername() + "|" +
@@ -135,6 +277,7 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
                         usuario.getRol());
             }
         } catch (IOException e) {
+            System.err.println("Error al guardar usuarios en el archivo de texto: " + e.getMessage());
             e.printStackTrace();
         }
     }
