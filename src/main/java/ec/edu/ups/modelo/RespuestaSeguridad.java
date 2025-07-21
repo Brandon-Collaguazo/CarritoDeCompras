@@ -1,5 +1,6 @@
 package ec.edu.ups.modelo;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -8,25 +9,14 @@ import java.util.Objects;
  * Almacena la combinación de usuario, pregunta de seguridad y respuesta correspondiente
  * para propósitos de verificación de identidad.
  */
-public class RespuestaSeguridad {
-    /**
-     * Nombre de usuario al que pertenece la respuesta
-     */
+public class RespuestaSeguridad implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String username;
-
-    /**
-     * Identificador de la pregunta de seguridad respondida.
-     */
     private int idPregunta;
-
-    /**
-     * Respuesta por defecto que crea una respuesta vacía
-     */
     private String respuesta;
 
-    /**
-     * Constructor por defecto que crea una respuesta vacía
-     */
+
     public RespuestaSeguridad() {
 
     }

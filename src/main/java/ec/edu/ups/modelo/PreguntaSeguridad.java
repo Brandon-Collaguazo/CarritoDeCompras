@@ -1,5 +1,6 @@
 package ec.edu.ups.modelo;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -7,15 +8,10 @@ import java.util.Objects;
  * Clase que representa una pregunta de seguridad utilizada para verificación de identidad.
  * Cada pregunta tiene un identificador único y un texto que formula la pregunta.
  */
-public class PreguntaSeguridad {
-    /**
-     * Identificador único de la pregunta
-     */
-    private int id;
+public class PreguntaSeguridad implements Serializable {
 
-    /**
-     * Texto/enunciado de la pregunta de seguridad
-     */
+    private static final long serialVersionUID = 1L;
+    private int id;
     private String textoPregunta;
 
     /**

@@ -5,7 +5,7 @@ import ec.edu.ups.controlador.ProductoController;
 import ec.edu.ups.controlador.RecuperarContraseniaController;
 import ec.edu.ups.controlador.UsuarioController;
 import ec.edu.ups.dao.ManagerDAO;
-import ec.edu.ups.dao.PreguntaSeguridadDAO; // Se mantiene, aunque el IDE lo marque como no usado si no hay getters/setters explícitos.
+import ec.edu.ups.dao.PreguntaSeguridadDAO;
 import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;

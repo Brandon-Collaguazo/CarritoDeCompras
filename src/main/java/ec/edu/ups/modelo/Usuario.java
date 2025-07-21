@@ -5,6 +5,7 @@ import ec.edu.ups.excepciones.ContraseniaException;
 import ec.edu.ups.excepciones.CorreoException;
 import ec.edu.ups.excepciones.FechaException;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -15,55 +16,18 @@ import java.util.concurrent.ThreadLocalRandom;
  * Clase que representa un usuario del sistema.
  * Contiene información general, credenciales de acceso, rol y preguntas de seguridad.
  */
-public class Usuario {
-    /**
-     * Cédula de identidad del usuario
-     */
+public class Usuario implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String cedula;
-
-    /**
-     * Nombre completo del usuario
-     */
     private String nombreCompleto;
-
-    /**
-     * Fecha de nacimiento del usuario
-     */
     private Date fechaNacimiento;
-
-    /**
-     * Número telefónico del usuario
-     */
     private String telefono;
-
-    /**
-     * Correo personal del usuario
-     */
     private String correo;
-
-    /**
-     * Nombre de usuario único para autenticación
-     */
     private String username;
-
-    /**
-     * Contraseña del usuario
-     */
     private String contrasenia;
-
-    /**
-     * Rol del usuario (ADMIN, USUARIO)
-     */
     private Rol rol;
-
-    /**
-     * Lista de IDs preguntas de seguridad asociadas
-     */
     private List<Integer> idPreguntas;
-
-    /**
-     * Lista de respuestas a las preguntas de seguridad
-     */
     private List<String> respuestas;
 
     /**

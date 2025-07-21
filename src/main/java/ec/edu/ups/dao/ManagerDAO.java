@@ -1,5 +1,9 @@
 package ec.edu.ups.dao;
 
+import ec.edu.ups.dao.impl.archBin.CarritoDAOBinario;
+import ec.edu.ups.dao.impl.archBin.PreguntaDAOBinario;
+import ec.edu.ups.dao.impl.archBin.ProductoDAOBinario;
+import ec.edu.ups.dao.impl.archBin.UsuarioDAOBinario;
 import ec.edu.ups.dao.impl.archTxt.CarritoDAOArchivoTxt;
 import ec.edu.ups.dao.impl.archTxt.PreguntaDAOArchivoTxt;
 import ec.edu.ups.dao.impl.archTxt.ProductoDAOArchivoTxt;
@@ -25,35 +29,17 @@ import java.util.Date;
  * si no existen al inicializar los DAOs.
  */
 public class ManagerDAO {
-    /**
-     * Objeto DAO para la gestión de usuarios.
-     */
+
     private UsuarioDAO usuarioDAO;
-    /**
-     * Objeto DAO para la gestión de productos.
-     */
+
     private ProductoDAO productoDAO;
-    /**
-     * Objeto DAO para la gestión de carritos de compra.
-     */
     private CarritoDAO carritoDAO;
-    /**
-     * Objeto DAO para la gestión de preguntas de seguridad.
-     */
     private PreguntaSeguridadDAO preguntaDAO;
-    /**
-     * Manejador para obtener mensajes internacionalizados.
-     */
     private MensajeInternacionalizacionHandler mensaje;
 
-    /**
-     * Clave para el tipo de almacenamiento en memoria, obtenida del manejador de mensajes.
-     */
     private static final String ALMACENAMIENTO_MEMORIA = "almacenamiento.memoria.login";
-    /**
-     * Clave para el tipo de almacenamiento en sistema de archivos (texto), obtenida del manejador de mensajes.
-     */
     private static final String ALMACENAMIENTO_SISTEMA = "almacenamiento.memoria.sistema.login";
+    private static final String ALMACENAMIENTO_BINARIO = "login.almacenamiento.binario";
 
     /**
      * Constructor de la clase `ManagerDAO`.
@@ -98,13 +84,6 @@ public class ManagerDAO {
                 }
             }
 
-            // Asumiendo que el tipo de archivo (.txt o .bin) también se controla por la clave
-            // En este caso, solo .txt para ALMACENAMIENTO_SISTEMA (como se usa en la clase)
-            String extensionArchivo = ".txt"; // Forzando a .txt según el uso actual en la clase
-            usuariosRutaArchivo = rutaBase + "usuarios" + extensionArchivo;
-            productosRutaArchivo = rutaBase + "productos" + extensionArchivo;
-            carritosRutaArchivo = rutaBase + "carritos" + extensionArchivo;
-            preguntasRutaArchivo = rutaBase + "preguntas" + extensionArchivo;
         }
 
         if (almacenamientoKey.equals(mensaje.get(ALMACENAMIENTO_MEMORIA))) {
@@ -113,12 +92,29 @@ public class ManagerDAO {
             this.carritoDAO = new CarritoDAOMemoria();
             this.preguntaDAO = new PreguntaSeguridadDAOMemoria();
         } else if (almacenamientoKey.equals(mensaje.get(ALMACENAMIENTO_SISTEMA))) {
+            String extensionArchivo = ".txt";
+            usuariosRutaArchivo = rutaBase + "usuarios" + extensionArchivo;
+            productosRutaArchivo = rutaBase + "productos" + extensionArchivo;
+            carritosRutaArchivo = rutaBase + "carritos" + extensionArchivo;
+            preguntasRutaArchivo = rutaBase + "preguntas" + extensionArchivo;
+
             this.usuarioDAO = new UsuarioDAOArchivoTxt(usuariosRutaArchivo);
             this.productoDAO = new ProductoDAOArchivoTxt(productosRutaArchivo);
             // Se inyecta la dependencia de UsuarioDAO a CarritoDAOArchivoTxt
             this.carritoDAO = new CarritoDAOArchivoTxt(carritosRutaArchivo, this.usuarioDAO);
             this.preguntaDAO = new PreguntaDAOArchivoTxt(preguntasRutaArchivo);
-        } else {
+        } else if (almacenamientoKey.equals(mensaje.get(ALMACENAMIENTO_BINARIO))) {
+            String extensionArchivo = ".bin";
+            usuariosRutaArchivo = rutaBase + "usuarios" + extensionArchivo;
+            productosRutaArchivo = rutaBase + "productos" + extensionArchivo;
+            carritosRutaArchivo = rutaBase + "carritos" + extensionArchivo;
+            preguntasRutaArchivo = rutaBase + "preguntas" + extensionArchivo;
+
+            this.usuarioDAO = new UsuarioDAOBinario(usuariosRutaArchivo);
+            this.productoDAO = new ProductoDAOBinario(productosRutaArchivo);
+            this.carritoDAO = new CarritoDAOBinario(carritosRutaArchivo);
+            this.preguntaDAO = new PreguntaDAOBinario(preguntasRutaArchivo);
+        }else {
             System.err.println("Tipo de almacenamiento desconocido: " + almacenamientoKey + ". Usando memoria.");
             inicializarDAOS(mensaje.get(ALMACENAMIENTO_MEMORIA), null);
         }

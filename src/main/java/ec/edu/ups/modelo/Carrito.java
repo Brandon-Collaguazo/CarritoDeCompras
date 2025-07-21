@@ -1,5 +1,6 @@
 package ec.edu.ups.modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -11,35 +12,14 @@ import java.util.List;
  * Permite agregar, eliminar, y modificar productos, así como calcular
  * los valores totales de la compra incluyendo subtotal, IVA y total
  */
-public class Carrito {
-    /**
-     * Valor del IVA (12%) aplicado a las compras
-     */
+public class Carrito implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private final double IVA = 0.12;
-
-    /**
-     * Contador estático para generar códigos únicos de carrito
-     */
     private static int contador = 1;
-
-    /**
-     * Código único del carrito
-     */
     private int codigo;
-
-    /**
-     * Usuario asociado al carrito
-     */
     private Usuario usuario;
-
-    /**
-     * Fecha de creación del carrito
-     */
     private GregorianCalendar fechaCreacion;
-
-    /**
-     * Lista de items (productos con cantidad) en el carrito
-     */
     private List<ItemCarrito> items;
 
     /**

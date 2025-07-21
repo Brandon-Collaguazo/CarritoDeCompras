@@ -1,24 +1,19 @@
 package ec.edu.ups.modelo;
 
+import java.io.Serializable;
+
 /**
  * Clase que representa un ítem dentro de un carrito de compras.
  * Contiene un producto y la cantidad seleccionada de dicho producto,
  * además de proporcionar métodos para calcular el subtotal del ítem.
  */
-public class ItemCarrito {
-    /**
-     * Producto asociado a este ítem del carrito
-     */
-    private Producto producto;
+public class ItemCarrito implements Serializable {
 
-    /**
-     * Cantidad del producto en este ítem
-     */
+    private static final long serialVersionUID = 1L;
+    private Producto producto;
     private int cantidad;
 
-    /**
-     * Constructor por defecto que crea un ítem vacío
-     */
+
     public ItemCarrito() {
     }
 

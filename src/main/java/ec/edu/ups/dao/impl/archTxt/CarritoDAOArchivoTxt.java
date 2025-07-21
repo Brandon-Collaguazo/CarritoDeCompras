@@ -26,19 +26,8 @@ import java.util.List;
  */
 public class CarritoDAOArchivoTxt implements CarritoDAO {
 
-    /**
-     * Ruta del directorio donde se almacenará el archivo de carritos.
-     */
     private String ruta;
-    /**
-     * Nombre del archivo de texto donde se persistirán los carritos.
-     */
     private static final String NOMBRE_ARCHIVO_CARRITOS = "carritos.txt";
-
-    /**
-     * Instancia de {@link UsuarioDAO} utilizada para buscar y asociar objetos {@link Usuario}
-     * completos a los carritos al leerlos del archivo. Esta es una dependencia inyectada.
-     */
     private UsuarioDAO usuarioDAO;
 
     /**
