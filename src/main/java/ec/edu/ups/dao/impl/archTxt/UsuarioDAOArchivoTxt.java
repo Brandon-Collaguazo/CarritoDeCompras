@@ -1,4 +1,4 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.archTxt;
 
 import ec.edu.ups.dao.UsuarioDAO;
 import ec.edu.ups.excepciones.FechaException;
@@ -82,8 +82,8 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
     @Override
     public Usuario autenticar(String username, String contrasenia) {
         for (Usuario usuario : usuarios) {
-            if (usuario.getUsername().equals(username) &&
-                    usuario.getContrasenia().equals(contrasenia)) {
+            if (usuario.getUsername().equals(username.trim()) &&
+                    usuario.getContrasenia().trim().equals(contrasenia.trim())) {
                 return usuario;
             }
         }
@@ -179,9 +179,6 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
      */
     @Override
     public List<Usuario> listarPorRol(Rol rol) {
-        // TODO: Implementar la lógica para filtrar usuarios por Rol.
-        // Ejemplo de implementación:
-        /*
         List<Usuario> usuariosPorRol = new ArrayList<>();
         for (Usuario usuario : usuarios) {
             if (usuario.getRol() != null && usuario.getRol().equals(rol)) {
@@ -189,8 +186,6 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
             }
         }
         return usuariosPorRol;
-        */
-        return List.of(); // Devuelve una lista inmutable vacía como implementación actual.
     }
 
     /**
@@ -205,53 +200,46 @@ public class UsuarioDAOArchivoTxt implements UsuarioDAO {
      * se imprime un mensaje de error y se salta la línea problemática.
      */
     private void cargarUsuarios() {
-        // Se inicializa un SimpleDateFormat para parsear la fecha.
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] datos = linea.split("\\|");
-                if (datos.length == 8) { // Asegura que la línea tiene el número esperado de campos
+                if (datos.length == 8) {
                     Usuario usuario = new Usuario();
                     usuario.setCedula(datos[0]);
                     usuario.setNombreCompleto(datos[1]);
-
+                    // Validar y setear la fecha de nacimiento
                     try {
-                        // Intenta validar y setear la fecha de nacimiento.
-                        // El método validarFecha en Usuario probablemente ya se encarga del parseo.
                         usuario.validarFecha(datos[2]);
                     } catch (FechaException e) {
                         System.err.println("Error al validar la fecha para el usuario en línea: '" + linea + "'. Mensaje: " + e.getMessage());
-                        continue; // Salta esta línea y procesa la siguiente.
-                    } catch (Exception e) { // Captura cualquier otra excepción que pueda surgir del parseo/validación de fecha.
-                        System.err.println("Error inesperado al procesar la fecha para el usuario en línea: '" + linea + "'. Mensaje: " + e.getMessage());
                         continue;
                     }
-
                     usuario.setTelefono(datos[3]);
                     usuario.setCorreo(datos[4]);
                     usuario.setUsername(datos[5]);
                     usuario.setContrasenia(datos[6]);
                     try {
-                        // Convierte la cadena del rol a su correspondiente enumeración Rol.
                         usuario.setRol(Rol.valueOf(datos[7]));
                     } catch (IllegalArgumentException e) {
                         System.err.println("Rol inválido para el usuario en línea: '" + linea + "'. Rol recibido: '" + datos[7] + "'. Mensaje: " + e.getMessage());
-                        continue; // Salta esta línea si el rol no es válido.
+                        continue;
                     }
                     usuarios.add(usuario);
+                    System.out.println("Usuario cargado: " + usuario.getUsername()); // Mensaje de depuración
                 } else {
                     System.err.println("Advertencia: Línea de usuario con formato incorrecto ignorada: '" + linea + "'");
                 }
             }
         } catch (FileNotFoundException e) {
-            // Se ignora si el archivo no existe, ya que se creará automáticamente cuando se guarde el primer usuario.
             System.out.println("Información: El archivo de usuarios no fue encontrado. Se creará uno nuevo al guardar.");
         } catch (IOException e) {
             System.err.println("Error de E/S al cargar usuarios desde el archivo: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     /**
      * Guarda la lista actual de {@link Usuario}s en memoria en el archivo de texto.

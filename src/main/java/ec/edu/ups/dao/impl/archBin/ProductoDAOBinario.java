@@ -1,4 +1,4 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.archBin;
 
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.modelo.Producto;
@@ -6,7 +6,6 @@ import ec.edu.ups.modelo.Producto;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors; // Importación para uso potencial con streams
 
 /**
  * Implementación de la interfaz {@link ec.edu.ups.dao.ProductoDAO} que

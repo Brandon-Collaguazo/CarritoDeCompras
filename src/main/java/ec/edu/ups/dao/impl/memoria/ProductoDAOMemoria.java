@@ -1,4 +1,4 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.memoria;
 
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.modelo.Producto;
@@ -6,7 +6,6 @@ import ec.edu.ups.modelo.Producto;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors; // Importación útil para métodos concisos
 
 /**
  * Implementación de la interfaz {@link ec.edu.ups.dao.ProductoDAO} que

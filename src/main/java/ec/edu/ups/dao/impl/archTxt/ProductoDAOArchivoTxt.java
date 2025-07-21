@@ -1,4 +1,4 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.archTxt;
 
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.modelo.Producto;
@@ -6,7 +6,6 @@ import ec.edu.ups.modelo.Producto;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors; // Importación para uso potencial con streams
 
 /**
  * Implementación de la interfaz {@link ec.edu.ups.dao.ProductoDAO} que
@@ -81,7 +80,8 @@ public class ProductoDAOArchivoTxt implements ProductoDAO {
         productos.clear(); // Limpia la lista actual antes de cargar
         File archivo = new File(ruta + "/productos.txt");
         if (!archivo.exists() || archivo.length() == 0) {
-            System.out.println("Información: El archivo de productos no existe o está vacío. No se cargaron productos.");
+            System.out.println("Información: El archivo de productos no existe o está vacío. Cargando productos iniciales.");
+            inicializarProductos(); // Carga productos iniciales solo si el archivo está vacío
             return;
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
@@ -98,6 +98,24 @@ public class ProductoDAOArchivoTxt implements ProductoDAO {
             System.err.println("Error al cargar productos desde el archivo de texto: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Inicializador de Productos
+     * Método que inicializa los productos en el archivo
+     */
+    private void inicializarProductos() {
+        System.out.println("Cargando productos");
+        productos.add(new Producto(1, "Pantalla", 250.00));
+        productos.add(new Producto(2, "Mouse", 15.00));
+        productos.add(new Producto(3, "Teclado", 20.00));
+        productos.add(new Producto(4, "Laptop", 850.00));
+        productos.add(new Producto(5, "Impresora", 120.00));
+        productos.add(new Producto(6, "Parlantes", 35.00));
+        productos.add(new Producto(7, "Webcam", 40.00));
+        productos.add(new Producto(8, "Micrófono", 30.00));
+        productos.add(new Producto(9, "Router", 60.00));
+        productos.add(new Producto(10, "Disco Duro", 100.00));
     }
 
     /**

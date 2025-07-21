@@ -1,4 +1,4 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.archTxt;
 
 import ec.edu.ups.dao.PreguntaSeguridadDAO;
 import ec.edu.ups.modelo.PreguntaSeguridad;
@@ -311,7 +311,7 @@ public class PreguntaDAOArchivoTxt implements PreguntaSeguridadDAO {
         if (disponibles.isEmpty()) {
             return null;
         }
-        Collections.shuffle(disponibles); // Mezcla las preguntas disponibles
-        return disponibles.get(0); // Devuelve la primera pregunta de la lista mezclada
+        Collections.shuffle(disponibles);
+        return disponibles.get(0);
     }
 }

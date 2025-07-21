@@ -6,110 +6,176 @@ import ec.edu.ups.vista.MenuPrincipalView;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
 
 /**
- * La clase `LoginView` representa la ventana de inicio de sesión de la aplicación.
- * Permite a los usuarios ingresar sus credenciales (nombre de usuario y contraseña),
- * seleccionar un tipo de almacenamiento de datos y cambiar el idioma de la interfaz.
- * También proporciona acceso a las vistas de registro de usuario y recuperación de contraseña.
- *
+ * <p>La clase {@code LoginView} representa la ventana de inicio de sesión de la aplicación.</p>
+ * <p>Permite a los usuarios ingresar sus credenciales, acceder a las opciones de registro
+ * y recuperación de contraseña, así como seleccionar el tipo de almacenamiento de datos
+ * y la ruta de archivos. También ofrece soporte para la internacionalización de la interfaz de usuario.</p>
  */
 public class LoginView extends JFrame {
-
-    /** Componente JMenuBar para el menú de la aplicación. */
+    /**
+     * Referencia a la vista principal de la aplicación, utilizada para la navegación posterior al login.
+     */
+    private MenuPrincipalView principalView;
+    /**
+     * Barra de menú principal de la ventana.
+     */
     private JMenuBar menuBar;
-    /** Menú desplegable para la selección de idioma. */
+    /**
+     * Menú desplegable para la selección del idioma.
+     */
     private JMenu menuIdioma;
-    /** Opción de menú para cambiar el idioma a Español. */
+    /**
+     * Opción de menú para cambiar el idioma a español.
+     */
     private JMenuItem menuItemEspaniol;
-    /** Opción de menú para cambiar el idioma a Inglés. */
+    /**
+     * Opción de menú para cambiar el idioma a inglés.
+     */
     private JMenuItem menuItemIngles;
-    /** Opción de menú para cambiar el idioma a Francés. */
+    /**
+     * Opción de menú para cambiar el idioma a francés.
+     */
     private JMenuItem menuItemFrances;
-    /** Panel principal que contiene todos los demás componentes. */
+    /**
+     * Panel principal que contiene todos los demás componentes de la vista.
+     */
     private JPanel pnlPrincipal;
-    /** Panel superior de la interfaz, posiblemente para el título. */
+    /**
+     * Panel superior de la interfaz, típicamente para el título o encabezado.
+     */
     private JPanel pnlSuperior;
-    /** Panel central de la interfaz, que contiene los campos de entrada y etiquetas. */
+    /**
+     * Panel central donde se ubican los campos de usuario, contraseña y opciones de almacenamiento.
+     */
     private JPanel pnlCentral;
-    /** Campo de texto para que el usuario ingrese su nombre de usuario. */
+    /**
+     * Campo de texto para que el usuario ingrese su nombre de usuario.
+     */
     private JTextField txtUsuario;
-    /** Botón para iniciar sesión. */
+    /**
+     * Botón para iniciar sesión con las credenciales ingresadas.
+     */
     private JButton btnIniciar;
-    /** Botón para registrar un nuevo usuario. */
+    /**
+     * Botón para acceder a la vista de registro de nuevos usuarios.
+     */
     private JButton btnRegistrar;
-    /** Etiqueta para el título de la ventana de inicio de sesión. */
+    /**
+     * Etiqueta para mostrar el título principal de la ventana de login.
+     */
     private JLabel lblTitulo;
-    /** Etiqueta para el campo de nombre de usuario. */
+    /**
+     * Etiqueta para el campo de entrada de usuario.
+     */
     private JLabel lblUsuario;
-    /** Etiqueta para el campo de contraseña. */
+    /**
+     * Etiqueta para el campo de entrada de contraseña.
+     */
     private JLabel lblPassword;
-    /** Panel que contiene los botones de acción (iniciar, registrar, recuperar). */
+    /**
+     * Panel que agrupa los botones de acción como iniciar sesión, registrar y recuperar contraseña.
+     */
     private JPanel pnlBotones;
-    /** Botón para iniciar el proceso de recuperación de contraseña. */
+    /**
+     * Botón para iniciar el proceso de recuperación de contraseña.
+     */
     private JButton btnRecuperar;
-    /** Etiqueta para el enlace o botón de recuperación de contraseña. */
+    /**
+     * Etiqueta informativa o de título para la sección de recuperación de contraseña.
+     */
     private JLabel lblRecuperar;
-    /** Campo de texto para que el usuario ingrese su contraseña (oculto). */
+    /**
+     * Campo de contraseña para que el usuario ingrese su clave.
+     */
     private JPasswordField txtPassword;
-    /** Etiqueta para el selector de tipo de almacenamiento. */
+    /**
+     * Etiqueta para el combo box de selección del tipo de almacenamiento.
+     */
     private JLabel lblAlmacenamiento;
-    /** ComboBox para seleccionar el tipo de almacenamiento de datos (Memoria, Archivos Txt, Archivos Binarios). */
+    /**
+     * Combo box para seleccionar el tipo de almacenamiento de datos (Memoria, Archivos Txt, Archivos Binarios).
+     */
     private JComboBox<String> cbxAlmacenamiento;
-    /** Campo de texto para ingresar la ruta del archivo de almacenamiento (visible solo para Txt y Binarios). */
+    /**
+     * Campo de texto para que el usuario especifique la ruta de los archivos de datos.
+     */
     private JTextField txtRuta;
-    /** Etiqueta para el campo de ruta del archivo. */
+    /**
+     * Etiqueta para el campo de entrada de la ruta de archivos.
+     */
     private JLabel lblRuta;
+    /**
+     * Botón para abrir un explorador de archivos y seleccionar una ruta de directorio.
+     */
+    private JButton btnRuta;
 
-    /** Array de opciones de almacenamiento disponibles para el ComboBox. */
+    /**
+     * Opciones de almacenamiento disponibles para el JComboBox.
+     */
     private String[] opcionesAlmacenamiento = {"Memoria", "Archivos Txt", "Archivos Binarios"};
-    /** Manejador de mensajes de internacionalización para obtener textos en el idioma seleccionado. */
+    /**
+     * Manejador para obtener los textos de la interfaz en el idioma seleccionado.
+     */
     private MensajeInternacionalizacionHandler mensaje;
-    /** Array de códigos de idioma soportados (es, en, fr). */
+    /**
+     * Códigos de idioma soportados (ej. "es", "en", "fr").
+     */
     private String[] codigosIdioma = {"es", "en", "fr"};
-    /** Idioma actualmente seleccionado, por defecto "es" (español). */
+    /**
+     * Idioma actualmente seleccionado en la interfaz. Por defecto "es".
+     */
     private String idiomaSeleccionado = "es";
-    /** País actualmente seleccionado, por defecto "EC" (Ecuador). */
+    /**
+     * País asociado al idioma seleccionado, utilizado para la internacionalización. Por defecto "EC".
+     */
     private String paisSeleccionado = "EC";
 
-    /** Referencia a la vista de registro de usuario, si ha sido establecida. */
+    /**
+     * Referencia a la vista de registro de usuarios, para permitir la navegación.
+     */
     private UsuarioRegistroView usuarioRegistroView;
-    /** Referencia a la vista de recuperación de contraseña, si ha sido establecida. */
+    /**
+     * Referencia a la vista de recuperación de contraseña.
+     */
     private RecuperarContraseniaView recuperarContraseniaView;
 
     /**
-     * Constructor de la clase `LoginView`.
-     * Inicializa el manejador de internacionalización, configura los componentes
-     * de la interfaz gráfica, establece los listeners para el cambio de idioma
-     * y actualiza los textos de la interfaz al idioma por defecto.
+     * <p>Construye e inicializa una nueva instancia de {@code LoginView}.</p>
+     * <p>Configura los componentes de la interfaz de usuario, los listeners para el cambio de idioma,
+     * y actualiza todos los textos de la vista de acuerdo al idioma inicial.</p>
+     *
+     * @param mensaje El {@link MensajeInternacionalizacionHandler} utilizado para la gestión de idiomas y textos.
      */
-    public LoginView() {
-        mensaje = new MensajeInternacionalizacionHandler(idiomaSeleccionado, paisSeleccionado);
+    public LoginView(MensajeInternacionalizacionHandler mensaje) {
+        this.mensaje = mensaje;
         initComponents();
         configurarListenersIdiomas();
         actualizarTextos();
     }
 
     /**
-     * Inicializa y configura los componentes de la interfaz gráfica de usuario (GUI).
-     * Establece las propiedades de la ventana, inicializa el ComboBox de almacenamiento,
-     * configura la barra de menú con las opciones de idioma y carga los iconos para
-     * botones y elementos del menú.
+     * <p>Inicializa y configura todos los componentes gráficos de la ventana de login.</p>
+     * <p>Esto incluye la configuración del diseño del panel principal, los campos de entrada,
+     * botones, la barra de menú con las opciones de idioma, y la carga de los iconos
+     * para los botones y elementos del menú.</p>
      */
     private void initComponents() {
         setContentPane(pnlPrincipal);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
-        setLocationRelativeTo(null); // Centra la ventana en la pantalla.
+        setSize(500, 500);
+        setLocationRelativeTo(null);
 
         cbxAlmacenamiento.setModel(new DefaultComboBoxModel<>(
                 new String[]{"Memoria", "Archivos Txt", "Archivos Binarios"}
         ));
-        cbxAlmacenamiento.setSelectedIndex(0); // Selecciona "Memoria" por defecto.
+        cbxAlmacenamiento.setSelectedIndex(0);
 
         menuBar = new JMenuBar();
-        menuIdioma = new JMenu(mensaje.get("menu.idioma")); // Texto del menú de idioma.
+        menuIdioma = new JMenu(mensaje.get("menu.idioma"));
 
         menuItemEspaniol = new JMenuItem(mensaje.get("menu.idioma.es"));
         menuItemIngles = new JMenuItem(mensaje.get("menu.idioma.en"));
@@ -122,7 +188,6 @@ public class LoginView extends JFrame {
         menuBar.add(menuIdioma);
         setJMenuBar(menuBar);
 
-        // Carga y asignación de íconos para los botones
         URL iniciarsesionURL = LoginView.class.getClassLoader().getResource("imagenes/iniciarsesion.png");
         if(iniciarsesionURL != null) {
             ImageIcon iconoBtnIniciar = new ImageIcon(iniciarsesionURL);
@@ -147,7 +212,6 @@ public class LoginView extends JFrame {
             System.err.println("Error: no se ha cargado el ícono de recuperar contraseña.");
         }
 
-        // Carga y asignación de íconos para los elementos del menú de idioma
         URL espaniolURL = MenuPrincipalView.class.getClassLoader().getResource("imagenes/espana.png");
         if(espaniolURL != null) {
             ImageIcon iconItemEsp = new ImageIcon(espaniolURL);
@@ -174,52 +238,80 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Configura los ActionListeners para los elementos del menú de idioma
-     * y para el ComboBox de selección de almacenamiento.
-     * Al seleccionar un idioma, se llama a `cambiarIdioma`.
-     * Al cambiar la opción de almacenamiento, se controla la visibilidad
-     * del campo de texto de la ruta.
+     * <p>Configura los {@link ActionListener} para los elementos interactivos de la vista.</p>
+     * <p>Esto incluye los ítems del menú de idioma para permitir el cambio de interfaz,
+     * el {@link JComboBox} de selección de almacenamiento para mostrar u ocultar el campo de ruta,
+     * y el botón de selección de ruta de archivos.</p>
      */
     private void configurarListenersIdiomas() {
         menuItemEspaniol.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cambiarIdioma(0); // Índice para Español
+                cambiarIdioma(0);
             }
         });
 
         menuItemIngles.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cambiarIdioma(1); // Índice para Inglés
+                cambiarIdioma(1);
             }
         });
 
         menuItemFrances.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cambiarIdioma(2); // Índice para Francés
+                cambiarIdioma(2);
             }
         });
 
         cbxAlmacenamiento.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // La ruta solo es relevante para almacenamiento en Archivos Txt o Binarios.
-                boolean mostrarRuta = !cbxAlmacenamiento.getSelectedItem().equals("Memoria");
-                lblRuta.setVisible(mostrarRuta);
-                txtRuta.setVisible(mostrarRuta);
+                String tipoKey = (String) cbxAlmacenamiento.getSelectedItem();
+                boolean esArchivo = tipoKey != null &&
+                        (tipoKey.equals(mensaje.get("login.almacenamiento.archivo.sistema")) ||
+                                tipoKey.equals(mensaje.get("login.almacenamiento.binario")));
+                lblRuta.setVisible(esArchivo);
+                txtRuta.setVisible(esArchivo);
+                btnRecuperar.setVisible(esArchivo);
+                if(esArchivo && txtRuta.getText().isEmpty()) {
+                    txtRuta.setText("data" + File.separator);
+                } else if (!esArchivo) {
+                    txtRuta.setText("");
+                }
+            }
+        });
+        cbxAlmacenamiento.setSelectedIndex(0);
+        if (cbxAlmacenamiento.getActionListeners().length > 0) {
+            cbxAlmacenamiento.getActionListeners()[0].actionPerformed(
+                    new ActionEvent(cbxAlmacenamiento, ActionEvent.ACTION_PERFORMED, null)
+            );
+        }
+
+        btnRuta.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int opcion = fileChooser.showOpenDialog(LoginView.this);
+
+                if (opcion == JFileChooser.APPROVE_OPTION) {
+                    File directorioSelected = fileChooser.getSelectedFile();
+                    txtRuta.setText(directorioSelected.getAbsolutePath() + File.separator);
+                }
             }
         });
     }
 
     /**
-     * Actualiza todos los textos de la interfaz de usuario (etiquetas, botones, menú)
-     * utilizando el `MensajeInternacionalizacionHandler` para reflejar el idioma actual.
+     * <p>Actualiza todos los textos visibles en la interfaz de usuario de acuerdo
+     * con el idioma actualmente configurado en el {@link MensajeInternacionalizacionHandler}.</p>
+     * <p>Esto incluye el título de la ventana, etiquetas, textos de botones y elementos de menú.</p>
      */
     private void actualizarTextos() {
-        setTitle(mensaje.get("login.titulo")); // Título de la ventana
-        lblTitulo.setText(mensaje.get("login.titulo")); // Etiqueta de título principal
+        setTitle(mensaje.get("login.titulo"));
+        lblTitulo.setText(mensaje.get("login.titulo"));
 
         lblUsuario.setText(mensaje.get("usuario"));
         lblPassword.setText(mensaje.get("contrasenia"));
@@ -230,6 +322,7 @@ public class LoginView extends JFrame {
         btnIniciar.setText(mensaje.get("iniciar"));
         btnRegistrar.setText(mensaje.get("registrar"));
         btnRecuperar.setText(mensaje.get("btn.recuperar"));
+        btnRuta.setText(mensaje.get("btn.ruta"));
 
         menuIdioma.setText(mensaje.get("menu.idioma"));
         menuItemEspaniol.setText(mensaje.get("menu.idioma.es"));
@@ -238,24 +331,27 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Cambia el idioma de la interfaz de usuario.
-     * Actualiza el `MensajeInternacionalizacionHandler` con el nuevo idioma y país,
-     * luego llama a `actualizarTextos()`. Además, si las vistas de registro y
-     * recuperación de contraseña están instanciadas, también les indica que cambien su idioma.
+     * <p>Cambia el idioma de la interfaz de usuario de la aplicación.</p>
+     * <p>Actualiza el {@code Locale} en el {@link MensajeInternacionalizacionHandler} y luego
+     * refresca todos los textos de la vista de login. También propaga el cambio de idioma
+     * a las vistas dependientes, como {@link UsuarioRegistroView} y {@link RecuperarContraseniaView},
+     * si estas han sido inicializadas.</p>
      *
-     * @param indice El índice del idioma en el array `codigosIdioma`.
-     * 0 para Español, 1 para Inglés, 2 para Francés.
+     * @param indice El índice del idioma a seleccionar:
+     * <ul>
+     * <li>0 para español ("es", país "EC")</li>
+     * <li>1 para inglés ("en", país "US")</li>
+     * <li>2 para francés ("fr", país "FR")</li>
+     * </ul>
      */
     private void cambiarIdioma(int indice) {
         if (indice >= 0 && indice < codigosIdioma.length) {
             idiomaSeleccionado = codigosIdioma[indice];
-            // Asigna el código de país según el idioma seleccionado.
             paisSeleccionado = idiomaSeleccionado.equals("es") ? "EC" :
-                    idiomaSeleccionado.equals("fr") ? "FR" : "US"; // Por defecto "US" para inglés
-            mensaje.setLenguaje(idiomaSeleccionado, paisSeleccionado); // Actualiza el manejador de mensajes
-            actualizarTextos(); // Actualiza los textos de esta vista
+                    idiomaSeleccionado.equals("fr") ? "FR" : "US";
+            mensaje.setLenguaje(idiomaSeleccionado, paisSeleccionado);
+            actualizarTextos();
 
-            // Si las vistas relacionadas están abiertas, también se actualiza su idioma.
             if(usuarioRegistroView != null) {
                 usuarioRegistroView.cambiarIdioma(idiomaSeleccionado, paisSeleccionado);
             }
@@ -267,10 +363,10 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece la vista de registro de usuario y le pasa el manejador de mensajes
-     * de internacionalización de esta vista.
+     * <p>Establece la instancia de la vista de registro de usuarios.</p>
+     * <p>También transfiere el manejador de mensajes a la vista de registro.</p>
      *
-     * @param usuarioRegistroView La instancia de `UsuarioRegistroView`.
+     * @param usuarioRegistroView La {@link UsuarioRegistroView} a enlazar.
      */
     public void setUsuarioRegistroView(UsuarioRegistroView usuarioRegistroView) {
         this.usuarioRegistroView = usuarioRegistroView;
@@ -278,20 +374,19 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece la vista de recuperación de contraseña y le pasa el manejador de mensajes
-     * de internacionalización de esta vista.
+     * <p>Establece la instancia de la vista de recuperación de contraseña.</p>
+     * <p>También transfiere el manejador de mensajes a la vista de recuperación.</p>
      *
-     * @param recuperarContraseniaView La instancia de `RecuperarContraseniaView`.
+     * @param recuperarContraseniaView La {@link RecuperarContraseniaView} a enlazar.
      */
     public void setRecuperarContraseniaView(RecuperarContraseniaView recuperarContraseniaView) {
         this.recuperarContraseniaView = recuperarContraseniaView;
         recuperarContraseniaView.setMensaje(this.mensaje);
     }
 
-    // --- Métodos Getters y Setters para los componentes de la interfaz ---
-
     /**
-     * Retorna el panel principal de la vista.
+     * Obtiene el panel principal de la vista de login.
+     *
      * @return El {@link JPanel} principal.
      */
     public JPanel getPnlPrincipal() {
@@ -299,7 +394,8 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el panel principal de la vista.
+     * Establece el panel principal de la vista de login.
+     *
      * @param pnlPrincipal El {@link JPanel} a establecer como principal.
      */
     public void setPnlPrincipal(JPanel pnlPrincipal) {
@@ -307,7 +403,8 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Retorna el panel superior de la vista.
+     * Obtiene el panel superior de la vista de login.
+     *
      * @return El {@link JPanel} superior.
      */
     public JPanel getPnlSuperior() {
@@ -315,7 +412,8 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el panel superior de la vista.
+     * Establece el panel superior de la vista de login.
+     *
      * @param pnlSuperior El {@link JPanel} a establecer como superior.
      */
     public void setPnlSuperior(JPanel pnlSuperior) {
@@ -323,7 +421,8 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Retorna el panel central de la vista.
+     * Obtiene el panel central de la vista de login.
+     *
      * @return El {@link JPanel} central.
      */
     public JPanel getPnlCentral() {
@@ -331,7 +430,8 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el panel central de la vista.
+     * Establece el panel central de la vista de login.
+     *
      * @param pnlCentral El {@link JPanel} a establecer como central.
      */
     public void setPnlCentral(JPanel pnlCentral) {
@@ -339,103 +439,116 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Retorna el menú de idioma.
-     * @return El {@link JMenu} de idioma.
+     * Obtiene el menú de selección de idioma.
+     *
+     * @return El {@link JMenu} para idiomas.
      */
     public JMenu getMenuIdioma() {
         return menuIdioma;
     }
 
     /**
-     * Establece el menú de idioma.
-     * @param menuIdioma El {@link JMenu} a establecer.
+     * Establece el menú de selección de idioma.
+     *
+     * @param menuIdioma El {@link JMenu} a establecer para idiomas.
      */
     public void setMenuIdioma(JMenu menuIdioma) {
         this.menuIdioma = menuIdioma;
     }
 
     /**
-     * Retorna el elemento de menú para el idioma Español.
-     * @return El {@link JMenuItem} de Español.
+     * Obtiene el ítem de menú para el idioma español.
+     *
+     * @return El {@link JMenuItem} para español.
      */
     public JMenuItem getMenuItemEspaniol() {
         return menuItemEspaniol;
     }
 
     /**
-     * Establece el elemento de menú para el idioma Español.
-     * @param menuItemEspaniol El {@link JMenuItem} a establecer.
+     * Establece el ítem de menú para el idioma español.
+     *
+     * @param menuItemEspaniol El {@link JMenuItem} a establecer para español.
      */
     public void setMenuItemEspaniol(JMenuItem menuItemEspaniol) {
         this.menuItemEspaniol = menuItemEspaniol;
     }
 
     /**
-     * Retorna el elemento de menú para el idioma Inglés.
-     * @return El {@link JMenuItem} de Inglés.
+     * Obtiene el ítem de menú para el idioma inglés.
+     *
+     * @return El {@link JMenuItem} para inglés.
      */
     public JMenuItem getMenuItemIngles() {
         return menuItemIngles;
     }
 
     /**
-     * Establece el elemento de menú para el idioma Inglés.
-     * @param menuItemIngles El {@link JMenuItem} a establecer.
+     * Establece el ítem de menú para el idioma inglés.
+     *
+     * @param menuItemIngles El {@link JMenuItem} a establecer para inglés.
      */
     public void setMenuItemIngles(JMenuItem menuItemIngles) {
         this.menuItemIngles = menuItemIngles;
     }
 
     /**
-     * Retorna el elemento de menú para el idioma Francés.
-     * @return El {@link JMenuItem} de Francés.
+     * Obtiene el ítem de menú para el idioma francés.
+     *
+     * @return El {@link JMenuItem} para francés.
      */
     public JMenuItem getMenuItemFrances() {
         return menuItemFrances;
     }
 
     /**
-     * Establece el elemento de menú para el idioma Francés.
-     * @param menuItemFrances El {@link JMenuItem} a establecer.
+     * Establece el ítem de menú para el idioma francés.
+     *
+     * @param menuItemFrances El {@link JMenuItem} a establecer para francés.
      */
     public void setMenuItemFrances(JMenuItem menuItemFrances) {
         this.menuItemFrances = menuItemFrances;
     }
 
     /**
-     * Retorna la etiqueta para el campo de usuario.
-     * @return El {@link JLabel} del usuario.
+     * Obtiene la etiqueta del campo de usuario.
+     *
+     * @return El {@link JLabel} para el usuario.
      */
     public JLabel getLblUsuario() {
         return lblUsuario;
     }
 
     /**
-     * Establece la etiqueta para el campo de usuario.
-     * @param lblUsuario El {@link JLabel} a establecer.
+     * Establece la etiqueta del campo de usuario.
+     *
+     * @param lblUsuario El {@link JLabel} a establecer para el usuario.
      */
     public void setLblUsuario(JLabel lblUsuario) {
         this.lblUsuario = lblUsuario;
     }
 
     /**
-     * Retorna la etiqueta para el campo de contraseña.
-     * @return El {@link JLabel} de la contraseña.
+     * Obtiene la etiqueta del campo de contraseña.
+     *
+     * @return El {@link JLabel} para la contraseña.
      */
     public JLabel getLblPassword() {
         return lblPassword;
     }
 
     /**
-     * Establece la etiqueta para el campo de contraseña.
-     * @param lblPassword El {@link JLabel} a establecer.
+     * Establece la etiqueta del campo de contraseña.
+     *
+     * @param lblPassword El {@link JLabel} a establecer para la contraseña.
      */
     public void setLblPassword(JLabel lblPassword) {
         this.lblPassword = lblPassword;
     }
 
     /**
-     * Retorna el panel que contiene los botones.
+     * Obtiene el panel que contiene los botones de acción.
+     *
      * @return El {@link JPanel} de botones.
      */
     public JPanel getPnlBotones() {
@@ -443,47 +556,53 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el panel que contiene los botones.
-     * @param pnlBotones El {@link JPanel} a establecer.
+     * Establece el panel que contiene los botones de acción.
+     *
+     * @param pnlBotones El {@link JPanel} a establecer para los botones.
      */
     public void setPnlBotones(JPanel pnlBotones) {
         this.pnlBotones = pnlBotones;
     }
 
     /**
-     * Retorna el botón de recuperar contraseña.
-     * @return El {@link JButton} de recuperar.
+     * Obtiene el botón para recuperar la contraseña.
+     *
+     * @return El {@link JButton} de recuperar contraseña.
      */
     public JButton getBtnRecuperar() {
         return btnRecuperar;
     }
 
     /**
-     * Establece el botón de recuperar contraseña.
-     * @param btnRecuperar El {@link JButton} a establecer.
+     * Establece el botón para recuperar la contraseña.
+     *
+     * @param btnRecuperar El {@link JButton} a establecer para recuperar contraseña.
      */
     public void setBtnRecuperar(JButton btnRecuperar) {
         this.btnRecuperar = btnRecuperar;
     }
 
     /**
-     * Retorna la etiqueta para el botón de recuperar contraseña.
-     * @return El {@link JLabel} de recuperar.
+     * Obtiene la etiqueta relacionada con la recuperación de contraseña.
+     *
+     * @return El {@link JLabel} de recuperación.
      */
     public JLabel getLblRecuperar() {
         return lblRecuperar;
     }
 
     /**
-     * Establece la etiqueta para el botón de recuperar contraseña.
-     * @param lblRecuperar El {@link JLabel} a establecer.
+     * Establece la etiqueta relacionada con la recuperación de contraseña.
+     *
+     * @param lblRecuperar El {@link JLabel} a establecer para recuperación.
      */
     public void setLblRecuperar(JLabel lblRecuperar) {
         this.lblRecuperar = lblRecuperar;
     }
 
     /**
-     * Retorna el campo de texto para el nombre de usuario.
+     * Obtiene la instancia del campo de texto de usuario.
+     *
      * @return El {@link JTextField} del usuario.
      */
     public JTextField getTxtUsuario() {
@@ -491,15 +610,17 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el campo de texto para el nombre de usuario.
-     * @param txtUsuario El {@link JTextField} a establecer.
+     * Establece la instancia del campo de texto de usuario.
+     *
+     * @param txtUsuario El {@link JTextField} a establecer para el usuario.
      */
     public void setTxtUsuario(JTextField txtUsuario) {
         this.txtUsuario = txtUsuario;
     }
 
     /**
-     * Retorna el campo de contraseña.
+     * Obtiene la instancia del campo de contraseña.
+     *
      * @return El {@link JPasswordField} de la contraseña.
      */
     public JPasswordField getTxtPassword() {
@@ -507,15 +628,17 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el campo de contraseña.
-     * @param txtPassword El {@link JPasswordField} a establecer.
+     * Establece la instancia del campo de contraseña.
+     *
+     * @param txtPassword El {@link JPasswordField} a establecer para la contraseña.
      */
     public void setTxtPassword(JPasswordField txtPassword) {
         this.txtPassword = txtPassword;
     }
 
     /**
-     * Retorna el campo de texto para la ruta del archivo.
+     * Obtiene la instancia del campo de texto para la ruta de archivos.
+     *
      * @return El {@link JTextField} de la ruta.
      */
     public JTextField getTxtRuta() {
@@ -523,31 +646,35 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el campo de texto para la ruta del archivo.
-     * @param txtRuta El {@link JTextField} a establecer.
+     * Establece la instancia del campo de texto para la ruta de archivos.
+     *
+     * @param txtRuta El {@link JTextField} a establecer para la ruta.
      */
     public void setTxtRuta(JTextField txtRuta) {
         this.txtRuta = txtRuta;
     }
 
     /**
-     * Retorna el botón de iniciar sesión.
-     * @return El {@link JButton} de iniciar.
+     * Obtiene el botón para iniciar sesión.
+     *
+     * @return El {@link JButton} de iniciar sesión.
      */
     public JButton getBtnIniciar() {
         return btnIniciar;
     }
 
     /**
-     * Establece el botón de iniciar sesión.
-     * @param btnIniciar El {@link JButton} a establecer.
+     * Establece el botón para iniciar sesión.
+     *
+     * @param btnIniciar El {@link JButton} a establecer para iniciar sesión.
      */
     public void setBtnIniciar(JButton btnIniciar) {
         this.btnIniciar = btnIniciar;
     }
 
     /**
-     * Retorna el botón de registrar.
+     * Obtiene el botón para registrar un nuevo usuario.
+     *
      * @return El {@link JButton} de registrar.
      */
     public JButton getBtnRegistrar() {
@@ -555,23 +682,35 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el botón de registrar.
-     * @param btnRegistrar El {@link JButton} a establecer.
+     * Establece el botón para registrar un nuevo usuario.
+     *
+     * @param btnRegistrar El {@link JButton} a establecer para registrar.
      */
     public void setBtnRegistrar(JButton btnRegistrar) {
         this.btnRegistrar = btnRegistrar;
     }
 
     /**
-     * Retorna la etiqueta del título de la ventana.
-     * @return El {@link JLabel} del título.
+     * Obtiene el botón para seleccionar la ruta de archivos.
+     *
+     * @return El {@link JButton} de ruta.
      */
-    public JLabel getLblTitulo() {
-        return lblTitulo;
+    public JButton getBtnRuta() {
+        return btnRuta;
     }
 
     /**
-     * Retorna el ComboBox de selección de tipo de almacenamiento.
+     * Establece el botón para seleccionar la ruta de archivos.
+     *
+     * @param btnRuta El {@link JButton} a establecer para ruta.
+     */
+    public void setBtnRuta(JButton btnRuta) {
+        this.btnRuta = btnRuta;
+    }
+
+    /**
+     * Obtiene el combo box de selección de tipo de almacenamiento.
+     *
      * @return El {@link JComboBox} de almacenamiento.
      */
     public JComboBox getCbxAlmacenamiento() {
@@ -579,31 +718,53 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece el ComboBox de selección de tipo de almacenamiento.
-     * @param cbxAlmacenamiento El {@link JComboBox} a establecer.
+     * Establece el combo box de selección de tipo de almacenamiento.
+     *
+     * @param cbxAlmacenamiento El {@link JComboBox} a establecer para almacenamiento.
      */
     public void setCbxAlmacenamiento(JComboBox cbxAlmacenamiento) {
         this.cbxAlmacenamiento = cbxAlmacenamiento;
     }
 
     /**
-     * Establece la etiqueta del título de la ventana.
-     * @param lblTitulo El {@link JLabel} a establecer.
+     * Establece la etiqueta del título principal de la ventana.
+     *
+     * @param lblTitulo El {@link JLabel} a establecer como título.
      */
     public void setLblTitulo(JLabel lblTitulo) {
         this.lblTitulo = lblTitulo;
     }
 
     /**
-     * Retorna el manejador de mensajes de internacionalización.
-     * @return El {@link MensajeInternacionalizacionHandler} utilizado.
+     * Obtiene la instancia de la vista principal de la aplicación.
+     *
+     * @return La {@link MenuPrincipalView} enlazada.
+     */
+    public MenuPrincipalView getPrincipalView() {
+        return principalView;
+    }
+
+    /**
+     * Establece la instancia de la vista principal de la aplicación.
+     *
+     * @param principalView La {@link MenuPrincipalView} a enlazar.
+     */
+    public void setPrincipalView(MenuPrincipalView principalView) {
+        this.principalView = principalView;
+    }
+
+    /**
+     * Obtiene el manejador de mensajes para internacionalización.
+     *
+     * @return El {@link MensajeInternacionalizacionHandler} utilizado en la vista.
      */
     public MensajeInternacionalizacionHandler getMensaje() {
         return mensaje;
     }
 
     /**
-     * Establece el manejador de mensajes de internacionalización.
+     * Establece el manejador de mensajes para internacionalización.
+     *
      * @param mensaje El {@link MensajeInternacionalizacionHandler} a establecer.
      */
     public void setMensaje(MensajeInternacionalizacionHandler mensaje) {
@@ -611,33 +772,35 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Retorna el tipo de almacenamiento seleccionado en el ComboBox.
-     * @return Una cadena que representa el tipo de almacenamiento (ej., "Memoria", "Archivos Txt").
+     * Obtiene el texto del ítem actualmente seleccionado en el combo box de tipo de almacenamiento.
+     *
+     * @return El {@code String} que representa el tipo de almacenamiento seleccionado.
      */
     public String getTipoAlmacenamiento() {
         return (String) cbxAlmacenamiento.getSelectedItem();
     }
 
     /**
-     * Retorna la ruta del archivo ingresada en el campo de texto, sin espacios al inicio o al final.
-     * @return Una cadena que representa la ruta del archivo.
+     * Obtiene la ruta de archivo especificada en el campo de texto.
+     *
+     * @return La ruta de archivo ingresada, sin espacios al inicio o al final.
      */
     public String getRutaArchivo() {
         return txtRuta.getText().trim();
     }
 
     /**
-     * Muestra un cuadro de diálogo de mensaje utilizando el texto internacionalizado
-     * asociado a la clave proporcionada.
+     * Muestra un mensaje de información en un cuadro de diálogo modal.
+     * El texto del mensaje se obtiene a través del manejador de internacionalización.
      *
-     * @param mensajeKey La clave del mensaje a mostrar.
+     * @param mensajeKey La clave de internacionalización del mensaje a mostrar.
      */
     public void mostrarMensaje(String mensajeKey) {
         JOptionPane.showMessageDialog(this, mensaje.get(mensajeKey));
     }
 
     /**
-     * Limpia los campos de texto de usuario y contraseña.
+     * Limpia el contenido de los campos de texto de usuario y contraseña.
      */
     public void limpiarCampos() {
         txtUsuario.setText("");
@@ -645,11 +808,22 @@ public class LoginView extends JFrame {
     }
 
     /**
-     * Establece un texto por defecto en el campo de texto de la ruta del archivo.
+     * Establece el texto predeterminado en el campo de texto de la ruta de archivos.
      *
-     * @param rutaDefault La cadena de texto a establecer como ruta por defecto.
+     * @param rutaDefault La cadena de texto que representa la ruta predeterminada a establecer.
      */
     public void setRutaArchivo(String rutaDefault) {
         txtRuta.setText(rutaDefault);
+    }
+
+    /**
+     * <p>Obtiene el texto del ítem actualmente seleccionado en el combo box de tipo de almacenamiento.</p>
+     * <p>Este método devuelve el texto visible en el JComboBox, que puede usarse como clave
+     * para determinar el tipo de almacenamiento en otras partes de la aplicación.</p>
+     *
+     * @return El {@code String} que representa la clave del tipo de almacenamiento seleccionado.
+     */
+    public String getSelectedStorageTypeKey() {
+        return (String) cbxAlmacenamiento.getSelectedItem();
     }
 }

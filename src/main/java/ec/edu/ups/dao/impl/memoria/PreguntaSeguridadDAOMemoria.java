@@ -1,11 +1,10 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.memoria;
 
 import ec.edu.ups.dao.PreguntaSeguridadDAO;
 import ec.edu.ups.modelo.PreguntaSeguridad;
 import ec.edu.ups.modelo.RespuestaSeguridad;
 
 import java.util.*;
-import java.util.stream.Collectors; // Se puede usar para simplificar algunos métodos
 
 /**
  * Implementación de la interfaz {@link ec.edu.ups.dao.PreguntaSeguridadDAO}

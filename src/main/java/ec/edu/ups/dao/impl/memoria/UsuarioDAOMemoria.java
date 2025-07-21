@@ -1,10 +1,12 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.memoria;
 
 import ec.edu.ups.dao.UsuarioDAO;
 import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,8 +35,8 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
         usuarios = new ArrayList<Usuario>();
         // Se crean y añaden usuarios de ejemplo al inicializar la DAO en memoria.
         // La fecha de nacimiento es 'null' en estos ejemplos.
-        crear(new Usuario("0703062885", "Pepe", null, "1234556789","", "admin", "12345", Rol.ADMINISTRADOR));
-        crear(new Usuario("0706780590", "Brandon", null, "0969557675", "", "user", "12345", Rol.USUARIO));
+        crear(new Usuario("0703062885", "Pepe", Date.from(Instant.ofEpochMilli(2000/1/1)), "1234556789","admin@gmail.com", "admin", "12345", Rol.ADMINISTRADOR));
+        crear(new Usuario("0706780590", "Brandon", null, "0969557675", "", "usuario", "12345", Rol.USUARIO));
     }
 
     /**

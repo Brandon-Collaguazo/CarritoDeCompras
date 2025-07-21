@@ -36,9 +36,8 @@ public class CarritoListaView extends JInternalFrame {
      * configura el acceso y actualiza los textos según el idioma.
      *
      * @param mensaje Un objeto `MensajeInternacionalizacionHandler` para manejar la internacionalización de los textos.
-     * @param rol     El rol del usuario actual, que determina la visibilidad de ciertos componentes.
      */
-    public CarritoListaView(MensajeInternacionalizacionHandler mensaje, Rol rol) {
+    public CarritoListaView(MensajeInternacionalizacionHandler mensaje) {
         this.mensaje = mensaje;
         this.rol = rol;
         initComponents();

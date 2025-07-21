@@ -1,10 +1,15 @@
 package ec.edu.ups.controlador;
 
-import ec.edu.ups.dao.CarritoDAO;
-import ec.edu.ups.dao.PreguntaSeguridadDAO;
-import ec.edu.ups.dao.ProductoDAO;
-import ec.edu.ups.dao.UsuarioDAO;
-import ec.edu.ups.dao.impl.*;
+import ec.edu.ups.dao.*;
+import ec.edu.ups.dao.impl.archBin.CarritoDAOBinario;
+import ec.edu.ups.dao.impl.archBin.ProductoDAOBinario;
+import ec.edu.ups.dao.impl.archBin.UsuarioDAOBinario;
+import ec.edu.ups.dao.impl.archTxt.CarritoDAOArchivoTxt;
+import ec.edu.ups.dao.impl.archTxt.ProductoDAOArchivoTxt;
+import ec.edu.ups.dao.impl.archTxt.UsuarioDAOArchivoTxt;
+import ec.edu.ups.dao.impl.memoria.CarritoDAOMemoria;
+import ec.edu.ups.dao.impl.memoria.ProductoDAOMemoria;
+import ec.edu.ups.dao.impl.memoria.UsuarioDAOMemoria;
 import ec.edu.ups.excepciones.CedulaException;
 import ec.edu.ups.excepciones.ContraseniaException;
 import ec.edu.ups.excepciones.CorreoException;
@@ -55,6 +60,7 @@ public class UsuarioController {
     private final UsuarioListaView usuarioListaView;
     private final UsuarioModificarView usuarioModificarView;
     private final AdminModificarView adminModificarView;
+    private final ManagerDAO managerDAO;
 
     /**
      * Constructor principal del controlador de usuarios.
@@ -83,7 +89,8 @@ public class UsuarioController {
                              UsuarioListaView usuarioListaView,
                              UsuarioModificarView usuarioModificarView,
                              AdminModificarView adminModificarView,
-                             MensajeInternacionalizacionHandler mensaje) {
+                             MensajeInternacionalizacionHandler mensaje,
+                             ManagerDAO managerDAO) {
         this.usuarioDAO = usuarioDAO;
         this.carritoDAO = carritoDAO;
         this.productoDAO = productoDAO;
@@ -98,6 +105,7 @@ public class UsuarioController {
         this.usuarioListaView = usuarioListaView;
         this.usuarioModificarView = usuarioModificarView;
         this.adminModificarView = adminModificarView;
+        this.managerDAO = managerDAO;
 
 
         configurarEventosEnVistas();
@@ -261,59 +269,44 @@ public class UsuarioController {
      * Autentica a un usuario en el sistema.
      * Verifica las credenciales y establece el estado de administrador.
      */
-    private void autenticar(){
-        String username = loginView.getTxtUsuario().getText();
-        String contrasenia = loginView.getTxtPassword().getText();
+    public void autenticar() {
+        String username = loginView.getTxtUsuario().getText().trim();
+        String contrasenia = loginView.getTxtPassword().getText().trim();
+        String almacenamientoKey = loginView.getSelectedStorageTypeKey();
+        String filePath = loginView.getRutaArchivo();
 
+        // Inicializar el DAO según el tipo de almacenamiento seleccionado
+        managerDAO.inicializarDAOS(almacenamientoKey, filePath);
+        this.usuarioDAO = managerDAO.getUsuarioDAO();
+
+        // Autenticación del usuario
         usuario = usuarioDAO.autenticar(username, contrasenia);
-        if(usuario == null){
+        if (usuario == null) {
             loginView.mostrarMensaje("datos.usuario.incorrectos");
-        }else{
+        } else {
             this.administrador = (usuario.getRol() == Rol.ADMINISTRADOR);
+            loginView.dispose(); // Cerrar la vista de login
 
-            loginView.dispose();
-            if (this.administrador && this.adminModificarView != null) {
-                inicializarCamposAdmin();
-            } else if (!this.administrador && this.usuarioModificarView != null) {
-                usuarioModificarView.cargarDatosUsuario(usuario);
-                seleccionCombo();
+            // Redirigir a la vista correspondiente según el rol
+            if (this.administrador) {
+                if (this.adminModificarView != null) {
+                    inicializarCamposAdmin();
+                } else {
+                    System.err.println("Vista de administrador no inicializada.");
+                }
+            } else {
+                if (this.usuarioModificarView != null) {
+                    usuarioModificarView.cargarDatosUsuario(usuario);
+                    seleccionCombo();
+                } else {
+                    System.err.println("Vista de usuario no inicializada.");
+                }
             }
         }
-
+        // Limpiar campos después de intentar autenticar
         loginView.limpiarCampos();
     }
 
-    /**
-     * Configura los DAOs según el tipo de persistencia especificado.
-     *
-     * @param tipo Tipo de persistencia ("Archivos Txt", "Archivos Binarios" o "Memoria")
-     * @param ruta Ruta base para almacenamiento (solo aplica para persistencia en archivos)
-     */
-    private void configurarDAOs(String tipo, String ruta) {
-        // Asegurar que la ruta termine con separador
-        if (!tipo.equals("Memoria") && !ruta.endsWith(File.separator)) {
-            ruta += File.separator;
-        }
-
-        switch (tipo) {
-            case "Archivos Txt":
-                this.usuarioDAO = new UsuarioDAOArchivoTxt(ruta);
-                this.carritoDAO = new CarritoDAOArchivoTxt(ruta);
-                this.productoDAO = new ProductoDAOArchivoTxt(ruta);
-                break;
-
-            case "Archivos Binarios":
-                this.usuarioDAO = new UsuarioDAOBinario(ruta);
-                this.carritoDAO = new CarritoDAOBinario(ruta);
-                this.productoDAO = new ProductoDAOBinario(ruta);
-                break;
-
-            default:  // Memoria
-                this.usuarioDAO = new UsuarioDAOMemoria();
-                this.carritoDAO = new CarritoDAOMemoria();
-                this.productoDAO = new ProductoDAOMemoria();
-        }
-    }
 
     /**
      * Obtiene el usuario actualmente autenticado.

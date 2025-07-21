@@ -1,4 +1,4 @@
-package ec.edu.ups.dao.impl;
+package ec.edu.ups.dao.impl.archBin;
 
 import ec.edu.ups.dao.PreguntaSeguridadDAO;
 import ec.edu.ups.modelo.PreguntaSeguridad;
