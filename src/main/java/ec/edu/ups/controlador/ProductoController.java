@@ -211,6 +211,9 @@ public class ProductoController {
         if (producto != null) {
             productoModificarView.getTxtNombre().setText(producto.getNombre());
             productoModificarView.getTxtPrecio().setText(FormateadorUtils.formatearMoneda(producto.getPrecio(), locale));
+
+            productoModificarView.getTxtNombre().setEnabled(true);
+            productoModificarView.getTxtPrecio().setEnabled(true);
             productoModificarView.getBtnActualizar().setEnabled(true);
         } else {
             productoModificarView.mostrarMensaje("producto.no.encontrado");

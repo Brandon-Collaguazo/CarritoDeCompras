@@ -72,7 +72,7 @@ public class UsuarioRegistroView extends JFrame {
     private void initComponents() {
         setContentPane(pnlPrincipal);
         setTitle("Registro de Usuario");
-        setSize(750, 500);
+        setSize(900, 500);
         setLocationRelativeTo(null);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -10,10 +10,7 @@ import ec.edu.ups.dao.impl.archTxt.UsuarioDAOArchivoTxt;
 import ec.edu.ups.dao.impl.memoria.CarritoDAOMemoria;
 import ec.edu.ups.dao.impl.memoria.ProductoDAOMemoria;
 import ec.edu.ups.dao.impl.memoria.UsuarioDAOMemoria;
-import ec.edu.ups.excepciones.CedulaException;
-import ec.edu.ups.excepciones.ContraseniaException;
-import ec.edu.ups.excepciones.CorreoException;
-import ec.edu.ups.excepciones.FechaException;
+import ec.edu.ups.excepciones.*;
 import ec.edu.ups.modelo.*;
 import ec.edu.ups.utils.FormateadorUtils;
 import ec.edu.ups.utils.MensajeInternacionalizacionHandler;
@@ -355,61 +352,30 @@ public class UsuarioController {
      * @return true si los datos son válidos, false en caso contrario
      */
     private boolean validarDatos() {
-        String cedula = usuarioRegistroView.getTxtCedula().getText();
-        String nombre = usuarioRegistroView.getTxtNombre().getText();
-        String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText();
-        String telefono = usuarioRegistroView.getTxtTelefono().getText();
-        String correo = usuarioRegistroView.getTxtCorreo().getText();
-        String username = usuarioRegistroView.getTxtUsername().getText();
+        String cedula = usuarioRegistroView.getTxtCedula().getText().trim();
+        String nombre = usuarioRegistroView.getTxtNombre().getText().trim();
+        String fecha = usuarioRegistroView.getTxtFechaNacimiento().getText().trim();
+        String telefono = usuarioRegistroView.getTxtTelefono().getText().trim();
+        String correo = usuarioRegistroView.getTxtCorreo().getText().trim();
+        String username = usuarioRegistroView.getTxtUsername().getText().trim();
         String password = new String(usuarioRegistroView.getTxtPassword().getPassword());
         String confirmarPassword = new String(usuarioRegistroView.getTxtConfirmarPassword().getPassword());
-
-        if (nombre.isEmpty() || fecha.isEmpty() || telefono.isEmpty() ||
+        // Validación básica de campos obligatorios
+        if (cedula.isEmpty() || nombre.isEmpty() || fecha.isEmpty() || telefono.isEmpty() ||
                 correo.isEmpty() || username.isEmpty() || password.isEmpty()) {
             usuarioRegistroView.mostrarMensaje("campo.usuario.obligatorio");
             return false;
         }
-
+        // Verificación de username único
         if (usuarioDAO.buscarPorUsername(username) != null) {
             usuarioRegistroView.mostrarMensaje("usuario.existente");
             return false;
         }
-
-        Date fechaNacimiento;
-        try {
-            fechaNacimiento = new SimpleDateFormat("dd/MM/yyyy").parse(fecha);
-        } catch (ParseException e) {
-            usuarioRegistroView.mostrarMensaje("formato.fecha.incorrecto");
-            return false;
-        }
-
+        // Verificación de coincidencia de contraseñas
         if (!password.equals(confirmarPassword)) {
-            usuarioRegistroView.mostrarMensaje("contrasenia.no.coinciden");
+            usuarioRegistroView.mostrarMensaje("contrasenias.no.coinciden");
             return false;
         }
-
-        Usuario nuevoUsuario = new Usuario(
-                cedula,
-                nombre,
-                fechaNacimiento,
-                telefono,
-                correo,
-                username,
-                password,
-                Rol.USUARIO);
-        try {
-            nuevoUsuario.validarCedula();
-        } catch (CedulaException e) {
-            usuarioRegistroView.mostrarMensaje(e.getMessage());
-            return  false;
-        }
-
-        try {
-            nuevoUsuario.validarContrasenia();
-        } catch (ContraseniaException e) {
-            usuarioRegistroView.mostrarMensaje(e.getMessage());
-        }
-
         return true;
     }
 
@@ -451,23 +417,26 @@ public class UsuarioController {
      * Valida y guarda la información en la base de datos.
      */
     private void completarRegistro() {
-        if (!usuarioRegistroView.validarCampos()) {
+        if (!validarDatos()) {
             return;
         }
 
-        String cedula = usuarioRegistroView.getTxtCedula().getText();
-        String nombre = usuarioRegistroView.getTxtNombre().getText();
-        String fechaStr = usuarioRegistroView.getTxtFechaNacimiento().getText();
-        String telefono = usuarioRegistroView.getTxtTelefono().getText();
-        String correo = usuarioRegistroView.getTxtCorreo().getText();
-        String username = usuarioRegistroView.getTxtUsername().getText();
+        String cedula = usuarioRegistroView.getTxtCedula().getText().trim();
+        String nombre = usuarioRegistroView.getTxtNombre().getText().trim();
+        String fechaStr = usuarioRegistroView.getTxtFechaNacimiento().getText().trim();
+        String telefono = usuarioRegistroView.getTxtTelefono().getText().trim();
+        String correo = usuarioRegistroView.getTxtCorreo().getText().trim();
+        String username = usuarioRegistroView.getTxtUsername().getText().trim();
         String password = new String(usuarioRegistroView.getTxtPassword().getPassword());
+
+        // Limpiar el número de teléfono (remover espacios, guiones, etc.)
+        String telefonoLimpio = telefono.replaceAll("[^0-9]", "");
 
         Usuario nuevoUsuario = new Usuario(
                 cedula,
                 nombre,
                 null,
-                telefono,
+                telefonoLimpio, // Usar el teléfono limpio
                 correo,
                 username,
                 password,
@@ -477,23 +446,27 @@ public class UsuarioController {
         try {
             nuevoUsuario.validar(fechaStr);
 
-            if (usuarioDAO.buscarPorUsername(username) != null) {
-                usuarioRegistroView.mostrarMensaje("usuario.existente");
-                return;
-            }
-
             usuarioDAO.crear(nuevoUsuario);
             usuarioRegistroView.mostrarMensaje("registro.exitoso");
             usuarioRegistroView.dispose();
 
+            // Limpiar estado
             pasoActual = 0;
             preguntasSeleccionadas = null;
             usernameEnRegistro = null;
             passwordEnRegistro = null;
             usuarioRegistroView.limpiarCampos();
 
-        } catch (CedulaException | ContraseniaException | FechaException | CorreoException e) {
+        } catch (CedulaException e) {
+            usuarioRegistroView.mostrarMensaje("cedula.invalida");
+        } catch (ContraseniaException e) {
             usuarioRegistroView.mostrarMensaje(e.getMessage());
+        } catch (CorreoException e) {
+            usuarioRegistroView.mostrarMensaje("correo.invalido");
+        } catch (FechaException e) {
+            usuarioRegistroView.mostrarMensaje("formato.fecha.incorrecto");
+        } catch (TelefonoException e) {
+            usuarioRegistroView.mostrarMensaje("telefono.invalido");
         } catch (Exception e) {
             usuarioRegistroView.mostrarMensaje("error.registro");
             e.printStackTrace();

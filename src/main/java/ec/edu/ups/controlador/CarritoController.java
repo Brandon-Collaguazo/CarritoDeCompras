@@ -329,6 +329,8 @@ public class CarritoController {
         carritoAnadirView.getTxtCodigo().setText("");
         carritoAnadirView.getTxtNombre().setText("");
         carritoAnadirView.getTxtPrecio().setText(valorCero);
+        DefaultTableModel model = (DefaultTableModel) carritoAnadirView.getTblProducto().getModel();
+        model.setRowCount(0);
         carritoAnadirView.getCbxCantidad().setSelectedIndex(0);
         carritoAnadirView.getTxtSubtotal().setText(valorCero);
         carritoAnadirView.getTxtIva().setText(valorCero);

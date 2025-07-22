@@ -274,7 +274,6 @@ public class LoginView extends JFrame {
                                 tipoKey.equals(mensaje.get("login.almacenamiento.binario")));
                 lblRuta.setVisible(esArchivo);
                 txtRuta.setVisible(esArchivo);
-                btnRecuperar.setVisible(esArchivo);
                 if(esArchivo && txtRuta.getText().isEmpty()) {
                     txtRuta.setText("data" + File.separator);
                 } else if (!esArchivo) {

@@ -1,9 +1,6 @@
 package ec.edu.ups.modelo;
 
-import ec.edu.ups.excepciones.CedulaException;
-import ec.edu.ups.excepciones.ContraseniaException;
-import ec.edu.ups.excepciones.CorreoException;
-import ec.edu.ups.excepciones.FechaException;
+import ec.edu.ups.excepciones.*;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -99,19 +96,27 @@ public class Usuario implements Serializable {
     }
 
     public void validarCedula() throws CedulaException {
-        if(cedula == null || cedula.length() != 10 || !cedula.matches("\\d+")) {
+        // Validación básica en una línea
+        if (cedula == null || !cedula.matches("^[0-9]{10}$")) {
+            throw new CedulaException("cedula.digitos");
+        }
+
+        // Validación de provincia y tercer dígito
+        int provincia = Integer.parseInt(cedula.substring(0, 2));
+        int tercerDig = Character.getNumericValue(cedula.charAt(2));
+        if (provincia < 1 || provincia > 24 || tercerDig > 5) {
             throw new CedulaException("cedula.invalida");
         }
 
-        int ultimoDigito = Character.getNumericValue(cedula.charAt(9));
+        // Algoritmo de verificación simplificado
         int suma = 0;
         for (int i = 0; i < 9; i++) {
             int digito = Character.getNumericValue(cedula.charAt(i));
-            suma += (i % 2 == 0) ? digito * 2 : digito;
+            suma += (i % 2 == 0) ? ((digito * 2 > 9) ? digito * 2 - 9 : digito * 2) : digito;
         }
 
-        int verfificadorCalculado = (10 - (suma % 10)) % 10;
-        if (verfificadorCalculado != ultimoDigito) {
+        int digitoVerif = Character.getNumericValue(cedula.charAt(9));
+        if ((10 - suma % 10) % 10 != digitoVerif) {
             throw new CedulaException("digito.verificador");
         }
     }
@@ -155,10 +160,22 @@ public class Usuario implements Serializable {
         }
     }
 
-    public void validar(String fechaNacimientoStr) throws CedulaException, ContraseniaException, CorreoException, FechaException {
+    public void validarNumero() throws TelefonoException {
+        if (telefono == null || telefono.trim().isEmpty()) {
+            throw new TelefonoException("telefono.vacio");
+        }
+        // Eliminar espacios, guiones u otros caracteres no numéricos
+        String numeroLimpio = telefono.replaceAll("[^0-9]", "");
+        if (!numeroLimpio.matches("09\\d{8}")) {
+            throw new TelefonoException("telefono.invalido");
+        }
+    }
+
+    public void validar(String fechaNacimientoStr) throws CedulaException, ContraseniaException, CorreoException, FechaException, TelefonoException {
         validarCedula();
         validarContrasenia();
         validarCorreo();
+        validarNumero();
         validarFecha(fechaNacimientoStr);
     }
 
